@@ -1,6 +1,9 @@
 # 대본을 받아 이미지 + 내레이션 슬라이드쇼 영상을 만드는 도구
 import asyncio
+import glob
 import os
+import random
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -15,6 +18,8 @@ from generate import write_script
 load_dotenv()
 
 FFMPEG = imageio_ffmpeg.get_ffmpeg_exe()
+MUSIC_DIR = "music"  # 여기에 배경음악 파일을 넣으면 자동으로 깔립니다.
+MUSIC_VOLUME = 0.15  # 배경음악 음량(0~1). 내레이션이 잘 들리도록 작게.
 # 장면마다 이 순서로 번갈아 씁니다. 하나만 두면 그 음성만 씁니다.
 VOICES = ["ko-KR-SunHiNeural", "ko-KR-InJoonNeural"]
 RATE = "+25%"  # 내레이션 속도. +로 빠르게, -로 느리게 (예: "-10%").
@@ -93,6 +98,57 @@ def render_clip(image: str, audio: str, out: str) -> None:
     )
 
 
+def fetch_music_jamendo(path: str) -> str:
+    """Jamendo 에서 무료 음악 하나를 받고, 출처 표기 문구를 돌려줍니다."""
+    res = requests.get(
+        "https://api.jamendo.com/v3.0/tracks",
+        params={
+            "client_id": os.environ["JAMENDO_CLIENT_ID"],
+            "format": "json",
+            "limit": 1,
+            "audioformat": "mp32",
+            "order": "popularity_total",
+            "tags": "instrumental",  # 가사 없는 곡이 배경음악에 어울립니다.
+            "vocalinstrumental": "instrumental",
+        },
+        timeout=30,
+    )
+    res.raise_for_status()
+    tracks = res.json()["results"]
+    if not tracks:
+        raise ValueError("Jamendo 에서 음악을 찾지 못했습니다.")
+    t = tracks[0]
+    with open(path, "wb") as f:
+        f.write(requests.get(t["audio"], timeout=120).content)
+    return f"음악: {t['name']} - {t['artist_name']} (Jamendo, CC BY)"
+
+
+def pick_music(path: str) -> str | None:
+    """배경음악을 준비합니다. 폴더 우선, 없으면 Jamendo. 출처 문구를 돌려줍니다."""
+    files = glob.glob(os.path.join(MUSIC_DIR, "*.mp3")) + glob.glob(os.path.join(MUSIC_DIR, "*.m4a"))
+    if files:
+        chosen = random.choice(files)
+        subprocess.run([FFMPEG, "-y", "-i", chosen, "-c", "copy", path],
+                       check=True, capture_output=True)
+        return None  # 내가 넣은 음악이니 출처 표기 불필요
+    if os.environ.get("JAMENDO_CLIENT_ID"):
+        return fetch_music_jamendo(path)
+    return None  # 음악 없음
+
+
+def add_music(video: str, music: str, out: str) -> None:
+    """영상에 배경음악을 작게 깝니다. 음악이 길면 영상 길이에 맞춰 자릅니다."""
+    subprocess.run(
+        [FFMPEG, "-y", "-i", video, "-i", music,
+         # 내레이션은 그대로, 음악은 MUSIC_VOLUME 으로 줄여 섞습니다.
+         "-filter_complex",
+         f"[1:a]volume={MUSIC_VOLUME}[bg];[0:a][bg]amix=inputs=2:duration=first[a]",
+         "-map", "0:v", "-map", "[a]", "-c:v", "copy", "-c:a", "aac", out],
+        check=True,
+        capture_output=True,
+    )
+
+
 def concat(clips: list[str], out: str) -> None:
     """장면들을 하나의 영상으로 이어붙입니다."""
     listfile = os.path.join(os.path.dirname(clips[0]), "clips.txt")
@@ -128,7 +184,19 @@ def make_video(scenes: list[dict], out: str) -> str:
                 make_background(i, image)
             render_clip(image, audio, clip)
             clips.append(clip)
-        concat(clips, out)
+
+        joined = os.path.join(work, "joined.mp4")
+        concat(clips, joined)
+
+        # 배경음악을 준비해 깝니다. 없으면 그대로 둡니다.
+        music = os.path.join(work, "bgm.mp3")
+        credit = pick_music(music)
+        if os.path.exists(music):
+            add_music(joined, music, out)
+            if credit:
+                print(f"  {credit}")
+        else:
+            shutil.copy(joined, out)  # 임시폴더가 다른 드라이브일 수 있어 copy 사용
     return out
 
 

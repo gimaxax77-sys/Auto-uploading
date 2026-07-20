@@ -7,6 +7,7 @@ venv/
 .env.*
 client_secret.json
 token.json
+music/
 dist/
 build/
 .DS_Store

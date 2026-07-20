@@ -76,8 +76,53 @@ def test_빈_대본파일은_에러():
             raise AssertionError("빈 대본인데 에러가 나지 않았습니다")
 
 
+def make_music(work, name="bgm.mp3"):
+    """테스트용 무음이 아닌 톤 오디오를 만듭니다."""
+    p = os.path.join(work, name)
+    subprocess.run(
+        [video.FFMPEG, "-y", "-f", "lavfi", "-i", "sine=frequency=440:duration=5", p],
+        check=True, capture_output=True,
+    )
+    return p
+
+
+def test_배경음악_합성():
+    with tempfile.TemporaryDirectory() as work:
+        # 음성이 들어간 장면 하나를 만듭니다.
+        image, audio = make_dummy(work, 0)
+        clip = os.path.join(work, "clip.mp4")
+        video.render_clip(image, audio, clip)
+
+        music = make_music(work)
+        out = os.path.join(work, "with_music.mp4")
+        video.add_music(clip, music, out)
+
+        # 영상 트랙과 오디오 트랙이 둘 다 있어야 합니다.
+        info = subprocess.run([video.FFMPEG, "-i", out], capture_output=True, text=True).stderr
+        assert "Video:" in info and "Audio:" in info, f"트랙이 빠졌습니다:\n{info}"
+        assert os.path.getsize(out) > 0
+
+
+def test_폴더음악_우선():
+    # music 폴더에 파일이 있으면 그걸 쓰고 출처 표기는 None 이어야 합니다.
+    with tempfile.TemporaryDirectory() as work:
+        old = os.getcwd()
+        os.chdir(work)
+        try:
+            os.makedirs(video.MUSIC_DIR)
+            make_music(work, os.path.join(video.MUSIC_DIR, "my.mp3"))
+            out = os.path.join(work, "picked.mp3")
+            credit = video.pick_music(out)
+            assert credit is None, "폴더 음악은 출처 표기가 없어야 합니다"
+            assert os.path.getsize(out) > 0, "폴더 음악이 준비되지 않았습니다"
+        finally:
+            os.chdir(old)
+
+
 if __name__ == "__main__":
     test_장면조립과_이어붙이기()
     test_대본파일_읽기()
     test_빈_대본파일은_에러()
+    test_배경음악_합성()
+    test_폴더음악_우선()
     print("통과")
