@@ -50,6 +50,34 @@ def test_장면조립과_이어붙이기():
         assert 1.5 < duration < 3.0, f"길이가 {duration}초로 예상(약 2초)과 다릅니다"
 
 
+def test_대본파일_읽기():
+    with tempfile.TemporaryDirectory() as work:
+        path = os.path.join(work, "s.txt")
+        with open(path, "w", encoding="utf-8") as f:
+            f.write("# 주석은 무시\n\n첫 장면입니다. | autumn\n둘째 장면입니다.\n")
+
+        scenes = video.read_script(path)
+        assert len(scenes) == 2, f"장면이 2개여야 하는데 {len(scenes)}개입니다"
+        assert scenes[0] == {"narration": "첫 장면입니다.", "image_query": "autumn"}
+        # 검색어를 안 쓰면 비어 있어야 하고, 그러면 색 배경이 쓰입니다.
+        assert scenes[1] == {"narration": "둘째 장면입니다.", "image_query": ""}
+
+
+def test_빈_대본파일은_에러():
+    with tempfile.TemporaryDirectory() as work:
+        path = os.path.join(work, "empty.txt")
+        with open(path, "w", encoding="utf-8") as f:
+            f.write("# 주석만 있음\n\n")
+        try:
+            video.read_script(path)
+        except ValueError as e:
+            assert "읽을 장면이 없습니다" in str(e)
+        else:
+            raise AssertionError("빈 대본인데 에러가 나지 않았습니다")
+
+
 if __name__ == "__main__":
     test_장면조립과_이어붙이기()
+    test_대본파일_읽기()
+    test_빈_대본파일은_에러()
     print("통과")

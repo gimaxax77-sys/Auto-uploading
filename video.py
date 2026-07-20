@@ -19,6 +19,24 @@ VOICE = "ko-KR-SunHiNeural"
 SIZE = (1080, 1920)  # 세로형 쇼츠
 
 
+def read_script(path: str) -> list[dict]:
+    """대본 파일을 읽습니다. 한 줄이 한 장면이고, 세로줄(|) 뒤는 이미지 검색어입니다."""
+    scenes = []
+    with open(path, encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line or line.startswith("#"):  # 빈 줄과 # 로 시작하는 줄은 건너뜁니다.
+                continue
+            narration, _, query = line.partition("|")
+            scenes.append({
+                "narration": narration.strip(),
+                "image_query": query.strip(),
+            })
+    if not scenes:
+        raise ValueError(f"{path} 에서 읽을 장면이 없습니다.")
+    return scenes
+
+
 def narrate(text: str, path: str) -> None:
     """문장을 음성 파일로 만듭니다."""
     asyncio.run(edge_tts.Communicate(text, VOICE).save(path))
@@ -85,7 +103,7 @@ def concat(clips: list[str], out: str) -> None:
 
 def make_video(scenes: list[dict], out: str) -> str:
     """장면 목록을 받아 완성된 영상 파일을 만듭니다."""
-    # 키가 없으면 사진 대신 단색 배경을 씁니다.
+    # 키가 없거나 검색어가 비어 있으면 사진 대신 단색 배경을 씁니다.
     use_photos = bool(os.environ.get("PEXELS_API_KEY"))
     if not use_photos:
         print("  (PEXELS_API_KEY 가 없어 대체 배경을 씁니다)")
@@ -98,7 +116,7 @@ def make_video(scenes: list[dict], out: str) -> str:
             clip = os.path.join(work, f"{i}.mp4")
             print(f"  장면 {i + 1}/{len(scenes)}: {scene['narration'][:30]}...")
             narrate(scene["narration"], audio)
-            if use_photos:
+            if use_photos and scene["image_query"]:
                 fetch_image(scene["image_query"], image)
             else:
                 make_background(i, image)
@@ -110,12 +128,17 @@ def make_video(scenes: list[dict], out: str) -> str:
 
 def main() -> None:
     if len(sys.argv) < 2:
-        print("사용법: python video.py \"주제\" [장면수]")
+        print("사용법: python video.py \"주제\" [장면수]      (AI가 대본 작성)")
+        print("        python video.py --file 대본.txt      (대본 파일 사용)")
         sys.exit(1)
 
-    scenes_count = int(sys.argv[2]) if len(sys.argv) > 2 else 5
-    print("대본을 쓰는 중...")
-    scenes = write_script(sys.argv[1], scenes_count)
+    if sys.argv[1] == "--file":
+        scenes = read_script(sys.argv[2])
+        print(f"대본 {len(scenes)}장면을 읽었습니다.")
+    else:
+        print("대본을 쓰는 중...")
+        scenes = write_script(sys.argv[1], int(sys.argv[2]) if len(sys.argv) > 2 else 5)
+
     print("영상을 만드는 중...")
     print(f"\n완성: {make_video(scenes, 'out.mp4')}")
 
