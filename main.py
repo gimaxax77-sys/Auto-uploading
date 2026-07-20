@@ -25,9 +25,11 @@ def post_to_x(text: str) -> str:
 def main() -> None:
     if len(sys.argv) < 2:
         print("사용법: python main.py \"주제\" [--post]")
+        print("        python main.py \"올릴 글 그대로\" --text [--post]")
         sys.exit(1)
 
-    text = write_post(sys.argv[1], "x")
+    # --text 는 AI 생성을 건너뛰고 준 글을 그대로 올립니다(Anthropic 키 불필요).
+    text = sys.argv[1] if "--text" in sys.argv else write_post(sys.argv[1], "x")
     print(text)
 
     # 기본은 미리보기만. 실제 게시는 --post 를 붙여야 합니다.
