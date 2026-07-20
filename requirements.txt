@@ -1,3 +1,6 @@
 anthropic
 tweepy
 python-dotenv
+edge-tts
+imageio-ffmpeg
+requests

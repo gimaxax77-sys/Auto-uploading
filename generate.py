@@ -1,4 +1,5 @@
-# 주제를 받아 플랫폼에 맞는 게시글을 생성하는 도구
+# 주제를 받아 플랫폼에 맞는 게시글과 영상 대본을 생성하는 도구
+import json
 import sys
 
 import anthropic
@@ -39,6 +40,47 @@ def write_post(topic: str, platform: str = "x") -> str:
             f"생성된 글이 {len(text)}자로 {platform} 한도 {rule['limit']}자를 넘습니다: {text}"
         )
     return text
+
+
+def write_script(topic: str, scenes: int = 5) -> list[dict]:
+    """주제를 받아 장면별 내레이션과 이미지 검색어를 생성합니다."""
+    client = anthropic.Anthropic()
+    response = client.messages.create(
+        model="claude-opus-4-8",
+        max_tokens=2000,
+        system=(
+            f"너는 짧은 영상 대본을 쓴다. {TONE}로 정확히 {scenes}개 장면을 만든다. "
+            "narration 은 소리내어 읽었을 때 5~10초인 한국어 한두 문장. "
+            "image_query 는 그 장면에 어울리는 사진을 스톡 사이트에서 찾을 영어 검색어 2~3단어."
+        ),
+        messages=[{"role": "user", "content": topic}],
+        output_config={
+            "format": {
+                "type": "json_schema",
+                "schema": {
+                    "type": "object",
+                    "properties": {
+                        "scenes": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "narration": {"type": "string"},
+                                    "image_query": {"type": "string"},
+                                },
+                                "required": ["narration", "image_query"],
+                                "additionalProperties": False,
+                            },
+                        }
+                    },
+                    "required": ["scenes"],
+                    "additionalProperties": False,
+                },
+            }
+        },
+    )
+    text = next(b.text for b in response.content if b.type == "text")
+    return json.loads(text)["scenes"]
 
 
 def main() -> None:
