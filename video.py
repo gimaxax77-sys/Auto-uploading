@@ -16,6 +16,7 @@ load_dotenv()
 
 FFMPEG = imageio_ffmpeg.get_ffmpeg_exe()
 VOICE = "ko-KR-SunHiNeural"
+RATE = "+15%"  # 내레이션 속도. +로 빠르게, -로 느리게 (예: "-10%").
 SIZE = (1080, 1920)  # 세로형 쇼츠
 
 
@@ -39,7 +40,7 @@ def read_script(path: str) -> list[dict]:
 
 def narrate(text: str, path: str) -> None:
     """문장을 음성 파일로 만듭니다."""
-    asyncio.run(edge_tts.Communicate(text, VOICE).save(path))
+    asyncio.run(edge_tts.Communicate(text, VOICE, rate=RATE).save(path))
 
 
 def fetch_image(query: str, path: str) -> None:
