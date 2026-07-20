@@ -40,6 +40,20 @@ def fetch_image(query: str, path: str) -> None:
         f.write(requests.get(photos[0]["src"]["large2x"], timeout=60).content)
 
 
+def make_background(index: int, path: str) -> None:
+    """Pexels 키가 없을 때 쓰는 대체 배경. 장면마다 색을 바꿉니다."""
+    w, h = SIZE
+    hue = (index * 47) % 360  # 장면마다 충분히 다른 색이 나오도록 47도씩 돌립니다.
+    subprocess.run(
+        [FFMPEG, "-y", "-f", "lavfi",
+         "-i", f"color=c=gray:s={w}x{h}",
+         "-vf", f"hue=h={hue}:s=1.4,gblur=sigma=40",
+         "-frames:v", "1", path],
+        check=True,
+        capture_output=True,
+    )
+
+
 def render_clip(image: str, audio: str, out: str) -> None:
     """사진 한 장과 음성 하나를 붙여 장면 하나를 만듭니다."""
     w, h = SIZE
@@ -71,6 +85,11 @@ def concat(clips: list[str], out: str) -> None:
 
 def make_video(scenes: list[dict], out: str) -> str:
     """장면 목록을 받아 완성된 영상 파일을 만듭니다."""
+    # 키가 없으면 사진 대신 단색 배경을 씁니다.
+    use_photos = bool(os.environ.get("PEXELS_API_KEY"))
+    if not use_photos:
+        print("  (PEXELS_API_KEY 가 없어 대체 배경을 씁니다)")
+
     with tempfile.TemporaryDirectory() as work:
         clips = []
         for i, scene in enumerate(scenes):
@@ -79,7 +98,10 @@ def make_video(scenes: list[dict], out: str) -> str:
             clip = os.path.join(work, f"{i}.mp4")
             print(f"  장면 {i + 1}/{len(scenes)}: {scene['narration'][:30]}...")
             narrate(scene["narration"], audio)
-            fetch_image(scene["image_query"], image)
+            if use_photos:
+                fetch_image(scene["image_query"], image)
+            else:
+                make_background(i, image)
             render_clip(image, audio, clip)
             clips.append(clip)
         concat(clips, out)
