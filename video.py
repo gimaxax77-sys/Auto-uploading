@@ -17,6 +17,7 @@ load_dotenv()
 FFMPEG = imageio_ffmpeg.get_ffmpeg_exe()
 VOICE = "ko-KR-SunHiNeural"
 RATE = "+25%"  # 내레이션 속도. +로 빠르게, -로 느리게 (예: "-10%").
+GAP = 0.3  # 장면 사이 여백(초). 넘어갈 때 숨 쉬는 틈을 줍니다.
 SIZE = (1080, 1920)  # 세로형 쇼츠
 
 
@@ -81,6 +82,8 @@ def render_clip(image: str, audio: str, out: str) -> None:
             FFMPEG, "-y", "-loop", "1", "-i", image, "-i", audio,
             # 사진을 세로 화면에 꽉 채우고 넘치는 부분은 잘라냅니다.
             "-vf", f"scale={w}:{h}:force_original_aspect_ratio=increase,crop={w}:{h}",
+            # 음성 끝에 GAP 초 만큼 무음을 붙여 장면 사이에 여백을 줍니다.
+            "-af", f"apad=pad_dur={GAP}",
             "-c:v", "libx264", "-pix_fmt", "yuv420p", "-r", "30",
             "-c:a", "aac", "-shortest", out,
         ],
