@@ -15,7 +15,8 @@ from generate import write_script
 load_dotenv()
 
 FFMPEG = imageio_ffmpeg.get_ffmpeg_exe()
-VOICE = "ko-KR-SunHiNeural"
+# 장면마다 이 순서로 번갈아 씁니다. 하나만 두면 그 음성만 씁니다.
+VOICES = ["ko-KR-SunHiNeural", "ko-KR-InJoonNeural"]
 RATE = "+25%"  # 내레이션 속도. +로 빠르게, -로 느리게 (예: "-10%").
 GAP = 0.3  # 장면 사이 여백(초). 넘어갈 때 숨 쉬는 틈을 줍니다.
 SIZE = (1080, 1920)  # 세로형 쇼츠
@@ -39,9 +40,9 @@ def read_script(path: str) -> list[dict]:
     return scenes
 
 
-def narrate(text: str, path: str) -> None:
+def narrate(text: str, path: str, voice: str = VOICES[0]) -> None:
     """문장을 음성 파일로 만듭니다."""
-    asyncio.run(edge_tts.Communicate(text, VOICE, rate=RATE).save(path))
+    asyncio.run(edge_tts.Communicate(text, voice, rate=RATE).save(path))
 
 
 def fetch_image(query: str, path: str) -> None:
@@ -118,8 +119,9 @@ def make_video(scenes: list[dict], out: str) -> str:
             audio = os.path.join(work, f"{i}.mp3")
             image = os.path.join(work, f"{i}.jpg")
             clip = os.path.join(work, f"{i}.mp4")
-            print(f"  장면 {i + 1}/{len(scenes)}: {scene['narration'][:30]}...")
-            narrate(scene["narration"], audio)
+            voice = VOICES[i % len(VOICES)]  # 장면마다 음성을 번갈아 씁니다.
+            print(f"  장면 {i + 1}/{len(scenes)} [{voice.split('-')[-1]}]: {scene['narration'][:24]}...")
+            narrate(scene["narration"], audio, voice)
             if use_photos and scene["image_query"]:
                 fetch_image(scene["image_query"], image)
             else:
