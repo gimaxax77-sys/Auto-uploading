@@ -16,7 +16,7 @@ load_dotenv()
 
 FFMPEG = imageio_ffmpeg.get_ffmpeg_exe()
 VOICE = "ko-KR-SunHiNeural"
-RATE = "+15%"  # 내레이션 속도. +로 빠르게, -로 느리게 (예: "-10%").
+RATE = "+25%"  # 내레이션 속도. +로 빠르게, -로 느리게 (예: "-10%").
 SIZE = (1080, 1920)  # 세로형 쇼츠
 
 
