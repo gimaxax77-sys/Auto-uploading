@@ -5,6 +5,8 @@ venv/
 *.pyc
 .env
 .env.*
+client_secret.json
+token.json
 dist/
 build/
 .DS_Store

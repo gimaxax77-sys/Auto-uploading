@@ -21,11 +21,13 @@
 - [x] 글 생성 분리 (`generate.py`)
 - [x] X 업로드 코드 (`main.py`)
 - [x] 영상 생성 코드 (`video.py`) — 대본·음성·이미지·조립
-- [ ] Gim이 Anthropic 키 발급 (결제 화면 문제 해결 중)
-- [ ] Gim이 Pexels 키 발급 (무료·즉시)
-- [ ] Gim이 Google Cloud OAuth 설정 (`client_secret.json`)
-- [ ] 영상 1개 실제 생성 검증
-- [ ] YouTube 업로드 붙이기
+- [x] 대본 파일 입력 (`--file`) — Anthropic 없이 영상 생성
+- [x] 영상 1개 실제 생성 검증 (`sample.mp4`)
+- [x] YouTube 업로드 코드 (`youtube.py`)
+- [ ] Gim이 Pexels 키를 `.env`에 넣기 (발급 완료, PC 필요)
+- [ ] Gim이 Google Cloud OAuth 설정 (`client_secret.json`, PC 필요)
+- [ ] YouTube 실제 업로드 검증 (PC 필요)
+- [ ] Anthropic 키 (결제 막힘 — 보류. 대본 파일로 대체 가능)
 - [ ] X 또는 Threads 게시 검증
 
 ## 결정과 근거
