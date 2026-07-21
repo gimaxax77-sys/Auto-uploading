@@ -30,6 +30,12 @@
 - [ ] Anthropic 키 (결제 막힘 — 보류. 대본 파일로 대체 가능)
 - [ ] X 또는 Threads 게시 검증
 
+## 보류 리스트 (나중에)
+
+- **배경음악 Jamendo 연동** — 코드는 완성됨(`video.py`의 `pick_music`). Gim이 `devportal.jamendo.com` 에서 `client_id` 발급 후 `.env`의 `JAMENDO_CLIENT_ID` 에 넣으면 자동 작동. 폴더(`music/`) 방식은 지금도 사용 가능. Jamendo 곡은 출처 표기(CC BY) 필요.
+- **Anthropic 대본 자동 작성** — 결제 화면 문제로 보류. 대본 파일(`--file`)로 대체 중.
+- **자막 넣기** — 쇼츠 무음 시청 대비. 미착수.
+
 ## 결정과 근거
 
 **Python 하나로 시작합니다.** Node를 같이 쓰면 실행·배포·의존성이 두 배로 복잡해집니다. 브라우저 자동화가 정말 필요해질 때 Node를 더합니다.
