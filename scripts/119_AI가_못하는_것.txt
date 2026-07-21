@@ -3,4 +3,4 @@
 그럴듯하지만 틀린 정보를 지어내기도 합니다. | question thinking doubt
 최신 정보나 실시간 상황은 부정확할 수 있습니다. | laptop data screen
 정확성이 중요한 일은 사람이 꼭 확인해야 합니다. | person reviewing document
-AI는 최종 판단이 아니라 보조 도구입니다. | human technology hands
+AI는 판단이 아니라, 도구일 뿐이에요. | human technology hands

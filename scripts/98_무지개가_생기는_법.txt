@@ -3,4 +3,4 @@
 햇빛이 공기 중 물방울에서 꺾이고 반사됩니다. | rain droplets light
 색마다 꺾이는 각도가 달라 일곱 빛깔로 나뉩니다. | colorful rainbow sky
 물방울 하나하나가 작은 프리즘이 됩니다. | water drops sunlight
-태양을 등지고 서면 무지개가 보입니다. | rainbow field beautiful
+태양을 등지면, 무지개가 보여요. | rainbow field beautiful
