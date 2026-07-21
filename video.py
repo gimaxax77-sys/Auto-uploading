@@ -37,6 +37,15 @@ RATE = "+25%"  # 내레이션 속도. +로 빠르게, -로 느리게 (예: "-10%
 GAP = 0.3  # 장면 사이 여백(초). 넘어갈 때 숨 쉬는 틈을 줍니다.
 SIZE = (1080, 1920)  # 세로형 쇼츠
 
+# 화면 연출효과 (입자 제외 전부)
+EFFECTS = True  # False 로 두면 효과 없이 정지 사진으로 만듭니다.
+ZOOM_END = 1.12  # 켄번즈: 장면 동안 이만큼 확대(1.0=없음).
+DARKEN = 0.05  # 사진을 이만큼 어둡게(0~1). 자막 가독성 향상.
+VIGNETTE = "PI/5"  # 가장자리 어둡게(비네팅) 강도.
+SUB_FADE = 0.4  # 자막이 나타나는 시간(초).
+XFADE = 0.4  # 장면 전환 겹침 시간(초).
+FPS = 30
+
 
 def read_script(path: str) -> list[dict]:
     """대본 파일을 읽습니다. 한 줄이 한 장면이고, 세로줄(|) 뒤는 이미지 검색어입니다."""
@@ -128,11 +137,31 @@ def subtitle_style(image: str) -> str:
     return STYLE_BRIGHT if image_brightness(image) > BRIGHT_THRESHOLD else STYLE_DARK
 
 
+def media_duration(path: str) -> float:
+    """오디오/영상 파일의 길이(초)를 ffmpeg 출력에서 읽습니다."""
+    info = subprocess.run([FFMPEG, "-i", path], capture_output=True, text=True).stderr
+    m = re.search(r"Duration: (\d+):(\d+):([\d.]+)", info)
+    h, mi, s = m.groups()
+    return int(h) * 3600 + int(mi) * 60 + float(s)
+
+
 def render_clip(image: str, audio: str, out: str, subtitle: str = "") -> None:
     """사진 한 장과 음성 하나를 붙여 장면 하나를 만듭니다."""
     w, h = SIZE
-    # 사진을 세로 화면에 꽉 채우고 넘치는 부분은 잘라냅니다.
-    vf = f"scale={w}:{h}:force_original_aspect_ratio=increase,crop={w}:{h}"
+    duration = media_duration(audio) + GAP  # 이 장면의 총 길이
+    frames = max(1, round(duration * FPS))
+
+    if EFFECTS:
+        # 켄번즈: 사진을 크게 키운 뒤 천천히 확대(zoompan)합니다.
+        step = (ZOOM_END - 1.0) / frames
+        vf = (
+            f"scale={w * 2}:{h * 2}:force_original_aspect_ratio=increase,crop={w * 2}:{h * 2},"
+            f"zoompan=z='min(zoom+{step:.6f},{ZOOM_END})':d={frames}"
+            f":x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':s={w}x{h}:fps={FPS},"
+            f"eq=brightness=-{DARKEN},vignette={VIGNETTE}"  # 어둡게 + 비네팅
+        )
+    else:
+        vf = f"scale={w}:{h}:force_original_aspect_ratio=increase,crop={w}:{h}"
 
     subtitle_file = None
     if SUBTITLE and subtitle:
@@ -144,10 +173,12 @@ def render_clip(image: str, audio: str, out: str, subtitle: str = "") -> None:
         font = FONT.replace(":", "\\:")  # 드라이브 문자 뒤 콜론 이스케이프
         tf = subtitle_file.replace("\\", "/").replace(":", "\\:")
         style = subtitle_style(image)  # 배경 밝기에 맞춰 색을 고릅니다.
+        # 자막이 SUB_FADE 초에 걸쳐 스르륵 나타납니다.
+        fade = f":alpha='min(1\\,t/{SUB_FADE})'" if EFFECTS else ""
         vf += (
             f",drawtext=fontfile='{font}':textfile='{tf}'"
             f":fontsize={FONT_SIZE}:{style}"
-            f":line_spacing={LINE_SPACING}:x=(w-tw)/2:y={SUB_TOP}"  # 가로 가운데, 상단 배치
+            f":line_spacing={LINE_SPACING}:x=(w-tw)/2:y={SUB_TOP}{fade}"
         )
 
     try:
@@ -157,8 +188,9 @@ def render_clip(image: str, audio: str, out: str, subtitle: str = "") -> None:
                 "-vf", vf,
                 # 음성 끝에 GAP 초 만큼 무음을 붙여 장면 사이에 여백을 줍니다.
                 "-af", f"apad=pad_dur={GAP}",
-                "-c:v", "libx264", "-pix_fmt", "yuv420p", "-r", "30",
-                "-c:a", "aac", "-shortest", out,
+                "-t", f"{duration:.3f}",
+                "-c:v", "libx264", "-pix_fmt", "yuv420p", "-r", str(FPS),
+                "-c:a", "aac", out,
             ],
             check=True,
             capture_output=True,
@@ -220,13 +252,46 @@ def add_music(video: str, music: str, out: str) -> None:
 
 
 def concat(clips: list[str], out: str) -> None:
-    """장면들을 하나의 영상으로 이어붙입니다."""
+    """장면들을 그대로(전환 없이) 이어붙입니다."""
     listfile = os.path.join(os.path.dirname(clips[0]), "clips.txt")
-    with open(listfile, "w", encoding="utf-8") as f:
+    with open(listfile, "w", encoding="utf-8", newline="\n") as f:
         for c in clips:
             f.write(f"file '{os.path.basename(c)}'\n")
     subprocess.run(
         [FFMPEG, "-y", "-f", "concat", "-safe", "0", "-i", listfile, "-c", "copy", out],
+        check=True,
+        capture_output=True,
+    )
+
+
+def concat_xfade(clips: list[str], out: str, t: float = XFADE) -> None:
+    """장면들을 크로스페이드로 부드럽게 이어붙입니다."""
+    if len(clips) == 1:
+        shutil.copy(clips[0], out)
+        return
+    durs = [media_duration(c) for c in clips]
+    inputs = []
+    for c in clips:
+        inputs += ["-i", c]
+
+    v_filters, a_filters = [], []
+    vlabel, alabel = "0:v", "0:a"
+    acc = durs[0]
+    for i in range(1, len(clips)):
+        offset = acc - t
+        vout, aout = f"v{i}", f"a{i}"
+        v_filters.append(
+            f"[{vlabel}][{i}:v]xfade=transition=fade:duration={t}:offset={offset:.3f}[{vout}]"
+        )
+        a_filters.append(f"[{alabel}][{i}:a]acrossfade=d={t}[{aout}]")
+        vlabel, alabel = vout, aout
+        acc += durs[i] - t
+
+    filter_complex = ";".join(v_filters + a_filters)
+    subprocess.run(
+        [FFMPEG, "-y", *inputs, "-filter_complex", filter_complex,
+         "-map", f"[{vlabel}]", "-map", f"[{alabel}]",
+         "-c:v", "libx264", "-pix_fmt", "yuv420p", "-c:a", "aac", out],
         check=True,
         capture_output=True,
     )
@@ -256,7 +321,8 @@ def make_video(scenes: list[dict], out: str) -> str:
             clips.append(clip)
 
         joined = os.path.join(work, "joined.mp4")
-        concat(clips, joined)
+        # 효과가 켜져 있으면 크로스페이드로, 아니면 그대로 이어붙입니다.
+        (concat_xfade if EFFECTS else concat)(clips, joined)
 
         # 배경음악을 준비해 깝니다. 없으면 그대로 둡니다.
         music = os.path.join(work, "bgm.mp3")
