@@ -23,9 +23,14 @@ MUSIC_DIR = "music"  # 여기에 배경음악 파일을 넣으면 자동으로 �
 MUSIC_VOLUME = 0.15  # 배경음악 음량(0~1). 내레이션이 잘 들리도록 작게.
 SUBTITLE = True  # 내레이션 문장을 자막으로 넣습니다.
 FONT = "C:/Windows/Fonts/malgunbd.ttf"  # 맑은 고딕 굵게 (가독성)
-FONT_SIZE = 62
-WRAP = 13  # 한 줄 최대 글자 수. 넘으면 다음 줄로 넘깁니다.
-SUB_TOP = 220  # 자막 위쪽 여백(px). 화면 상단에 배치합니다.
+FONT_SIZE = 74
+WRAP = 12  # 한 줄 최대 글자 수. 넘으면 다음 줄로 넘깁니다.
+SUB_TOP = 200  # 자막 위쪽 여백(px). 화면 상단에 배치합니다.
+LINE_SPACING = 4  # 줄 간격(px). 작을수록 줄이 붙습니다.
+# 배경 밝기에 따라 고르는 자막 색. 밝으면 노란 글씨, 어두우면 흰 글씨+초록 테두리.
+STYLE_BRIGHT = "fontcolor=yellow:borderw=6:bordercolor=black:shadowcolor=black@0.7:shadowx=3:shadowy=3"
+STYLE_DARK = "fontcolor=white:borderw=6:bordercolor=0x00aa00:shadowcolor=black@0.7:shadowx=3:shadowy=3"
+BRIGHT_THRESHOLD = 128  # 자막 영역 평균 밝기가 이 값보다 크면 밝은 배경으로 봅니다.
 # 장면마다 이 순서로 번갈아 씁니다. 하나만 두면 그 음성만 씁니다.
 VOICES = ["ko-KR-SunHiNeural", "ko-KR-InJoonNeural"]
 RATE = "+25%"  # 내레이션 속도. +로 빠르게, -로 느리게 (예: "-10%").
@@ -107,6 +112,22 @@ def wrap_text(text: str, width: int) -> str:
     return "\n".join(lines)
 
 
+def image_brightness(image: str) -> int:
+    """자막이 놓일 상단 영역의 평균 밝기(0~255)를 잽니다."""
+    # 상단 45% 만 잘라 1픽셀로 줄이면 그 한 바이트가 평균 밝기입니다.
+    r = subprocess.run(
+        [FFMPEG, "-i", image, "-vf", "crop=iw:ih*0.45:0:0,scale=1:1",
+         "-f", "rawvideo", "-pix_fmt", "gray", "-"],
+        capture_output=True,
+    )
+    return r.stdout[0] if r.stdout else 128
+
+
+def subtitle_style(image: str) -> str:
+    """배경 밝기에 맞는 자막 색 스타일을 고릅니다."""
+    return STYLE_BRIGHT if image_brightness(image) > BRIGHT_THRESHOLD else STYLE_DARK
+
+
 def render_clip(image: str, audio: str, out: str, subtitle: str = "") -> None:
     """사진 한 장과 음성 하나를 붙여 장면 하나를 만듭니다."""
     w, h = SIZE
@@ -117,16 +138,16 @@ def render_clip(image: str, audio: str, out: str, subtitle: str = "") -> None:
     if SUBTITLE and subtitle:
         # 자막 텍스트는 파일로 넘겨 따옴표·콜론 이스케이프 문제를 피합니다.
         subtitle_file = out + ".txt"
-        with open(subtitle_file, "w", encoding="utf-8") as f:
+        # newline="\n" 로 저장해야 윈도우식 \r\n 때문에 줄 사이가 벌어지지 않습니다.
+        with open(subtitle_file, "w", encoding="utf-8", newline="\n") as f:
             f.write(wrap_text(subtitle, WRAP))
         font = FONT.replace(":", "\\:")  # 드라이브 문자 뒤 콜론 이스케이프
         tf = subtitle_file.replace("\\", "/").replace(":", "\\:")
+        style = subtitle_style(image)  # 배경 밝기에 맞춰 색을 고릅니다.
         vf += (
             f",drawtext=fontfile='{font}':textfile='{tf}'"
-            f":fontcolor=white:fontsize={FONT_SIZE}:borderw=4:bordercolor=black"
-            # 그림자를 더해 복잡한 배경에서도 글자가 또렷하게 보이게 합니다.
-            f":shadowcolor=black@0.7:shadowx=3:shadowy=3"
-            f":line_spacing=16:x=(w-tw)/2:y={SUB_TOP}"  # 가로 가운데, 상단 배치
+            f":fontsize={FONT_SIZE}:{style}"
+            f":line_spacing={LINE_SPACING}:x=(w-tw)/2:y={SUB_TOP}"  # 가로 가운데, 상단 배치
         )
 
     try:
