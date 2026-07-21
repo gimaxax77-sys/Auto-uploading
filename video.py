@@ -20,6 +20,10 @@ load_dotenv()
 FFMPEG = imageio_ffmpeg.get_ffmpeg_exe()
 MUSIC_DIR = "music"  # 여기에 배경음악 파일을 넣으면 자동으로 깔립니다.
 MUSIC_VOLUME = 0.15  # 배경음악 음량(0~1). 내레이션이 잘 들리도록 작게.
+SUBTITLE = True  # 내레이션 문장을 화면 가운데 자막으로 넣습니다.
+FONT = "C:/Windows/Fonts/malgunbd.ttf"  # 맑은 고딕 굵게 (한글 지원)
+FONT_SIZE = 58
+WRAP = 14  # 한 줄 최대 글자 수. 넘으면 다음 줄로 넘깁니다.
 # 장면마다 이 순서로 번갈아 씁니다. 하나만 두면 그 음성만 씁니다.
 VOICES = ["ko-KR-SunHiNeural", "ko-KR-InJoonNeural"]
 RATE = "+25%"  # 내레이션 속도. +로 빠르게, -로 느리게 (예: "-10%").
@@ -80,22 +84,57 @@ def make_background(index: int, path: str) -> None:
     )
 
 
-def render_clip(image: str, audio: str, out: str) -> None:
+def wrap_text(text: str, width: int) -> str:
+    """긴 문장을 띄어쓰기 기준으로 여러 줄로 나눕니다."""
+    lines, line = [], ""
+    for word in text.split():
+        candidate = f"{line} {word}".strip()
+        if len(candidate) > width and line:
+            lines.append(line)
+            line = word
+        else:
+            line = candidate
+    if line:
+        lines.append(line)
+    return "\n".join(lines)
+
+
+def render_clip(image: str, audio: str, out: str, subtitle: str = "") -> None:
     """사진 한 장과 음성 하나를 붙여 장면 하나를 만듭니다."""
     w, h = SIZE
-    subprocess.run(
-        [
-            FFMPEG, "-y", "-loop", "1", "-i", image, "-i", audio,
-            # 사진을 세로 화면에 꽉 채우고 넘치는 부분은 잘라냅니다.
-            "-vf", f"scale={w}:{h}:force_original_aspect_ratio=increase,crop={w}:{h}",
-            # 음성 끝에 GAP 초 만큼 무음을 붙여 장면 사이에 여백을 줍니다.
-            "-af", f"apad=pad_dur={GAP}",
-            "-c:v", "libx264", "-pix_fmt", "yuv420p", "-r", "30",
-            "-c:a", "aac", "-shortest", out,
-        ],
-        check=True,
-        capture_output=True,
-    )
+    # 사진을 세로 화면에 꽉 채우고 넘치는 부분은 잘라냅니다.
+    vf = f"scale={w}:{h}:force_original_aspect_ratio=increase,crop={w}:{h}"
+
+    subtitle_file = None
+    if SUBTITLE and subtitle:
+        # 자막 텍스트는 파일로 넘겨 따옴표·콜론 이스케이프 문제를 피합니다.
+        subtitle_file = out + ".txt"
+        with open(subtitle_file, "w", encoding="utf-8") as f:
+            f.write(wrap_text(subtitle, WRAP))
+        font = FONT.replace(":", "\\:")  # 드라이브 문자 뒤 콜론 이스케이프
+        tf = subtitle_file.replace("\\", "/").replace(":", "\\:")
+        vf += (
+            f",drawtext=fontfile='{font}':textfile='{tf}'"
+            f":fontcolor=white:fontsize={FONT_SIZE}:borderw=3:bordercolor=black"
+            f":line_spacing=14:x=(w-tw)/2:y=(h-th)/2"  # 화면 정중앙
+        )
+
+    try:
+        subprocess.run(
+            [
+                FFMPEG, "-y", "-loop", "1", "-i", image, "-i", audio,
+                "-vf", vf,
+                # 음성 끝에 GAP 초 만큼 무음을 붙여 장면 사이에 여백을 줍니다.
+                "-af", f"apad=pad_dur={GAP}",
+                "-c:v", "libx264", "-pix_fmt", "yuv420p", "-r", "30",
+                "-c:a", "aac", "-shortest", out,
+            ],
+            check=True,
+            capture_output=True,
+        )
+    finally:
+        if subtitle_file and os.path.exists(subtitle_file):
+            os.remove(subtitle_file)
 
 
 def fetch_music_jamendo(path: str) -> str:
@@ -182,7 +221,7 @@ def make_video(scenes: list[dict], out: str) -> str:
                 fetch_image(scene["image_query"], image)
             else:
                 make_background(i, image)
-            render_clip(image, audio, clip)
+            render_clip(image, audio, clip, scene["narration"])
             clips.append(clip)
 
         joined = os.path.join(work, "joined.mp4")
