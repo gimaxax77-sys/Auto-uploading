@@ -32,9 +32,13 @@
 
 ## 보류 리스트 (나중에)
 
+> **PC 작업 가능 시간: 매일 오후 10시 이후.** 아래 PC 표시 항목은 그때 진행.
+
+- **YouTube 업로드 설정 (PC 필요)** — 코드는 완성됨(`youtube.py`). Google Cloud에서 프로젝트 생성 → YouTube Data API v3 사용 설정 → OAuth 동의 화면(테스트 사용자에 본인 이메일 추가) → `client_secret.json` 받아 `axdata_13` 폴더에 넣기 → 첫 실행 시 브라우저 로그인. 폰에서는 인증·업로드가 안 되어 PC 전용.
+- **Pexels 키 → `.env` (완료)** — 이미 넣어 사진 배경 동작 확인함.
 - **배경음악 Jamendo 연동** — 코드는 완성됨(`video.py`의 `pick_music`). Gim이 `devportal.jamendo.com` 에서 `client_id` 발급 후 `.env`의 `JAMENDO_CLIENT_ID` 에 넣으면 자동 작동. 폴더(`music/`) 방식은 지금도 사용 가능. Jamendo 곡은 출처 표기(CC BY) 필요.
 - **Anthropic 대본 자동 작성** — 결제 화면 문제로 보류. 대본 파일(`--file`)로 대체 중.
-- **자막 넣기** — 쇼츠 무음 시청 대비. 미착수.
+- **자막 넣기 (완료)** — 화면 가운데 흰 글씨+검은 테두리로 적용함.
 
 ## 결정과 근거
 
