@@ -101,10 +101,10 @@ def make_background(index: int, path: str) -> None:
 
 
 def wrap_text(text: str, width: int) -> str:
-    """마침표 뒤에서 문장을 나누고, 긴 문장은 띄어쓰기 기준으로 줄바꿈합니다."""
+    """쉼표·마침표 뒤에서 줄을 나누고, 긴 줄은 띄어쓰기 기준으로 줄바꿈합니다."""
     lines = []
-    # 마침표 뒤에서 문장을 끊습니다.
-    for sentence in re.split(r"(?<=\.)\s+", text.strip()):
+    # 쉼표(,)와 마침표(.) 뒤에서 줄을 끊습니다.
+    for sentence in re.split(r"(?<=[,.])\s+", text.strip()):
         sentence = sentence.strip()
         if not sentence:
             continue
@@ -173,8 +173,12 @@ def render_clip(image: str, audio: str, out: str, subtitle: str = "") -> None:
         font = FONT.replace(":", "\\:")  # 드라이브 문자 뒤 콜론 이스케이프
         tf = subtitle_file.replace("\\", "/").replace(":", "\\:")
         style = subtitle_style(image)  # 배경 밝기에 맞춰 색을 고릅니다.
-        # 자막이 SUB_FADE 초에 걸쳐 스르륵 나타납니다.
-        fade = f":alpha='min(1\\,t/{SUB_FADE})'" if EFFECTS else ""
+        # 자막이 나타날 때 페이드인, 장면 끝에서 페이드아웃 되어
+        # 다음 장면 자막과 부드럽게 교체됩니다.
+        fade = (
+            f":alpha='min(1\\,min(t/{SUB_FADE}\\,({duration:.3f}-t)/{SUB_FADE}))'"
+            if EFFECTS else ""
+        )
         vf += (
             f",drawtext=fontfile='{font}':textfile='{tf}'"
             f":fontsize={FONT_SIZE}:{style}"
