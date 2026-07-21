@@ -34,7 +34,9 @@ BRIGHT_THRESHOLD = 128  # 자막 영역 평균 밝기가 이 값보다 크면 �
 # 장면마다 이 순서로 번갈아 씁니다. 하나만 두면 그 음성만 씁니다.
 VOICES = ["ko-KR-SunHiNeural", "ko-KR-InJoonNeural"]
 RATE = "+25%"  # 내레이션 속도. +로 빠르게, -로 느리게 (예: "-10%").
+RATE_LAST = "+8%"  # 마지막 장면(마무리)은 차분하게 느린 속도로 읽습니다.
 GAP = 0.3  # 장면 사이 여백(초). 넘어갈 때 숨 쉬는 틈을 줍니다.
+GAP_LAST = 0.8  # 마지막 장면 뒤 여백. 끝맺음이 급하지 않게 여운을 줍니다.
 SIZE = (1080, 1920)  # 세로형 쇼츠
 
 # 화면 연출효과 (입자 제외 전부)
@@ -65,9 +67,9 @@ def read_script(path: str) -> list[dict]:
     return scenes
 
 
-def narrate(text: str, path: str, voice: str = VOICES[0]) -> None:
+def narrate(text: str, path: str, voice: str = VOICES[0], rate: str = RATE) -> None:
     """문장을 음성 파일로 만듭니다."""
-    asyncio.run(edge_tts.Communicate(text, voice, rate=RATE).save(path))
+    asyncio.run(edge_tts.Communicate(text, voice, rate=rate).save(path))
 
 
 def fetch_image(query: str, path: str) -> None:
@@ -145,10 +147,10 @@ def media_duration(path: str) -> float:
     return int(h) * 3600 + int(mi) * 60 + float(s)
 
 
-def render_clip(image: str, audio: str, out: str, subtitle: str = "") -> None:
+def render_clip(image: str, audio: str, out: str, subtitle: str = "", gap: float = GAP) -> None:
     """사진 한 장과 음성 하나를 붙여 장면 하나를 만듭니다."""
     w, h = SIZE
-    duration = media_duration(audio) + GAP  # 이 장면의 총 길이
+    duration = media_duration(audio) + gap  # 이 장면의 총 길이
     frames = max(1, round(duration * FPS))
 
     if EFFECTS:
@@ -190,8 +192,8 @@ def render_clip(image: str, audio: str, out: str, subtitle: str = "") -> None:
             [
                 FFMPEG, "-y", "-loop", "1", "-i", image, "-i", audio,
                 "-vf", vf,
-                # 음성 끝에 GAP 초 만큼 무음을 붙여 장면 사이에 여백을 줍니다.
-                "-af", f"apad=pad_dur={GAP}",
+                # 음성 끝에 gap 초 만큼 무음을 붙여 장면 사이에 여백을 줍니다.
+                "-af", f"apad=pad_dur={gap}",
                 "-t", f"{duration:.3f}",
                 "-c:v", "libx264", "-pix_fmt", "yuv420p", "-r", str(FPS),
                 "-c:a", "aac", out,
@@ -315,13 +317,14 @@ def make_video(scenes: list[dict], out: str) -> str:
             image = os.path.join(work, f"{i}.jpg")
             clip = os.path.join(work, f"{i}.mp4")
             voice = VOICES[i % len(VOICES)]  # 장면마다 음성을 번갈아 씁니다.
+            last = i == len(scenes) - 1  # 마지막 장면(마무리)
             print(f"  장면 {i + 1}/{len(scenes)} [{voice.split('-')[-1]}]: {scene['narration'][:24]}...")
-            narrate(scene["narration"], audio, voice)
+            narrate(scene["narration"], audio, voice, RATE_LAST if last else RATE)
             if use_photos and scene["image_query"]:
                 fetch_image(scene["image_query"], image)
             else:
                 make_background(i, image)
-            render_clip(image, audio, clip, scene["narration"])
+            render_clip(image, audio, clip, scene["narration"], GAP_LAST if last else GAP)
             clips.append(clip)
 
         joined = os.path.join(work, "joined.mp4")
