@@ -17,10 +17,14 @@ def main() -> None:
         sys.exit(1)
 
     print(f"대본 {len(files)}개를 영상으로 만듭니다.\n")
-    done, failed = [], []
+    done, failed, skipped = [], [], []
     for i, path in enumerate(files, 1):
         name = os.path.splitext(os.path.basename(path))[0]
         out = os.path.join(OUTPUT_DIR, f"{name}.mp4")
+        # 이미 만든 영상은 건너뜁니다. 다시 만들려면 output 에서 지우십시오.
+        if os.path.exists(out):
+            skipped.append(name)
+            continue
         print(f"[{i}/{len(files)}] {name}")
         try:
             scenes = read_script(path)
@@ -31,7 +35,7 @@ def main() -> None:
             print(f"  실패: {e}")
             failed.append(name)
 
-    print(f"\n완료 {len(done)}개, 실패 {len(failed)}개")
+    print(f"\n완료 {len(done)}개, 건너뜀 {len(skipped)}개, 실패 {len(failed)}개")
     if failed:
         print("실패 목록:", ", ".join(failed))
 
