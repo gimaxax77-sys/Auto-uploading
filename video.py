@@ -22,9 +22,9 @@ FFMPEG = imageio_ffmpeg.get_ffmpeg_exe()
 MUSIC_DIR = "music"  # 여기에 배경음악 파일을 넣으면 자동으로 깔립니다.
 MUSIC_VOLUME = 0.15  # 배경음악 음량(0~1). 내레이션이 잘 들리도록 작게.
 SUBTITLE = True  # 내레이션 문장을 자막으로 넣습니다.
-FONT = "C:/Windows/Fonts/malgun.ttf"  # 맑은 고딕 보통 (부드러운 느낌)
-FONT_SIZE = 58
-WRAP = 14  # 한 줄 최대 글자 수. 넘으면 다음 줄로 넘깁니다.
+FONT = "C:/Windows/Fonts/malgunbd.ttf"  # 맑은 고딕 굵게 (가독성)
+FONT_SIZE = 62
+WRAP = 13  # 한 줄 최대 글자 수. 넘으면 다음 줄로 넘깁니다.
 SUB_TOP = 220  # 자막 위쪽 여백(px). 화면 상단에 배치합니다.
 # 장면마다 이 순서로 번갈아 씁니다. 하나만 두면 그 음성만 씁니다.
 VOICES = ["ko-KR-SunHiNeural", "ko-KR-InJoonNeural"]
@@ -123,8 +123,10 @@ def render_clip(image: str, audio: str, out: str, subtitle: str = "") -> None:
         tf = subtitle_file.replace("\\", "/").replace(":", "\\:")
         vf += (
             f",drawtext=fontfile='{font}':textfile='{tf}'"
-            f":fontcolor=white:fontsize={FONT_SIZE}:borderw=3:bordercolor=black"
-            f":line_spacing=14:x=(w-tw)/2:y={SUB_TOP}"  # 가로 가운데, 상단 배치
+            f":fontcolor=white:fontsize={FONT_SIZE}:borderw=4:bordercolor=black"
+            # 그림자를 더해 복잡한 배경에서도 글자가 또렷하게 보이게 합니다.
+            f":shadowcolor=black@0.7:shadowx=3:shadowy=3"
+            f":line_spacing=16:x=(w-tw)/2:y={SUB_TOP}"  # 가로 가운데, 상단 배치
         )
 
     try:
