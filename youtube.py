@@ -52,6 +52,14 @@ def upload(video_path: str, title: str, description: str = "", private: bool = T
     return f"https://youtu.be/{response['id']}"
 
 
+def set_privacy(video_id: str, private: bool = False) -> None:
+    """이미 올린 영상의 공개 상태를 바꿉니다."""
+    get_service().videos().update(
+        part="status",
+        body={"id": video_id, "status": {"privacyStatus": "private" if private else "public"}},
+    ).execute()
+
+
 def main() -> None:
     if len(sys.argv) < 3:
         print("사용법: python youtube.py 영상.mp4 \"제목\" [설명] [--public]")
