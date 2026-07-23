@@ -21,6 +21,11 @@ load_dotenv()
 FFMPEG = imageio_ffmpeg.get_ffmpeg_exe()
 MUSIC_DIR = "music"  # 여기에 배경음악 파일을 넣으면 자동으로 깔립니다.
 MUSIC_VOLUME = 0.15  # 배경음악 음량(0~1). 내레이션이 잘 들리도록 작게.
+# 대본 번호대로 배경음악 무드를 자동 배정합니다. music/<무드>/ 폴더의 곡을 씁니다.
+# 아래에 없는 번호는 전부 "밝은"으로 갑니다. 폴더가 비면 music/ 공용에서 뽑습니다.
+MOOD_WOONGJANG = set(range(81, 86)) | set(range(96, 101)) | set(range(106, 116)) | set(range(131, 136))  # 명소·우주·자연·과학
+MOOD_CHABUN = (set(range(1, 21)) | set(range(25, 31)) | set(range(36, 41))
+               | set(range(46, 56)) | set(range(61, 66)) | set(range(76, 81)) | set(range(91, 96)))  # 동기부여·위로·감성
 SUBTITLE = True  # 내레이션 문장을 자막으로 넣습니다.
 FONT = "C:/Windows/Fonts/malgunbd.ttf"  # 맑은 고딕 굵게 (가독성)
 FONT_SIZE = 74
@@ -231,9 +236,25 @@ def fetch_music_jamendo(path: str) -> str:
     return f"음악: {t['name']} - {t['artist_name']} (Jamendo, CC BY)"
 
 
-def pick_music(path: str) -> str | None:
-    """배경음악을 준비합니다. 폴더 우선, 없으면 Jamendo. 출처 문구를 돌려줍니다."""
-    files = glob.glob(os.path.join(MUSIC_DIR, "*.mp3")) + glob.glob(os.path.join(MUSIC_DIR, "*.m4a"))
+def mood_of(out: str) -> str:
+    """출력 파일명 앞 번호로 배경음악 무드를 정합니다. 예: 01_아침.mp4 -> 차분"""
+    m = re.match(r"(\d+)", os.path.basename(out))
+    n = int(m.group(1)) if m else 0
+    if n in MOOD_WOONGJANG:
+        return "웅장"
+    if n in MOOD_CHABUN:
+        return "차분"
+    return "밝은"
+
+
+def pick_music(path: str, mood: str | None = None) -> str | None:
+    """배경음악을 준비합니다. 무드 폴더 우선 → 공용 폴더 → Jamendo. 출처 문구를 돌려줍니다."""
+    files = []
+    if mood:  # music/<무드>/ 폴더에 곡이 있으면 그 안에서만 고릅니다.
+        d = os.path.join(MUSIC_DIR, mood)
+        files = glob.glob(os.path.join(d, "*.mp3")) + glob.glob(os.path.join(d, "*.m4a"))
+    if not files:  # 무드 폴더가 비면 공용 music/ 에서 뽑습니다(끊기지 않게).
+        files = glob.glob(os.path.join(MUSIC_DIR, "*.mp3")) + glob.glob(os.path.join(MUSIC_DIR, "*.m4a"))
     if files:
         chosen = random.choice(files)
         subprocess.run([FFMPEG, "-y", "-i", chosen, "-c", "copy", path],
@@ -333,7 +354,7 @@ def make_video(scenes: list[dict], out: str) -> str:
 
         # 배경음악을 준비해 깝니다. 없으면 그대로 둡니다.
         music = os.path.join(work, "bgm.mp3")
-        credit = pick_music(music)
+        credit = pick_music(music, mood_of(out))
         if os.path.exists(music):
             add_music(joined, music, out)
             if credit:
