@@ -20,7 +20,7 @@ load_dotenv()
 
 FFMPEG = imageio_ffmpeg.get_ffmpeg_exe()
 MUSIC_DIR = "music"  # 여기에 배경음악 파일을 넣으면 자동으로 깔립니다.
-MUSIC_VOLUME = 0.15  # 배경음악 음량(0~1). 내레이션이 잘 들리도록 작게.
+MUSIC_VOLUME = 0.35  # 배경음악 음량(0~1). 내레이션이 잘 들리도록 작게.
 # 대본 번호대로 배경음악 무드를 자동 배정합니다. music/<무드>/ 폴더의 곡을 씁니다.
 # 아래에 없는 번호는 전부 "밝은"으로 갑니다. 폴더가 비면 music/ 공용에서 뽑습니다.
 MOOD_WOONGJANG = set(range(81, 86)) | set(range(96, 101)) | set(range(106, 116)) | set(range(131, 136))  # 명소·우주·자연·과학
@@ -341,7 +341,8 @@ def add_music(video: str, music: str, out: str) -> None:
         [FFMPEG, "-y", "-i", video, "-i", music,
          # 내레이션은 그대로, 음악은 MUSIC_VOLUME 으로 줄여 섞습니다.
          "-filter_complex",
-         f"[1:a]volume={MUSIC_VOLUME}[bg];[0:a][bg]amix=inputs=2:duration=first[a]",
+         # normalize=0: 자동 감쇠를 꺼서 내레이션은 원래 크기, 음악만 MUSIC_VOLUME 로.
+         f"[1:a]volume={MUSIC_VOLUME}[bg];[0:a][bg]amix=inputs=2:duration=first:normalize=0[a]",
          "-map", "0:v", "-map", "[a]", "-c:v", "copy", "-c:a", "aac", out],
         check=True,
         capture_output=True,
