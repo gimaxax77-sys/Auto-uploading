@@ -28,9 +28,10 @@ MOOD_CHABUN = (set(range(1, 21)) | set(range(25, 31)) | set(range(36, 41))
                | set(range(46, 56)) | set(range(61, 66)) | set(range(76, 81)) | set(range(91, 96)))  # 동기부여·위로·감성
 SUBTITLE = True  # 내레이션 문장을 자막으로 넣습니다.
 FONT = "C:/Windows/Fonts/malgunbd.ttf"  # 맑은 고딕 굵게 (가독성)
-FONT_SIZE = 74
+FONT_SIZE = 90
 WRAP = 12  # 한 줄 최대 글자 수. 넘으면 다음 줄로 넘깁니다.
 SUB_TOP = 200  # 자막 위쪽 여백(px). 화면 상단에 배치합니다.
+SUB_LAG = 0.1  # 단어별 자막 하이라이트를 소리보다 이 초만큼 늦춥니다(어긋남 보정).
 LINE_SPACING = 4  # 줄 간격(px). 작을수록 줄이 붙습니다.
 # 배경 밝기에 따라 고르는 자막 색. 밝으면 노란 글씨, 어두우면 흰 글씨+초록 테두리.
 STYLE_BRIGHT = "fontcolor=yellow:borderw=6:bordercolor=black:shadowcolor=black@0.7:shadowx=3:shadowy=3"
@@ -72,9 +73,22 @@ def read_script(path: str) -> list[dict]:
     return scenes
 
 
-def narrate(text: str, path: str, voice: str = VOICES[0], rate: str = RATE) -> None:
-    """문장을 음성 파일로 만듭니다."""
-    asyncio.run(edge_tts.Communicate(text, voice, rate=rate).save(path))
+async def _narrate_async(text: str, path: str, voice: str, rate: str) -> list[tuple[float, float, str]]:
+    """음성을 저장하면서 단어별 (시작초, 길이초, 단어) 목록을 모읍니다."""
+    comm = edge_tts.Communicate(text, voice, rate=rate, boundary="WordBoundary")
+    words = []
+    with open(path, "wb") as f:
+        async for ch in comm.stream():
+            if ch["type"] == "audio":
+                f.write(ch["data"])
+            elif ch["type"] == "WordBoundary":
+                words.append((ch["offset"] / 1e7, ch["duration"] / 1e7, ch["text"]))
+    return words
+
+
+def narrate(text: str, path: str, voice: str = VOICES[0], rate: str = RATE) -> list[tuple[float, float, str]]:
+    """문장을 음성 파일로 만들고, 단어별 타이밍 목록을 돌려줍니다."""
+    return asyncio.run(_narrate_async(text, path, voice, rate))
 
 
 def fetch_image(query: str, path: str) -> None:
@@ -152,7 +166,50 @@ def media_duration(path: str) -> float:
     return int(h) * 3600 + int(mi) * 60 + float(s)
 
 
-def render_clip(image: str, audio: str, out: str, subtitle: str = "", gap: float = GAP) -> None:
+def ass_time(t: float) -> str:
+    """초를 ASS 시간표기 h:mm:ss.cs(센티초)로 바꿉니다."""
+    cs = max(0, round(t * 100))
+    h, cs = divmod(cs, 360000)
+    m, cs = divmod(cs, 6000)
+    s, cs = divmod(cs, 100)
+    return f"{h}:{m:02d}:{s:02d}.{cs:02d}"
+
+
+# 단어별 자막 스타일: 안 부른 단어=흰색, 부른 단어=노란색(굵은 검은 테두리로 어디서든 잘 보임).
+_ASS_HEADER = (
+    "[Script Info]\nScriptType: v4.00+\n"
+    f"PlayResX: {SIZE[0]}\nPlayResY: {SIZE[1]}\nWrapStyle: 0\n\n"
+    "[V4+ Styles]\n"
+    "Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, "
+    "BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, "
+    "BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding\n"
+    f"Style: Def,Malgun Gothic,{FONT_SIZE},&H0000FFFF,&H00FFFFFF,&H00000000,&H80000000,"
+    f"-1,0,0,0,100,100,0,0,1,6,2,8,80,80,{SUB_TOP},1\n\n"
+    "[Events]\n"
+    "Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text\n"
+)
+
+
+def build_ass(words: list[tuple[float, float, str]], duration: float, path: str) -> None:
+    """단어 타이밍으로 노래방식(부르는 단어가 노랗게 채워지는) ASS 자막을 만듭니다."""
+    parts = [f"{{\\fad({int(SUB_FADE * 1000)},{int(SUB_FADE * 1000)})}}"]
+    if SUB_LAG > 0:  # 하이라이트를 소리보다 살짝 늦춰 어긋남을 줄입니다.
+        parts.append(f"{{\\kf{round(SUB_LAG * 100)}}} ")
+    prev_end = 0.0
+    for start, dur, word in words:
+        gap_cs = round(max(0.0, start - prev_end) * 100)
+        if gap_cs:  # 단어 사이 침묵만큼 하이라이트를 미룹니다.
+            parts.append(f"{{\\kf{gap_cs}}} ")
+        parts.append(f"{{\\kf{max(1, round(dur * 100))}}}{word} ")
+        prev_end = start + dur
+    text = "".join(parts).rstrip()
+    with open(path, "w", encoding="utf-8", newline="\n") as f:
+        f.write(_ASS_HEADER)
+        f.write(f"Dialogue: 0,{ass_time(0)},{ass_time(duration)},Def,,0,0,0,,{text}\n")
+
+
+def render_clip(image: str, audio: str, out: str, subtitle: str = "", gap: float = GAP,
+                words: list[tuple[float, float, str]] | None = None) -> None:
     """사진 한 장과 음성 하나를 붙여 장면 하나를 만듭니다."""
     w, h = SIZE
     duration = media_duration(audio) + gap  # 이 장면의 총 길이
@@ -171,8 +228,14 @@ def render_clip(image: str, audio: str, out: str, subtitle: str = "", gap: float
         vf = f"scale={w}:{h}:force_original_aspect_ratio=increase,crop={w}:{h}"
 
     subtitle_file = None
-    if SUBTITLE and subtitle:
-        # 자막 텍스트는 파일로 넘겨 따옴표·콜론 이스케이프 문제를 피합니다.
+    if SUBTITLE and subtitle and words:
+        # 단어별 자막: 단어 타이밍으로 ASS 자막을 만들어 ass 필터로 렌더합니다.
+        subtitle_file = out + ".ass"
+        build_ass(words, duration, subtitle_file)
+        af = subtitle_file.replace("\\", "/").replace(":", "\\:")
+        vf += f",ass='{af}'"
+    elif SUBTITLE and subtitle:
+        # (폴백) 단어 타이밍이 없으면 기존 통짜 자막을 씁니다.
         subtitle_file = out + ".txt"
         # newline="\n" 로 저장해야 윈도우식 \r\n 때문에 줄 사이가 벌어지지 않습니다.
         with open(subtitle_file, "w", encoding="utf-8", newline="\n") as f:
@@ -245,6 +308,13 @@ def mood_of(out: str) -> str:
     if n in MOOD_CHABUN:
         return "차분"
     return "밝은"
+
+
+def voice_of(out: str) -> str:
+    """영상 번호로 음성 하나로 통일. 홀수 편=여자(SunHi), 짝수 편=남자(InJoon)."""
+    m = re.match(r"(\d+)", os.path.basename(out))
+    n = int(m.group(1)) if m else 0
+    return VOICES[0] if n % 2 == 1 else VOICES[1]
 
 
 def pick_music(path: str, mood: str | None = None) -> str | None:
@@ -331,21 +401,21 @@ def make_video(scenes: list[dict], out: str) -> str:
     if not use_photos:
         print("  (PEXELS_API_KEY 가 없어 대체 배경을 씁니다)")
 
+    voice = voice_of(out)  # 한 영상은 한 음성으로 통일(홀수 편=여자, 짝수 편=남자).
     with tempfile.TemporaryDirectory() as work:
         clips = []
         for i, scene in enumerate(scenes):
             audio = os.path.join(work, f"{i}.mp3")
             image = os.path.join(work, f"{i}.jpg")
             clip = os.path.join(work, f"{i}.mp4")
-            voice = VOICES[i % len(VOICES)]  # 장면마다 음성을 번갈아 씁니다.
             last = i == len(scenes) - 1  # 마지막 장면(마무리)
             print(f"  장면 {i + 1}/{len(scenes)} [{voice.split('-')[-1]}]: {scene['narration'][:24]}...")
-            narrate(scene["narration"], audio, voice, RATE_LAST if last else RATE)
+            words = narrate(scene["narration"], audio, voice, RATE_LAST if last else RATE)
             if use_photos and scene["image_query"]:
                 fetch_image(scene["image_query"], image)
             else:
                 make_background(i, image)
-            render_clip(image, audio, clip, scene["narration"], GAP_LAST if last else GAP)
+            render_clip(image, audio, clip, scene["narration"], GAP_LAST if last else GAP, words)
             clips.append(clip)
 
         joined = os.path.join(work, "joined.mp4")
