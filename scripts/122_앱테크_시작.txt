@@ -1,5 +1,5 @@
 # 122_앱테크_시작
-스마트폰으로 하는 앱테크, 들어보셨나요? | smartphone mobile payment
+걷기만 해도 돈이 쌓인다는 말, 사실일까요? | smartphone mobile payment
 걸음 수를 포인트로 주는 앱이 있습니다. | walking phone steps
 설문이나 미션으로 소소하게 모을 수 있습니다. | phone reward points
 티끌이지만 모으면 쏠쏠합니다. | coins small saving

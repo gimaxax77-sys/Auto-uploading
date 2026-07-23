@@ -1,5 +1,5 @@
 # 81_파리_에펠탑
-가보고 싶은 세계 명소, 파리입니다. | eiffel tower paris
+파리의 상징 에펠탑, 그 높이가 얼마나 될까요? | eiffel tower paris
 에펠탑은 1889년에 세워진 파리의 상징입니다. | eiffel tower sky
 높이는 약 330미터에 이릅니다. | eiffel tower view
 밤이 되면 조명이 아름답게 빛납니다. | eiffel tower night lights

@@ -1,5 +1,5 @@
 # 118_챗봇_잘_쓰는_법
-챗봇, 이렇게 쓰면 훨씬 좋습니다. | chatbot screen technology
+같은 챗봇인데 왜 누군 더 좋은 답을 받을까요? | chatbot screen technology
 목적과 형식을 구체적으로 알려주세요. | typing keyboard focused
 한 번에 끝내지 말고 이어서 고쳐가세요. | person laptop thinking
 참고 자료를 직접 주면 엉뚱한 답이 줄어듭니다. | documents laptop desk

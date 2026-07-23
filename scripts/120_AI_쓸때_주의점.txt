@@ -1,5 +1,5 @@
 # 120_AI_쓸때_주의점
-AI를 쓸 때 이건 조심하세요. | security privacy laptop
+AI에 절대 넣으면 안 되는 정보, 뭘까요? | security privacy laptop
 주민번호나 계좌 같은 민감한 정보는 넣지 마세요. | privacy lock security
 AI 답변은 사실 오류가 있을 수 있습니다. | careful checking laptop
 중요한 내용은 원 출처를 직접 확인하세요. | person verify document

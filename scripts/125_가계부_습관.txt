@@ -1,5 +1,5 @@
 # 125_가계부_습관
-돈 관리의 시작은 가계부입니다. | budget notebook calculator
+돈이 자꾸 새는 이유, 어디에 있을까요? | budget notebook calculator
 가계부 앱으로 간편하게 기록하세요. | phone finance app
 무엇에 쓰는지 알면 새는 돈이 보입니다. | writing budget planning
 매일 1분이면 충분합니다. | notebook pen quick

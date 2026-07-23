@@ -1,5 +1,5 @@
 # 119_AI가_못하는_것
-똑똑한 AI에도 한계가 있습니다. | ai technology abstract
+이렇게 똑똑한 AI도 못 하는 게 있을까요? | ai technology abstract
 그럴듯하지만 틀린 정보를 지어내기도 합니다. | question thinking doubt
 최신 정보나 실시간 상황은 부정확할 수 있습니다. | laptop data screen
 정확성이 중요한 일은 사람이 꼭 확인해야 합니다. | person reviewing document

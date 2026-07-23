@@ -1,5 +1,5 @@
 # 71_계란_삶기
-계란 삶기, 시간이 핵심입니다. | boiling eggs pot
+완숙 계란, 몇 분 삶는 게 정답일까요? | boiling eggs pot
 끓는 물에 반숙은 약 7분, 완숙은 약 12분입니다. | eggs cooking timer
 삶은 뒤 찬물에 담그면 껍질이 잘 벗겨집니다. | boiled eggs bowl water
 실온 계란을 쓰면 잘 깨지지 않습니다. | eggs kitchen counter
