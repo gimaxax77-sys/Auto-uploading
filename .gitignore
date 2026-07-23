@@ -8,6 +8,7 @@ venv/
 client_secret.json
 token.json
 uploaded.json
+upload_log.txt
 music/
 output/
 dist/
