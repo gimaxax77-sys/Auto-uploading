@@ -24,7 +24,7 @@ MUSIC_VOLUME = 0.35  # 배경음악 음량(0~1). 내레이션이 잘 들리도�
 # 대본 번호대로 배경음악 무드를 자동 배정합니다. music/<무드>/ 폴더의 곡을 씁니다.
 # 아래에 없는 번호는 전부 "밝은"으로 갑니다. 폴더가 비면 music/ 공용에서 뽑습니다.
 MOOD_WOONGJANG = (set(range(81, 86)) | set(range(96, 101)) | set(range(106, 116))
-                  | set(range(131, 136)) | set(range(156, 166)))  # 명소·우주·자연·과학·경이
+                  | set(range(131, 136)) | set(range(156, 176)))  # 명소·우주·자연·과학·경이·극한장소
 MOOD_CHABUN = (set(range(1, 21)) | set(range(25, 31)) | set(range(36, 41))
                | set(range(46, 56)) | set(range(61, 66)) | set(range(76, 81)) | set(range(91, 96)))  # 동기부여·위로·감성
 SUBTITLE = True  # 내레이션 문장을 자막으로 넣습니다.
