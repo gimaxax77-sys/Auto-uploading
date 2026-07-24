@@ -40,6 +40,10 @@ STYLE_DARK = "fontcolor=white:borderw=6:bordercolor=0x00aa00:shadowcolor=black@0
 BRIGHT_THRESHOLD = 128  # 자막 영역 평균 밝기가 이 값보다 크면 밝은 배경으로 봅니다.
 # 장면마다 이 순서로 번갈아 씁니다. 하나만 두면 그 음성만 씁니다.
 VOICES = ["ko-KR-SunHiNeural", "ko-KR-InJoonNeural"]
+# 음성 엔진: "edge"(무료) 또는 "google"(Neural2, 더 자연스러움, GOOGLE_TTS_API_KEY 필요).
+TTS_ENGINE = "google"
+# edge 음성 → 구글 음성 대응(여자/남자).
+GOOGLE_VOICE_MAP = {"ko-KR-SunHiNeural": "ko-KR-Neural2-A", "ko-KR-InJoonNeural": "ko-KR-Neural2-C"}
 RATE = "+25%"  # 내레이션 속도. +로 빠르게, -로 느리게 (예: "-10%").
 RATE_LAST = "+8%"  # 마지막 장면(마무리)은 차분하게 느린 속도로 읽습니다.
 GAP = 0.3  # 장면 사이 여백(초). 넘어갈 때 숨 쉬는 틈을 줍니다.
@@ -88,8 +92,53 @@ async def _narrate_async(text: str, path: str, voice: str, rate: str) -> list[tu
     return words
 
 
+def narrate_google(text: str, path: str, voice: str, rate: str) -> list[tuple[float, float, str]]:
+    """구글 TTS(v1beta1)로 음성을 만들고 SSML 마크로 단어 타이밍을 받아옵니다."""
+    import base64
+    key = os.environ["GOOGLE_TTS_API_KEY"]
+    gvoice = GOOGLE_VOICE_MAP.get(voice, "ko-KR-Neural2-A")
+    speaking_rate = max(0.25, min(4.0, 1.0 + int(rate.replace("%", "").replace("+", "")) / 100))
+    toks = text.split()
+
+    def esc(s: str) -> str:  # SSML 특수문자 이스케이프
+        return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+
+    chirp = "Chirp" in gvoice  # Chirp 계열은 SSML 마크/타임포인트 미지원 → 평문 + 길이비례 추정
+    body = {"voice": {"languageCode": "ko-KR", "name": gvoice},
+            "audioConfig": {"audioEncoding": "MP3", "speakingRate": speaking_rate}}
+    if chirp:
+        body["input"] = {"text": text}
+    else:
+        ssml = "<speak>" + "".join(f'<mark name="w{i}"/>{esc(t)} ' for i, t in enumerate(toks))
+        ssml += f'<mark name="w{len(toks)}"/></speak>'  # 마지막 단어의 끝 시각용
+        body["input"] = {"ssml": ssml}
+        body["enableTimePointing"] = ["SSML_MARK"]
+    r = requests.post(
+        f"https://texttospeech.googleapis.com/v1beta1/text:synthesize?key={key}",
+        json=body, timeout=60,
+    )
+    r.raise_for_status()
+    j = r.json()
+    with open(path, "wb") as f:
+        f.write(base64.b64decode(j["audioContent"]))
+    starts = [tp["timeSeconds"] for tp in j.get("timepoints", [])]
+    if len(starts) >= len(toks) + 1:  # 정확한 단어 타이밍(Neural2 등)
+        return [(starts[i], max(0.05, starts[i + 1] - starts[i]), t) for i, t in enumerate(toks)]
+    # 타임포인트 없음(Chirp): 실제 오디오 길이를 글자 수 비례로 나눠 추정합니다.
+    total = media_duration(path)
+    clen = sum(len(t) for t in toks) or 1
+    words, acc = [], 0.0
+    for t in toks:
+        d = total * len(t) / clen
+        words.append((acc, max(0.05, d), t))
+        acc += d
+    return words
+
+
 def narrate(text: str, path: str, voice: str = VOICES[0], rate: str = RATE) -> list[tuple[float, float, str]]:
     """문장을 음성 파일로 만들고, 단어별 타이밍 목록을 돌려줍니다."""
+    if TTS_ENGINE == "google" and os.environ.get("GOOGLE_TTS_API_KEY"):
+        return narrate_google(text, path, voice, rate)
     return asyncio.run(_narrate_async(text, path, voice, rate))
 
 
