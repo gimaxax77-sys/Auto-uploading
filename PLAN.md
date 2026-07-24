@@ -34,7 +34,9 @@
 
 > **PC 작업 가능 시간: 매일 오후 10시 이후.** 아래 PC 표시 항목은 그때 진행.
 
-- **★ OAuth 동의 화면 "게시" 전환 (PC 필요, 오후 10시 작업)** — 현재 동의 화면이 "테스트" 상태라 토큰이 약 7일마다 만료됨 → 그 뒤 자동 업로드 실패. Google Cloud Console → API 및 서비스 → OAuth 동의 화면 → "앱 게시(PUBLISH APP)" 클릭 → 확인. 게시 후에는 토큰이 만료되지 않아 자동 업로드가 계속 돌아감. 자세한 단계는 진행 시 안내.
+- **★ OAuth 관련 PC 작업 2개 (오후 10시, 재인증 1회로 묶어 처리)** — 아래 둘은 같은 브라우저 재인증 세션에서 함께 처리하는 게 효율적:
+  1. **동의 화면 "게시" 전환** — 현재 "테스트" 상태라 토큰이 약 7일마다 만료됨 → 자동 업로드 실패. Google Cloud Console → API 및 서비스 → OAuth 동의 화면 → "앱 게시(PUBLISH APP)". 게시 후 만료 사라짐.
+  2. **force-ssl 스코프 추가 + 재인증** — 현재 토큰은 `youtube.upload`만 있어 **이미 올린 영상을 공개↔비공개로 전환 불가(403)**. `youtube.py`의 SCOPES에 `youtube.force-ssl` 추가 → `token.json` 지우고 재로그인하면, 그 뒤 클로드가 비공개 업로드 후 공개 전환까지 자동 처리 가능. **코드 수정은 재인증 직전에 함께 진행(그 전에 바꾸면 실행 중인 자동 업로드에 영향 줄 수 있어 대기).**
 - **자동 업로드 스케줄러 (설정 완료)** — Windows 작업 스케줄러 `AXdata_YouTube_DailyUpload`, 매일 밤 11시 `run_upload.bat`(=`upload_batch.py 7`) 실행. PC 꺼져 있으면 다음 부팅 시 실행. 기록은 `upload_log.txt`. 위 동의화면 게시가 되어야 7일 이후에도 지속됨.
 
 - **YouTube 업로드 설정 (PC 필요)** — 코드는 완성됨(`youtube.py`). Google Cloud에서 프로젝트 생성 → YouTube Data API v3 사용 설정 → OAuth 동의 화면(테스트 사용자에 본인 이메일 추가) → `client_secret.json` 받아 `axdata_13` 폴더에 넣기 → 첫 실행 시 브라우저 로그인. 폰에서는 인증·업로드가 안 되어 PC 전용.
