@@ -23,7 +23,8 @@ MUSIC_DIR = "music"  # 여기에 배경음악 파일을 넣으면 자동으로 �
 MUSIC_VOLUME = 0.35  # 배경음악 음량(0~1). 내레이션이 잘 들리도록 작게.
 # 대본 번호대로 배경음악 무드를 자동 배정합니다. music/<무드>/ 폴더의 곡을 씁니다.
 # 아래에 없는 번호는 전부 "밝은"으로 갑니다. 폴더가 비면 music/ 공용에서 뽑습니다.
-MOOD_WOONGJANG = set(range(81, 86)) | set(range(96, 101)) | set(range(106, 116)) | set(range(131, 136))  # 명소·우주·자연·과학
+MOOD_WOONGJANG = (set(range(81, 86)) | set(range(96, 101)) | set(range(106, 116))
+                  | set(range(131, 136)) | set(range(156, 166)))  # 명소·우주·자연·과학·경이
 MOOD_CHABUN = (set(range(1, 21)) | set(range(25, 31)) | set(range(36, 41))
                | set(range(46, 56)) | set(range(61, 66)) | set(range(76, 81)) | set(range(91, 96)))  # 동기부여·위로·감성
 SUBTITLE = True  # 내레이션 문장을 자막으로 넣습니다.
@@ -44,6 +45,7 @@ RATE_LAST = "+8%"  # 마지막 장면(마무리)은 차분하게 느린 속도�
 GAP = 0.3  # 장면 사이 여백(초). 넘어갈 때 숨 쉬는 틈을 줍니다.
 GAP_LAST = 0.8  # 마지막 장면 뒤 여백. 끝맺음이 급하지 않게 여운을 줍니다.
 SIZE = (1080, 1920)  # 세로형 쇼츠
+BROLL = True  # 켜면 장면마다 Pexels 세로 영상(B-roll)을 먼저 쓰고, 없으면 사진으로 폴백.
 
 # 화면 연출효과 (입자 제외 전부)
 EFFECTS = True  # False 로 두면 효과 없이 정지 사진으로 만듭니다.
@@ -105,6 +107,31 @@ def fetch_image(query: str, path: str) -> None:
         raise ValueError(f"'{query}' 로 찾은 사진이 없습니다. 검색어를 바꿔보십시오.")
     with open(path, "wb") as f:
         f.write(requests.get(photos[0]["src"]["large2x"], timeout=60).content)
+
+
+def fetch_video(query: str, path: str) -> bool:
+    """검색어에 맞는 무료 세로 스톡 영상을 내려받습니다. 없으면 False(→사진 폴백)."""
+    res = requests.get(
+        "https://api.pexels.com/videos/search",
+        headers={"Authorization": os.environ["PEXELS_API_KEY"]},
+        params={"query": query, "per_page": 5, "orientation": "portrait"},
+        timeout=30,
+    )
+    res.raise_for_status()
+    best = None  # (점수, 링크). 세로이면서 1920 높이에 가까운 것을 고릅니다.
+    for v in res.json().get("videos", []):
+        for vf in v.get("video_files", []):
+            wd, ht = vf.get("width") or 0, vf.get("height") or 0
+            if ht <= wd or ht < 1000:  # 가로거나 너무 저해상도면 제외
+                continue
+            score = abs(ht - 1920) + (10000 if ht > 2600 else 0)  # 4K는 뒤로
+            if best is None or score < best[0]:
+                best = (score, vf["link"])
+    if not best:
+        return False
+    with open(path, "wb") as f:
+        f.write(requests.get(best[1], timeout=120).content)
+    return True
 
 
 def make_background(index: int, path: str) -> None:
@@ -208,14 +235,20 @@ def build_ass(words: list[tuple[float, float, str]], duration: float, path: str)
         f.write(f"Dialogue: 0,{ass_time(0)},{ass_time(duration)},Def,,0,0,0,,{text}\n")
 
 
-def render_clip(image: str, audio: str, out: str, subtitle: str = "", gap: float = GAP,
-                words: list[tuple[float, float, str]] | None = None) -> None:
-    """사진 한 장과 음성 하나를 붙여 장면 하나를 만듭니다."""
+def render_clip(image: str | None, audio: str, out: str, subtitle: str = "", gap: float = GAP,
+                words: list[tuple[float, float, str]] | None = None,
+                video: str | None = None) -> None:
+    """사진 한 장(또는 B-roll 영상)과 음성 하나를 붙여 장면 하나를 만듭니다."""
     w, h = SIZE
     duration = media_duration(audio) + gap  # 이 장면의 총 길이
     frames = max(1, round(duration * FPS))
 
-    if EFFECTS:
+    if video:
+        # B-roll 영상: 실제 움직임이 있으니 켄번즈(zoompan) 없이 화면에 꽉 채우기만 합니다.
+        vf = f"scale={w}:{h}:force_original_aspect_ratio=increase,crop={w}:{h}"
+        if EFFECTS:
+            vf += f",eq=brightness=-{DARKEN},vignette={VIGNETTE}"  # 어둡게 + 비네팅
+    elif EFFECTS:
         # 켄번즈: 사진을 크게 키운 뒤 천천히 확대(zoompan)합니다.
         step = (ZOOM_END - 1.0) / frames
         vf = (
@@ -242,7 +275,8 @@ def render_clip(image: str, audio: str, out: str, subtitle: str = "", gap: float
             f.write(wrap_text(subtitle, WRAP))
         font = FONT.replace(":", "\\:")  # 드라이브 문자 뒤 콜론 이스케이프
         tf = subtitle_file.replace("\\", "/").replace(":", "\\:")
-        style = subtitle_style(image)  # 배경 밝기에 맞춰 색을 고릅니다.
+        # 배경 밝기에 맞춰 색 선택. 영상 소스면 잴 이미지가 없어 어두운 배경용을 씁니다.
+        style = subtitle_style(image) if image else STYLE_DARK
         # 자막이 나타날 때 페이드인, 장면 끝에서 페이드아웃 되어
         # 다음 장면 자막과 부드럽게 교체됩니다.
         fade = (
@@ -255,10 +289,13 @@ def render_clip(image: str, audio: str, out: str, subtitle: str = "", gap: float
             f":line_spacing={LINE_SPACING}:x=(w-tw)/2:y={SUB_TOP}{fade}"
         )
 
+    # 영상은 장면 길이에 맞게 반복(-stream_loop), 사진은 정지 반복(-loop 1).
+    src = ["-stream_loop", "-1", "-i", video] if video else ["-loop", "1", "-i", image]
     try:
         subprocess.run(
             [
-                FFMPEG, "-y", "-loop", "1", "-i", image, "-i", audio,
+                FFMPEG, "-y", *src, "-i", audio,
+                "-map", "0:v", "-map", "1:a",  # 영상은 0번, 내레이션은 1번에서
                 "-vf", vf,
                 # 음성 끝에 gap 초 만큼 무음을 붙여 장면 사이에 여백을 줍니다.
                 "-af", f"apad=pad_dur={gap}",
@@ -408,15 +445,30 @@ def make_video(scenes: list[dict], out: str) -> str:
         for i, scene in enumerate(scenes):
             audio = os.path.join(work, f"{i}.mp3")
             image = os.path.join(work, f"{i}.jpg")
+            broll = os.path.join(work, f"{i}_b.mp4")
             clip = os.path.join(work, f"{i}.mp4")
             last = i == len(scenes) - 1  # 마지막 장면(마무리)
+            query = scene["image_query"]
             print(f"  장면 {i + 1}/{len(scenes)} [{voice.split('-')[-1]}]: {scene['narration'][:24]}...")
             words = narrate(scene["narration"], audio, voice, RATE_LAST if last else RATE)
-            if use_photos and scene["image_query"]:
-                fetch_image(scene["image_query"], image)
+            gap = GAP_LAST if last else GAP
+
+            video_src = None
+            if BROLL and use_photos and query:
+                try:  # 영상 먼저 시도. 실패하면 사진으로 폴백.
+                    if fetch_video(query, broll):
+                        video_src = broll
+                except Exception as e:
+                    print(f"    (B-roll 실패, 사진으로 대체: {e})")
+
+            if video_src:
+                render_clip(None, audio, clip, scene["narration"], gap, words, video=video_src)
             else:
-                make_background(i, image)
-            render_clip(image, audio, clip, scene["narration"], GAP_LAST if last else GAP, words)
+                if use_photos and query:
+                    fetch_image(query, image)
+                else:
+                    make_background(i, image)
+                render_clip(image, audio, clip, scene["narration"], gap, words)
             clips.append(clip)
 
         joined = os.path.join(work, "joined.mp4")
