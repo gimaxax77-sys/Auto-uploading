@@ -6,11 +6,12 @@ venv/
 .env
 .env.*
 client_secret.json
-token.json
+token.json*
 uploaded.json
 upload_log.txt
 music/
 output/
+output_sample/
 dist/
 build/
 .DS_Store
