@@ -1,37 +1,28 @@
 # 밤 11시 업로드가 제대로 끝났는지 점검하고, 모자란 편수만 다시 올리는 도구
+import json
 import os
-import re
 import sys
 from datetime import date
 
-LOG = "upload_log.txt"
-START = re.compile(r"오늘 (\d+)편을 공개로 올립니다")
-EXIT = re.compile(r"\[(\d{4}-\d{2}-\d{2})[^\]]*\] exit=(\d+)")
+STATE = "last_run.json"  # upload_batch.py 가 남기는 진행 상황
+GOAL = 12  # 하루 목표 편수
 
 
 def missing_count() -> int:
     """오늘 몇 편을 더 올려야 하는지 계산합니다. 0이면 정상 완료입니다."""
-    if not os.path.exists(LOG):
-        return 12
+    if not os.path.exists(STATE):
+        return GOAL  # 실행 흔적이 아예 없음
 
-    text = open(LOG, encoding="utf-8", errors="replace").read()
-    starts = list(START.finditer(text))
-    if not starts:
-        return 12  # 실행 흔적이 아예 없음
+    try:
+        s = json.load(open(STATE, encoding="utf-8"))
+    except (ValueError, OSError):
+        return GOAL  # 기록이 깨졌으면 오늘 실행이 없었던 것으로 본다
 
-    last = starts[-1]
-    goal = int(last.group(1))
-    block = text[last.end():]
-    done = block.count("공개 완료:")
-    ended = EXIT.search(block)
-    today = date.today().isoformat()
-
-    # 마지막 실행이 오늘이 아니면 = 오늘 밤 실행이 통째로 실패한 것
     # ponytail: 날짜만 비교하므로 자정 넘겨 점검하면 오판함. 점검은 23:10 고정이라 무해.
-    if ended and ended.group(1) != today:
-        return 12
+    if s.get("date") != date.today().isoformat():
+        return GOAL  # 오늘 밤 실행이 통째로 실패한 것
 
-    return max(0, goal - done)
+    return max(0, min(GOAL, int(s.get("goal", GOAL)) - int(s.get("done", 0))))
 
 
 def main() -> None:

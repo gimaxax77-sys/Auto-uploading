@@ -5,11 +5,13 @@ import os
 import random
 import re
 import sys
+from datetime import date
 
 from youtube import upload
 
 OUTPUT_DIR = "output"
 LOG = "uploaded.json"  # 이미 올린 대본 이름 기록
+STATE = "last_run.json"  # 오늘 몇 편 목표로 몇 편 올렸는지(점검용)
 DESC = "매일 짧게 보는 이야기. #shorts #동기부여 #꿀팁 #일상"
 
 
@@ -22,6 +24,12 @@ def load_log() -> set:
 def save_log(done: set) -> None:
     with open(LOG, "w", encoding="utf-8") as f:
         json.dump(sorted(done), f, ensure_ascii=False, indent=0)
+
+
+def save_state(goal: int, done: int) -> None:
+    """오늘 진행 상황을 기록합니다. check_upload.py 가 이 파일만 보고 판단합니다."""
+    with open(STATE, "w", encoding="utf-8") as f:
+        json.dump({"date": date.today().isoformat(), "goal": goal, "done": done}, f)
 
 
 def title_of(name: str) -> str:
@@ -76,6 +84,8 @@ def main() -> None:
     todo = spread(todo)  # 장르 안 겹치게 랜덤 배치
     batch = todo[:count]
     print(f"오늘 {len(batch)}편을 공개로 올립니다. (남은 미업로드: {len(todo)}편)\n")
+    save_state(len(batch), 0)
+    올린수 = 0
     for f in batch:
         name = os.path.splitext(os.path.basename(f))[0]
         title = title_of(name)
@@ -84,6 +94,8 @@ def main() -> None:
             print(f"  공개 완료: {title} -> {url}")
             done.add(name)
             save_log(done)  # 하나 올릴 때마다 기록(중간에 멈춰도 안전)
+            올린수 += 1
+            save_state(len(batch), 올린수)
         except Exception as e:
             print(f"  실패: {name} - {e}")
             break
