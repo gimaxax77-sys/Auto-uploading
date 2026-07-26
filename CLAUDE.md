@@ -8,4 +8,11 @@
 
 ## 이 프로젝트 전용 규칙
 
-1. **테스트 명령**: 아직 정해지지 않았습니다. 테스트 체계를 만들면 여기에 적습니다.
+1. **테스트 명령**: 아래 한 줄로 전부 돕니다. 각 파일은 `assert` 자체 점검이라 pytest 없이도 실행되며, 통과하면 `통과`를 찍습니다.
+
+   ```
+   for %f in (test_*.py) do python -X utf8 -u %f
+   ```
+
+   - `test_generate.py` 글자 수 가드 · `test_video.py` ffmpeg 조립(외부 API 불필요) · `test_youtube.py` 자격증명 없을 때 안내 · `test_check_upload.py` 업로드 점검 계산.
+   - 코드를 건드렸으면 "완료"라고 말하기 전에 반드시 돌립니다.
