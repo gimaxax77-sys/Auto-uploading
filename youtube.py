@@ -11,6 +11,7 @@ from googleapiclient.http import MediaFileUpload
 SCOPES = [
     "https://www.googleapis.com/auth/youtube.upload",
     "https://www.googleapis.com/auth/youtube.force-ssl",  # 공개↔비공개 전환(videos.update)에 필요
+    "https://www.googleapis.com/auth/yt-analytics.readonly",  # 노출수·클릭률·시청지속률 조회에 필요
 ]
 CLIENT_SECRET = "client_secret.json"  # Google Cloud 에서 받은 파일
 TOKEN = "token.json"  # 최초 인증 후 자동 생성. 다음부터는 로그인 안 함.
