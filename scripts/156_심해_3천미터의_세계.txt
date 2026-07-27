@@ -1,6 +1,5 @@
 # 156_심해_3천미터의_세계
-빛 한 점 없는 심해에도, 생명이 살고 있을까요? | deep ocean underwater
-수심 3천 미터 아래는 햇빛이 닿지 않는 암흑입니다. | dark deep sea
-그곳 생물들은 스스로 몸에서 빛을 냅니다. | glowing jellyfish ocean
-이 빛으로 먹이를 유인하고 짝을 찾습니다. | bioluminescent sea creature
-가장 깊은 어둠에도, 빛은 피어납니다. | deep blue ocean
+수심 삼천 미터 아래는 햇빛이 닿지 않습니다. | deep ocean dark | 수심 3,000m
+그곳 생물들은 스스로 몸에서 빛을 냅니다. | bioluminescent glowing water | 
+이 빛으로 먹이를 유인하고 짝을 찾습니다. | deep sea creature | 
+가장 깊은 어둠에도, 빛은 피어납니다. | deep blue ocean | 

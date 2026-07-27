@@ -1,6 +1,5 @@
 # 200_씨앗은_얼마나_오래_살까
-이천 년 전 씨앗이 싹을 틔운다면? | seeds in hand
-사해 근처에서 나온 대추야자 씨앗이 그랬습니다. | desert ancient landscape
-건조하고 서늘한 곳에서 잠들어 있었습니다. | dry desert sand
-씨앗은 조건이 맞을 때까지 시간을 견딥니다. | sprout growing soil
-기다림도, 살아 있는 방법이에요. | young sprout sunlight
+이천 년 동안 잠들어 있던 씨앗이 싹을 틔웠습니다. | seeds in hand | 2,000년 만에 발아
+사해 근처에서 나온 대추야자 씨앗입니다. | desert ancient landscape | 
+건조하고 서늘한 곳이 시간을 멈춰 세웠습니다. | dry desert sand | 
+기다림도, 살아 있는 방법이에요. | sprout growing soil | 

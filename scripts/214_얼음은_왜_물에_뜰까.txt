@@ -1,6 +1,5 @@
 # 214_얼음은_왜_물에_뜰까
-얼면 무거워질 텐데 왜 뜰까요? | ice cubes water
-물은 얼 때 분자들이 성글게 자리를 잡습니다. | ice crystal macro
-그래서 같은 무게라도 부피가 커집니다. | iceberg floating sea
-이 성질 덕에 겨울에도 물속 생물이 삽니다. | frozen lake winter
-얼음이 뜨는 건, 흔한 일이 아니에요. | ice on water
+물은 얼면 부피가 십 퍼센트쯤 늘어납니다. | ice cubes water | 부피 10% 증가
+분자들이 성글게 자리를 잡기 때문입니다. | ice crystal macro | 
+그래서 같은 무게라도 더 가볍습니다. | iceberg floating sea | 
+얼음이 뜨는 건, 흔한 일이 아니에요. | frozen lake winter | 

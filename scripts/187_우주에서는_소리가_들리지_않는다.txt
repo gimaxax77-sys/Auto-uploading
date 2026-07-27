@@ -1,6 +1,5 @@
 # 187_우주에서는_소리가_들리지_않는다
-우주에서 아무리 소리쳐도 들리지 않는 이유는? | outer space stars
-소리는 공기 같은 매질이 있어야 퍼집니다. | space nebula deep
-우주는 거의 진공이라 전달할 것이 없습니다. | dark space vast
-그래서 우주비행사들은 무선으로 대화합니다. | astronaut space suit
-우주는, 완벽하게 고요한 곳이에요. | silent space galaxy
+우주에서는 아무리 소리쳐도 들리지 않습니다. | outer space stars | 완전한 무음
+소리는 공기 같은 매질을 타고 퍼집니다. | space nebula deep | 
+우주는 거의 진공이라 전달할 것이 없습니다. | dark space void | 
+우주는, 완벽하게 고요한 곳이에요. | galaxy stars space | 

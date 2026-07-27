@@ -1,6 +1,5 @@
 # 169_지구에서_가장_추운_곳
-지구에서 가장 추운 곳은 얼마나 추울까요? | antarctica ice
-남극에서 영하 89.2도가 기록됐습니다. | frozen ice landscape
-1983년 보스토크 기지에서 잰 값입니다. | snow ice cold
-숨을 쉬면 콧속이 얼어붙는 추위입니다. | icy antarctic snow
-상상하기 힘든 추위가, 실제로 존재해요. | snow storm white
+지구 최저 기온은 영하 팔십구 점 이 도입니다. | antarctica ice snow | 영하 89.2℃
+천구백팔십삼 년 남극 보스토크 기지에서 잰 값입니다. | polar research station | 
+숨을 쉬면 콧속이 얼어붙는 추위입니다. | frozen ice landscape | 
+사람이 견딜 수 있는 한계 너머예요. | antarctic ice horizon | 

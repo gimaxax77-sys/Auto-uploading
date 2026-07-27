@@ -1,6 +1,5 @@
 # 170_바다에서_가장_깊은_곳
-바다는 가장 깊은 곳이 얼마나 깊을까요? | deep ocean underwater
-태평양 마리아나 해구는 약 11킬로미터 깊이입니다. | dark deep sea
-에베레스트를 통째로 넣어도 잠깁니다. | ocean deep blue
-그 깊은 어둠에도 생명이 삽니다. | underwater ocean dark
-바다는, 우리가 아는 것보다 훨씬 깊어요. | ocean waves surface
+가장 깊은 바다는 십일 킬로미터 아래입니다. | deep ocean blue | 깊이 11km
+태평양의 마리아나 해구입니다. | ocean deep water | 
+에베레스트를 통째로 넣어도 잠깁니다. | underwater dark deep | 
+바다는, 우리가 아는 것보다 훨씬 깊어요. | ocean surface horizon | 

@@ -1,6 +1,5 @@
 # 178_밀물과_썰물의_비밀
-바닷물은 왜 하루에 두 번 들고 날까요? | ocean tide beach
-달의 중력이 바닷물을 끌어당기기 때문입니다. | moon over ocean
-지구가 도는 사이 밀물과 썰물이 반복됩니다. | tide coast rocks
-태양도 힘을 보태 물 높이를 바꿉니다. | ocean horizon moon
-바다의 오르내림엔, 달의 힘이 숨어 있어요. | beach tide sunset
+밀물과 썰물은 달이 만듭니다. | moon over ocean | 달이 끌어당긴다
+달의 중력이 바닷물을 끌어당깁니다. | tide beach water | 
+태양도 힘을 보태 물 높이를 바꿉니다. | low tide shore | 
+바다는 하늘을 따라 움직여요. | moonlight sea night | 

@@ -1,6 +1,5 @@
 # 144_끝내지_못한_일이_자꾸_생각나는_이유
-끝낸 일보다 못 끝낸 일이 더 오래 남는 이유, 아세요? | unfinished checklist
-뇌는 완결되지 않은 일을 계속 기억하려 합니다. | brain concept
-이를 '자이가르닉 효과'라고 부릅니다. | notebook desk tasks
-그래서 미룬 일이 자꾸 마음에 걸립니다. | worried person desk
-작게라도 시작하면, 마음이 한결 가벼워져요. | first step start
+뇌는 끝낸 일보다 끝내지 못한 일을 더 기억합니다. | desk unfinished work | 미완성을 더 기억
+이를 자이가르닉 효과라고 부릅니다. | person thinking window | 
+그래서 미룬 일이 자꾸 마음에 걸립니다. | notebook pen desk | 
+찜찜함이 남는다면, 뇌가 일하는 중이에요. | calm morning desk | 

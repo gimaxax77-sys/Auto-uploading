@@ -1,6 +1,5 @@
 # 176_바닷속에도_폭포가_있다
-바닷속에도 폭포가 있다면 믿으시겠어요? | underwater ocean
-덴마크 해협 바닷속엔 거대한 물 흐름이 있습니다. | deep sea current
-차갑고 무거운 물이 절벽 아래로 쏟아집니다. | ocean underwater deep
-세계에서 가장 큰 폭포가, 바닷속에 숨어 있습니다. | deep blue ocean
-바다는, 우리가 아는 것보다 신비로워요. | ocean horizon
+세계에서 가장 큰 폭포는 바닷속에 있습니다. | underwater ocean deep | 세계 최대 폭포
+덴마크 해협 바닷속의 거대한 물 흐름입니다. | ocean current water | 
+차갑고 무거운 물이 절벽 아래로 쏟아집니다. | underwater cliff blue | 
+보이지 않는 곳에도, 폭포가 있어요. | deep sea blue water | 

@@ -1,6 +1,5 @@
 # 155_월급날_돈이_사라지는_이유
-월급이 올라도 왜 통장은 늘 비어 있을까요? | empty wallet
-버는 만큼 쓰임도 함께 늘어나기 때문입니다. | money spending
-이를 생활비 팽창이라고 합니다. | shopping lifestyle
-먼저 저축하고 남은 돈으로 쓰면 달라집니다. | saving money jar
-오르는 건 소득이 아니라, 습관이에요. | budget planning money
+버는 만큼 쓰임도 함께 늘어납니다. | wallet empty hand | 버는 만큼 늘어난다
+이를 생활비 팽창이라고 합니다. | bills receipts table | 
+먼저 저축하고 남은 돈으로 쓰면 달라집니다. | saving money jar | 
+순서만 바꿔도, 결과가 달라져요. | calm person planning | 

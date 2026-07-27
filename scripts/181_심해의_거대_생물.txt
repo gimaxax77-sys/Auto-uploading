@@ -1,6 +1,5 @@
 # 181_심해의_거대_생물
-깊은 바다엔 왜 거대한 생물이 살까요? | deep sea creature
-대왕오징어는 길이가 십 미터를 넘기도 합니다. | giant squid ocean
-차갑고 먹이가 귀한 환경이 몸집을 키웁니다. | deep ocean dark
-느리게 자라 오래 사는 경우도 많습니다. | underwater deep sea
-심해엔, 아직 모르는 생명이 가득해요. | deep blue ocean
+대왕오징어는 길이가 십 미터를 넘기도 합니다. | giant squid ocean | 길이 10m
+차갑고 먹이가 귀한 환경이 몸집을 키웁니다. | deep ocean dark | 
+느리게 자라 오래 사는 경우도 많습니다. | underwater deep sea | 
+심해엔, 아직 모르는 생명이 가득해요. | deep blue ocean | 

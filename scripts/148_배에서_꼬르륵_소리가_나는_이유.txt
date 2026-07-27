@@ -1,6 +1,5 @@
 # 148_배에서_꼬르륵_소리가_나는_이유
-배에서 나는 꼬르륵 소리, 배고파서만일까요? | person stomach
-장이 음식과 공기를 밀어내며 나는 소리입니다. | healthy food meal
-속이 비어 있을 때 더 크게 울립니다. | empty plate table
-소화가 잘 되고 있다는 신호이기도 합니다. | fresh healthy food
-부끄러워 마세요, 몸이 일하는 소리예요. | relaxed person smile
+꼬르륵 소리는 장이 내는 소리입니다. | stomach hands person | 장이 내는 소리
+음식과 공기를 밀어내며 나는 소리입니다. | empty plate table | 
+속이 비어 있을 때 더 크게 울립니다. | hungry person kitchen | 
+소화가 잘 되고 있다는, 좋은 신호예요. | healthy meal table | 

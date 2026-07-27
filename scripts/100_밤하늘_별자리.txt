@@ -1,6 +1,5 @@
 # 100_밤하늘_별자리
-밤하늘 별자리는 어떻게 만들어졌을까요? | constellation night sky
-별들을 이어 모양을 상상해 이름 붙인 것입니다. | stars night connect
-같은 별자리라도 별들의 거리는 제각각입니다. | milky way deep space
-지구가 공전하며 계절마다 다른 별자리가 보입니다. | starry sky mountains
-밤하늘의 공식 별자리는, 88개랍니다. | astronomy night sky
+공식 별자리는 모두 여든여덟 개입니다. | night sky constellation | 88개
+별들을 이어 모양을 상상해 이름 붙인 것입니다. | stars night sky | 
+같은 별자리라도 별들의 거리는 제각각입니다. | deep space stars | 
+지구가 돌며, 계절마다 다른 별자리가 떠요. | milky way stars | 

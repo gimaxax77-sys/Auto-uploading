@@ -1,6 +1,5 @@
 # 131_우리_몸의_놀라운_사실
-우리 위벽이 며칠마다 새것으로 바뀌는지 아세요? | human body science concept
-위벽은 3일에서 5일마다 완전히 새것으로 바뀝니다. | medical anatomy science
-위산은 이론상 금속도 부식시킬 만큼 강합니다. | science laboratory
-뇌는 몸무게의 2퍼센트지만 에너지의 20퍼센트를 씁니다. | brain concept glowing
-지금 이 순간에도, 우리 몸은 쉬지 않고 일해요. | human silhouette light
+우리 위벽은 사흘이면 새것으로 바뀝니다. | human body anatomy | 3일이면 새것
+위산이 워낙 강해 스스로를 계속 갈아 끼웁니다. | science laboratory closeup | 
+뇌는 몸무게의 이 퍼센트인데 에너지는 이십 퍼센트를 씁니다. | brain model science | 
+지금 이 순간에도, 몸은 쉬지 않고 일해요. | person calm breathing | 

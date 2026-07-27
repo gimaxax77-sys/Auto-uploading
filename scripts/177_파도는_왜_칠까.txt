@@ -1,6 +1,5 @@
 # 177_파도는_왜_칠까
-바다의 파도는 대체 왜 칠까요? | ocean waves crashing
-바람이 바다 위를 스치며 에너지를 넘겨줍니다. | windy sea waves
-그 힘이 물결이 되어 해안까지 밀려옵니다. | waves beach shore
-바람이 오래 불수록 파도는 더 커집니다. | big ocean waves
-파도는, 바람이 바다에 남긴 흔적이에요. | calm ocean waves
+파도는 바람이 바다에 남긴 흔적입니다. | ocean waves crashing | 바람이 남긴 흔적
+바람이 바다 위를 스치며 에너지를 넘겨줍니다. | windy sea surface | 
+바람이 오래 불수록 파도는 더 커집니다. | big waves ocean | 
+파도 소리는, 멀리서 온 바람이에요. | calm beach waves | 

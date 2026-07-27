@@ -1,6 +1,5 @@
 # 212_커피가_잠을_쫓는_원리
-커피는 어떻게 졸음을 밀어낼까요? | coffee cup morning
-몸에는 졸음을 부르는 물질이 쌓입니다. | coffee beans close
-카페인이 그 자리를 대신 차지합니다. | pouring coffee cup
-졸음 신호가 전달되지 못해 덜 졸립니다. | coffee shop table
-커피는, 피로를 잠시 미뤄 둘 뿐이에요. | warm coffee steam
+카페인은 잠을 부르는 신호를 가로막습니다. | coffee cup morning | 졸음 신호 차단
+깨어 있는 동안 졸음을 부르는 물질이 쌓입니다. | coffee beans close | 
+카페인이 그 자리를 대신 차지해 버립니다. | pouring coffee cup | 
+커피는, 피로를 잠시 미뤄 둘 뿐이에요. | warm coffee steam | 

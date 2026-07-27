@@ -1,6 +1,5 @@
 # 134_동물의_신기한_사실
-심장이 세 개나 되는 동물이 있다는 사실, 아세요? | wildlife animals nature
-문어는 심장이 세 개이고 피가 파란색입니다. | octopus ocean underwater
-웜뱃은 세계에서 유일하게 네모난 똥을 눕니다. | green meadow nature grass
-상어는 나무보다 먼저 지구에 나타났습니다. | shark deep ocean
-자연은 언제나, 상상을 뛰어넘어요. | wildlife nature ocean
+문어는 심장이 세 개입니다. | octopus underwater | 심장 3개
+게다가 피는 파란색입니다. | octopus ocean closeup | 
+상어는 나무보다 먼저 지구에 나타났습니다. | shark swimming ocean | 
+자연은 언제나, 상상을 뛰어넘어요. | underwater sea life | 

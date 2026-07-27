@@ -1,6 +1,5 @@
 # 210_고기를_구우면_맛있어지는_이유
-같은 고기인데 구우면 왜 달라질까요? | grilling meat fire
-높은 열에서 단백질과 당이 만나 반응합니다. | steak cooking pan
-이때 갈색이 돌고 향이 확 살아납니다. | browning meat close
-삶으면 온도가 낮아 이 반응이 잘 안 납니다. | boiling pot kitchen
-굽는 냄새의 정체는, 화학 반응이에요. | grilled food plate
+고기의 그 향은 백사십 도를 넘겨야 생깁니다. | grilling meat fire | 140℃ 이상
+단백질과 당이 만나 갈색으로 변하는 반응입니다. | steak cooking pan | 
+삶으면 백 도를 못 넘어 이 반응이 안 납니다. | boiling pot kitchen | 
+굽는 냄새의 정체는, 화학 반응이에요. | grilled food plate | 

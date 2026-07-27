@@ -1,6 +1,5 @@
 # 209_빵은_어떻게_부풀어_오를까
-반죽이 두 배로 커지는 이유는 뭘까요? | bread dough rising
-효모가 당을 먹고 이산화탄소를 내놓습니다. | baking bread kitchen
-반죽 속 그물 같은 조직이 그 기체를 가둡니다. | kneading dough hands
-구우면 기체가 부풀며 모양이 굳습니다. | fresh baked bread
-빵의 구멍은, 갇힌 숨결이에요. | sliced bread bakery
+반죽은 효모가 내뿜는 기체로 부풉니다. | bread dough rising | 효모가 만든 기체
+효모가 당을 먹고 이산화탄소를 내놓습니다. | baking bread kitchen | 
+반죽 속 그물 같은 조직이 그 기체를 가둡니다. | kneading dough hands | 
+빵의 구멍은, 갇힌 숨결이에요. | sliced bread bakery | 

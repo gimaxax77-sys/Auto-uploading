@@ -1,6 +1,5 @@
 # 192_목성의_폭풍은_지구보다_크다
-삼백 년 넘게 멈추지 않은 폭풍이 있다면? | jupiter planet space
-목성의 대적점은 거대한 붉은 소용돌이입니다. | storm clouds swirl
-지구가 통째로 들어가고도 남는 크기였습니다. | planet surface clouds
-사람이 관측한 뒤로 한 번도 그친 적이 없습니다. | hurricane from space
-목성은, 폭풍이 끝나지 않는 행성이에요. | gas giant planet
+목성의 붉은 폭풍은 삼백 년 넘게 멈추지 않았습니다. | jupiter planet space | 300년째 진행 중
+지구가 통째로 들어가고도 남는 크기였습니다. | storm clouds swirl | 
+붙잡을 땅이 없어 폭풍이 잦아들지 않습니다. | gas giant planet | 
+목성은, 폭풍이 끝나지 않는 행성이에요. | jupiter space | 

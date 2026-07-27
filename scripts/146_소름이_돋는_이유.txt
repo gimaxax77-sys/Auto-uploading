@@ -1,6 +1,5 @@
 # 146_소름이_돋는_이유
-추울 때나 감동할 때, 소름은 왜 돋을까요? | cold skin arm
-털을 세우는 작은 근육이 수축하기 때문입니다. | skin macro closeup
-원래는 털을 부풀려 체온을 지키던 흔적입니다. | cold winter person
-털이 적어진 지금은 소름으로만 남았습니다. | person shivering cold
-우리 몸에 남은, 진화의 흔적이에요. | nature science
+소름은 털을 세우던 시절의 흔적입니다. | goosebumps skin arm | 털을 세우던 흔적
+털을 세우는 작은 근육이 수축하는 것입니다. | cold person shivering | 
+털이 적어진 지금은 소름으로만 남았습니다. | animal fur closeup | 
+우리 몸에 남은, 진화의 흔적이에요. | human skin macro | 

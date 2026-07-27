@@ -1,6 +1,5 @@
 # 185_바다가_만드는_산소
-우리가 마시는 산소, 절반이 바다에서 온다면? | ocean surface sky
-바다의 작은 플랑크톤이 산소를 만듭니다. | ocean water plankton
-숲만큼이나 많은 산소를 내뿜습니다. | blue ocean vast
-바다가 병들면 우리 숨도 위태로워집니다. | clean ocean waves
-바다는, 지구의 또 다른 허파예요. | ocean horizon calm
+우리가 마시는 산소의 절반은 바다에서 옵니다. | ocean surface sky | 산소의 절반
+바다의 작은 플랑크톤이 산소를 만듭니다. | ocean water plankton | 
+숲만큼이나 많은 산소를 내뿜습니다. | blue ocean vast | 
+바다는, 지구의 또 다른 허파예요. | ocean horizon calm | 

@@ -1,6 +1,5 @@
 # 198_오천_년을_살아온_나무
-피라미드보다 오래 산 나무가 있다면? | ancient tree old
-미국의 브리슬콘 소나무는 사천 년을 넘겼습니다. | bristlecone pine tree
-메마르고 추운 땅이 오히려 오래 살게 했습니다. | mountain rocky landscape
-천천히 자라 단단해진 나무는 잘 썩지 않습니다. | old tree bark texture
-느린 것이, 오래 남기도 해요. | lone tree mountain
+가장 오래 산 나무는 사천팔백 살이 넘습니다. | ancient tree old | 4,800살
+이집트 피라미드보다 오래됐습니다. | bristlecone pine tree | 
+메마르고 추운 땅이 오히려 오래 살게 했습니다. | mountain rocky landscape | 
+느린 것이, 오래 남기도 해요. | lone tree mountain | 

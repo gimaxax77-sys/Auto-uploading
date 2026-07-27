@@ -1,6 +1,5 @@
 # 143_카지노에_시계가_없는_이유
-카지노엔 왜 시계도 창문도 없을까요? | casino lights night
-시간 감각을 잊게 만들려는 설계입니다. | blurred clock
-시간이 안 보이면 사람은 더 오래 머뭅니다. | casino interior
-자연광이 없으면 밤낮 구분도 흐려집니다. | dark room lights
-환경이 행동을 바꾼다는, 좋은 예시죠. | aware person thinking
+카지노에는 시계도 창문도 없습니다. | casino lights night | 시계도 창문도 없음
+시간 감각을 잊게 만들려는 설계입니다. | clock on wall | 
+시간이 안 보이면 사람은 더 오래 머뭅니다. | dark room lights | 
+환경이 행동을 바꾼다는, 좋은 예시죠. | city night lights | 

@@ -1,6 +1,5 @@
 # 171_세계에서_가장_높은_곳
-세계에서 가장 높은 곳은 어디일까요? | snowy mountain peak
-히말라야의 에베레스트, 높이 8,849미터입니다. | himalaya mountains
-정상 부근은 산소가 지상의 3분의 1뿐입니다. | mountain summit snow
-그래서 '죽음의 지대'라고 불립니다. | mountain climber snow
-하늘에 가장 가까운 땅이랍니다. | mountain peak clouds
+에베레스트의 높이는 팔천팔백사십구 미터입니다. | everest mountain snow | 8,849m
+정상 부근은 산소가 지상의 삼분의 일뿐입니다. | himalaya mountain peak | 
+그래서 죽음의 지대라고 불립니다. | climber mountain snow | 
+가장 높은 곳은, 가장 숨쉬기 힘든 곳이에요. | mountain sunrise peak | 

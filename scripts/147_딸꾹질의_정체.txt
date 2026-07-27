@@ -1,6 +1,5 @@
 # 147_딸꾹질의_정체
-딸꾹질은 대체 왜 나는 걸까요? | surprised person
-가로막, 횡격막이 갑자기 경련하며 생깁니다. | person breathing chest
-급하게 먹거나 놀랐을 때 잘 나타납니다. | eating fast meal
-대개는 잠시 뒤 저절로 멎습니다. | glass of water
-우리 몸의 작은 딸꾹, 자연스러운 반응이에요. | calm breathing person
+딸꾹질은 횡격막이 갑자기 경련하는 것입니다. | person drinking water | 횡격막 경련
+급하게 먹거나 놀랐을 때 잘 나타납니다. | eating fast meal | 
+대개는 잠시 뒤 저절로 멎습니다. | glass of water | 
+몸이 잠깐 박자를 놓친 것뿐이에요. | calm breathing person | 

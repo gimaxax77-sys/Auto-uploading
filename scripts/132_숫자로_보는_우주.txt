@@ -1,6 +1,5 @@
 # 132_숫자로_보는_우주
-지구의 나무와 은하의 별, 어느 쪽이 더 많을까요? | space galaxy stars
-태양은 태양계 전체 질량의 99퍼센트가 넘습니다. | sun bright space
-지구의 나무 수가 우리 은하의 별 수보다 많습니다. | forest many trees
-금성은 자전 기준으로 하루가 1년보다 깁니다. | venus planet space
-알수록 놀라운 게, 바로 우주예요. | milky way night sky
+지구의 나무가 우리 은하의 별보다 많습니다. | forest trees aerial | 나무 > 별
+태양은 태양계 전체 질량의 구십구 퍼센트가 넘습니다. | sun solar system | 
+금성은 하루가 일 년보다 깁니다. | venus planet space | 
+알수록 놀라운 게, 바로 우주예요. | galaxy space stars | 

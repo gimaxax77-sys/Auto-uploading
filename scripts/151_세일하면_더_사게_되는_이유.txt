@@ -1,6 +1,5 @@
 # 151_세일하면_더_사게_되는_이유
-세일만 하면 왜 더 사게 될까요? | shopping bags sale
-원래 가격이 기준이 되어 싸다고 느낍니다. | price discount tag
-실제 필요보다 이득에 마음이 움직입니다. | shopping cart store
-살 계획이 없던 물건까지 담게 됩니다. | impulse shopping
-정말 필요한지, 한 번만 물어보세요. | wallet money thinking
+세일가는 원래 가격을 기준으로 싸 보입니다. | sale sign store | 원래 가격이 기준
+실제 필요보다 이득에 마음이 움직입니다. | shopping cart mall | 
+살 계획이 없던 물건까지 담게 됩니다. | shopping bags person | 
+싸다가 아니라, 필요한가를 먼저 물어보세요. | person checking receipt | 

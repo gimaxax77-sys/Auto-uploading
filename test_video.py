@@ -54,13 +54,31 @@ def test_대본파일_읽기():
     with tempfile.TemporaryDirectory() as work:
         path = os.path.join(work, "s.txt")
         with open(path, "w", encoding="utf-8") as f:
-            f.write("# 주석은 무시\n\n첫 장면입니다. | autumn\n둘째 장면입니다.\n")
+            f.write("# 주석은 무시\n\n첫 장면입니다. | autumn\n둘째 장면입니다.\n"
+                    "셋째 장면입니다. | bamboo | 하루 90cm\n")
 
         scenes = video.read_script(path)
-        assert len(scenes) == 2, f"장면이 2개여야 하는데 {len(scenes)}개입니다"
-        assert scenes[0] == {"narration": "첫 장면입니다.", "image_query": "autumn"}
+        assert len(scenes) == 3, f"장면이 3개여야 하는데 {len(scenes)}개입니다"
+        assert scenes[0] == {"narration": "첫 장면입니다.", "image_query": "autumn", "emphasis": ""}
         # 검색어를 안 쓰면 비어 있어야 하고, 그러면 색 배경이 쓰입니다.
-        assert scenes[1] == {"narration": "둘째 장면입니다.", "image_query": ""}
+        assert scenes[1] == {"narration": "둘째 장면입니다.", "image_query": "", "emphasis": ""}
+        # 세로줄 두 번째 뒤는 화면 가운데 크게 박히는 강조 문구입니다.
+        assert scenes[2] == {"narration": "셋째 장면입니다.", "image_query": "bamboo",
+                             "emphasis": "하루 90cm"}
+
+
+def test_강조문구_자막파일에_들어감():
+    with tempfile.TemporaryDirectory() as work:
+        path = os.path.join(work, "s.ass")
+        words = [(0.0, 0.5, "가"), (0.5, 0.5, "나")]
+        video.build_ass(words, 2.0, path, "3만℃")
+        내용 = open(path, encoding="utf-8").read()
+        assert "Style: Big" in 내용, "강조용 스타일이 없습니다"
+        assert "3만℃" in 내용, "강조 문구가 안 들어갔습니다"
+        assert 내용.count("Dialogue:") == 2, "자막 줄과 강조 줄 2개여야 합니다"
+
+        video.build_ass(words, 2.0, path)  # 강조를 안 주면 자막 한 줄만
+        assert open(path, encoding="utf-8").read().count("Dialogue:") == 1
 
 
 def test_빈_대본파일은_에러():
@@ -122,6 +140,7 @@ def test_폴더음악_우선():
 if __name__ == "__main__":
     test_장면조립과_이어붙이기()
     test_대본파일_읽기()
+    test_강조문구_자막파일에_들어감()
     test_빈_대본파일은_에러()
     test_배경음악_합성()
     test_폴더음악_우선()

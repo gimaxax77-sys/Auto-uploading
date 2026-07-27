@@ -1,6 +1,5 @@
 # 145_보고_싶은_것만_보는_이유
-우리는 믿고 싶은 것만 보고 있진 않을까요? | eyes looking
-뇌는 자기 생각에 맞는 정보만 골라 받아들입니다. | brain thinking
-이를 '확증 편향'이라고 합니다. | puzzle pieces mind
-반대 의견을 일부러 찾아보면 균형이 생깁니다. | two sides balance
-열린 마음이, 더 나은 판단을 만들어요. | open sky mind
+뇌는 자기 생각에 맞는 정보만 골라 받아들입니다. | person phone screen | 믿는 것만 보인다
+이를 확증 편향이라고 합니다. | person reading news | 
+반대 의견을 일부러 찾아보면 균형이 생깁니다. | books open reading | 
+내 생각을 의심하는 것도, 능력이에요. | quiet person thinking | 

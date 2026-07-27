@@ -1,6 +1,5 @@
 # 186_달은_매년_멀어지고_있다
-밤하늘의 달이 조금씩 멀어지고 있다면? | full moon night sky
-달은 해마다 약 삼 점 팔 센티미터씩 멀어집니다. | moon surface space
-달에 놓인 반사경으로 레이저를 쏘아 잰 값입니다. | moon telescope night
-아주 먼 옛날의 달은 지금보다 훨씬 커 보였습니다. | moon over ocean
-오늘 본 달은, 어제보다 조금 더 멀어요. | moon in dark sky
+달은 해마다 삼 점 팔 센티미터씩 멀어집니다. | full moon night sky | 매년 3.8cm
+달에 놓아둔 반사경으로 레이저를 쏘아 잰 값입니다. | moon surface craters | 
+지구의 바닷물을 끌어당기며 조금씩 밀려나는 것입니다. | ocean tide waves | 
+오늘 본 달은, 어제보다 조금 더 멀어요. | moon dark sky | 

@@ -1,6 +1,5 @@
 # 99_바다가_파란_이유
-바다는 왜 파랗게 보일까요? | blue ocean sea
-물은 빨간빛을 흡수하고 파란빛을 되돌려 보냅니다. | deep blue ocean water
-그래서 남은 파란빛이 우리 눈에 보입니다. | ocean waves blue
-하늘이 비쳐서만은 아닙니다. 물의 성질입니다. | clear turquoise sea
-바다의 파랑엔, 과학이 숨어 있어요. | ocean horizon calm
+바다가 파란 건 하늘이 비쳐서가 아닙니다. | blue ocean water | 하늘 때문이 아니다
+물은 빨간빛을 흡수하고 파란빛을 되돌려 보냅니다. | clear sea water | 
+그래서 남은 파란빛이 우리 눈에 보입니다. | underwater blue light | 
+바다의 파랑엔, 과학이 숨어 있어요. | ocean horizon calm | 

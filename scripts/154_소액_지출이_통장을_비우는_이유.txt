@@ -1,6 +1,5 @@
 # 154_소액_지출이_통장을_비우는_이유
-몇 천 원 지출이 통장을 비운다는 것, 아세요? | coffee cup coins
-작은 돈은 부담이 없어 자주 나갑니다. | small coins
-매일의 커피 한 잔도 한 달이면 큰돈입니다. | daily coffee habit
-새는 곳은 큰돈이 아니라 작은 습관입니다. | wallet coins
-작은 지출부터 살피면, 돈이 모여요. | piggy bank saving
+매일의 커피 한 잔이 한 달이면 큰돈이 됩니다. | coffee cup cafe | 하루 한 잔, 한 달 큰돈
+작은 돈은 부담이 없어 자주 나갑니다. | coins small change | 
+새는 곳은 큰돈이 아니라 작은 습관입니다. | notebook budget writing | 
+작은 지출부터 살피면, 돈이 모여요. | piggy bank saving | 

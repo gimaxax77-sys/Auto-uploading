@@ -38,6 +38,7 @@ LINE_SPACING = 4  # 줄 간격(px). 작을수록 줄이 붙습니다.
 STYLE_BRIGHT = "fontcolor=yellow:borderw=6:bordercolor=black:shadowcolor=black@0.7:shadowx=3:shadowy=3"
 STYLE_DARK = "fontcolor=white:borderw=6:bordercolor=0x00aa00:shadowcolor=black@0.7:shadowx=3:shadowy=3"
 BRIGHT_THRESHOLD = 128  # 자막 영역 평균 밝기가 이 값보다 크면 밝은 배경으로 봅니다.
+EMPHASIS_SIZE = 240  # 강조 문구(핵심 숫자) 글자 크기. 대본 3번째 칸에 적으면 화면 가운데 뜹니다.
 # 장면마다 이 순서로 번갈아 씁니다. 하나만 두면 그 음성만 씁니다.
 VOICES = ["ko-KR-SunHiNeural", "ko-KR-InJoonNeural"]
 # 음성 엔진: "edge"(무료) 또는 "google"(Neural2, 더 자연스러움, GOOGLE_TTS_API_KEY 필요).
@@ -69,10 +70,13 @@ def read_script(path: str) -> list[dict]:
             line = line.strip()
             if not line or line.startswith("#"):  # 빈 줄과 # 로 시작하는 줄은 건너뜁니다.
                 continue
-            narration, _, query = line.partition("|")
+            # 문장 | 검색어 | 강조문구(선택). 강조문구는 화면 가운데에 크게 박힙니다.
+            narration, _, rest = line.partition("|")
+            query, _, emphasis = rest.partition("|")
             scenes.append({
                 "narration": narration.strip(),
                 "image_query": query.strip(),
+                "emphasis": emphasis.strip(),
             })
     if not scenes:
         raise ValueError(f"{path} 에서 읽을 장면이 없습니다.")
@@ -260,13 +264,17 @@ _ASS_HEADER = (
     "BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, "
     "BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding\n"
     f"Style: Def,Malgun Gothic,{FONT_SIZE},&H0000FFFF,&H00FFFFFF,&H00000000,&H80000000,"
-    f"-1,0,0,0,100,100,0,0,1,6,2,8,80,80,{SUB_TOP},1\n\n"
+    f"-1,0,0,0,100,100,0,0,1,6,2,8,80,80,{SUB_TOP},1\n"
+    # 강조 문구용. 화면 가운데에 큰 노란 글씨로 박아 스크롤을 멈추게 합니다.
+    f"Style: Big,Malgun Gothic,{EMPHASIS_SIZE},&H0000D5FF,&H00FFFFFF,&H00000000,&H80000000,"
+    "-1,0,0,0,100,100,0,0,1,10,4,5,60,60,60,1\n\n"
     "[Events]\n"
     "Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text\n"
 )
 
 
-def build_ass(words: list[tuple[float, float, str]], duration: float, path: str) -> None:
+def build_ass(words: list[tuple[float, float, str]], duration: float, path: str,
+              emphasis: str = "") -> None:
     """단어 타이밍으로 노래방식(부르는 단어가 노랗게 채워지는) ASS 자막을 만듭니다."""
     parts = [f"{{\\fad({int(SUB_FADE * 1000)},{int(SUB_FADE * 1000)})}}"]
     if SUB_LAG > 0:  # 하이라이트를 소리보다 살짝 늦춰 어긋남을 줄입니다.
@@ -282,11 +290,15 @@ def build_ass(words: list[tuple[float, float, str]], duration: float, path: str)
     with open(path, "w", encoding="utf-8", newline="\n") as f:
         f.write(_ASS_HEADER)
         f.write(f"Dialogue: 0,{ass_time(0)},{ass_time(duration)},Def,,0,0,0,,{text}\n")
+        if emphasis:
+            # 살짝 커지며 나타났다가 장면 끝까지 남습니다(\t = 시간에 따른 변화).
+            효과 = "{\\fad(200,250)\\fscx70\\fscy70\\t(0,260,\\fscx104\\fscy104)\\t(260,380,\\fscx100\\fscy100)}"
+            f.write(f"Dialogue: 1,{ass_time(0)},{ass_time(duration)},Big,,0,0,0,,{효과}{emphasis}\n")
 
 
 def render_clip(image: str | None, audio: str, out: str, subtitle: str = "", gap: float = GAP,
                 words: list[tuple[float, float, str]] | None = None,
-                video: str | None = None) -> None:
+                video: str | None = None, emphasis: str = "") -> None:
     """사진 한 장(또는 B-roll 영상)과 음성 하나를 붙여 장면 하나를 만듭니다."""
     w, h = SIZE
     duration = media_duration(audio) + gap  # 이 장면의 총 길이
@@ -313,7 +325,7 @@ def render_clip(image: str | None, audio: str, out: str, subtitle: str = "", gap
     if SUBTITLE and subtitle and words:
         # 단어별 자막: 단어 타이밍으로 ASS 자막을 만들어 ass 필터로 렌더합니다.
         subtitle_file = out + ".ass"
-        build_ass(words, duration, subtitle_file)
+        build_ass(words, duration, subtitle_file, emphasis)
         af = subtitle_file.replace("\\", "/").replace(":", "\\:")
         vf += f",ass='{af}'"
     elif SUBTITLE and subtitle:
@@ -510,14 +522,16 @@ def make_video(scenes: list[dict], out: str) -> str:
                 except Exception as e:
                     print(f"    (B-roll 실패, 사진으로 대체: {e})")
 
+            강조 = scene.get("emphasis", "")
             if video_src:
-                render_clip(None, audio, clip, scene["narration"], gap, words, video=video_src)
+                render_clip(None, audio, clip, scene["narration"], gap, words,
+                            video=video_src, emphasis=강조)
             else:
                 if use_photos and query:
                     fetch_image(query, image)
                 else:
                     make_background(i, image)
-                render_clip(image, audio, clip, scene["narration"], gap, words)
+                render_clip(image, audio, clip, scene["narration"], gap, words, emphasis=강조)
             clips.append(clip)
 
         joined = os.path.join(work, "joined.mp4")

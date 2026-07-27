@@ -1,6 +1,5 @@
 # 205_사막_식물은_어떻게_버틸까
-비가 거의 오지 않는 곳에서 어떻게 살까요? | desert cactus sand
-선인장은 밤에만 숨구멍을 엽니다. | cactus close up
-뜨거운 낮에 열면 물이 다 날아가기 때문입니다. | desert hot sun
-두툼한 몸에 물을 저장해 두고 씁니다. | cactus desert landscape
-사막의 식물은, 밤에 숨을 쉬어요. | desert sunset cactus
+선인장은 뜨거운 낮에 숨구멍을 닫아 둡니다. | desert cactus sand | 낮엔 숨구멍 닫힘
+낮에 열면 물이 다 날아가기 때문입니다. | desert hot sun | 
+대신 서늘한 밤에 열어 공기를 들이마십니다. | cactus close up | 
+사막의 식물은, 밤에 숨을 쉬어요. | desert sunset cactus | 

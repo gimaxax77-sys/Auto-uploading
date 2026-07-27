@@ -1,6 +1,5 @@
 # 197_나무들은_땅속에서_이어져_있다
-숲의 나무들이 서로 연결되어 있다면? | forest floor moss
-뿌리에 붙은 곰팡이가 그물처럼 이어집니다. | tree roots soil
-이 길을 따라 양분이 오가는 것이 관찰됐습니다. | mushroom forest ground
-그늘에 가린 어린나무가 도움을 받기도 합니다. | young tree forest
-숲은, 보이지 않는 곳에서 이어져 있어요. | deep green forest
+숲의 나무들은 땅속에서 서로 이어져 있습니다. | forest floor moss | 뿌리로 연결
+뿌리에 붙은 곰팡이가 그물처럼 뻗어 있습니다. | tree roots soil | 
+이 길을 따라 양분이 오가는 것이 관찰됐습니다. | mushroom forest ground | 
+숲은, 보이지 않는 곳에서 이어져 있어요. | deep green forest | 
