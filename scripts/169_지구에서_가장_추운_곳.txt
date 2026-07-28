@@ -1,5 +1,5 @@
 # 169_지구에서_가장_추운_곳
 지구 최저 기온은 영하 팔십구 점 이 도입니다. | antarctica ice snow | 영하 89.2℃
-남극 보스토크 기지에서 잰 값입니다. | polar research station | 보스토크 기지
+남극 보스토크 기지에서 잰 값입니다. | @card | 보스토크 기지
 숨을 쉬면 콧속이 얼어붙는 추위입니다. | frozen ice landscape | 숨쉬면 코가 언다
 사람이 견딜 수 있는 한계는 어디까지일까요? | antarctic ice horizon | 

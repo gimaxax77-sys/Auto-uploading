@@ -1,5 +1,5 @@
 # 185_바다가_만드는_산소
 우리가 마시는 산소의 절반은 바다에서 옵니다. | ocean surface sky | 산소의 절반
 바다의 작은 플랑크톤이 만들어 냅니다. | ocean water plankton | 플랑크톤이 만든다
-아마존 숲보다 더 많이 내뿜습니다. | amazon rainforest aerial | 아마존보다 많다
+아마존 숲보다 더 많이 내뿜습니다. | @card | 아마존보다 많다
 숨 두 번 중 한 번은 바다 덕분이라면요? | ocean horizon calm | 

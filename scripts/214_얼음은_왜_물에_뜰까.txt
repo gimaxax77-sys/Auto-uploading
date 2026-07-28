@@ -1,5 +1,5 @@
 # 214_얼음은_왜_물에_뜰까
 물은 얼면 부피가 십 퍼센트쯤 늘어납니다. | ice cubes water | 부피 10% 증가
-분자들이 성글게 자리를 잡기 때문입니다. | ice crystal macro | 성글게 배열
+분자들이 성글게 자리를 잡기 때문입니다. | @card | 성글게 배열
 대부분의 물질은 반대로 얼면 무거워집니다. | frozen lake winter | 물만 예외
 얼음이 뜨지 않았다면 어떻게 됐을까요? | iceberg floating sea | 

@@ -1,5 +1,5 @@
 # 161_뒤로_나는_유일한_새
 벌새는 일 초에 여든 번까지 날갯짓합니다. | hummingbird flying flower | 1초에 80번
 그 덕에 공중에 멈춰 설 수 있습니다. | hummingbird hovering | 공중에 멈춘다
-뒤로 나는 새는 벌새뿐입니다. | small bird flower nectar | 뒤로 나는 유일한 새
+뒤로 나는 새는 벌새뿐입니다. | @card | 뒤로 나는 유일한 새
 가장 작은 새가 가장 어려운 비행을 하네요. | hummingbird in nature | 

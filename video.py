@@ -201,6 +201,64 @@ def make_background(index: int, path: str) -> None:
     )
 
 
+# 카드 배경 팔레트(위/아래 색). 편 번호로 골라 편마다 다른 색이 나오게 합니다.
+# 렌더 단계에서 어둡게(DARKEN)와 비네팅이 한 번 더 얹히므로 여기서는 넉넉히 밝게 잡습니다.
+CARD_PALETTES = [
+    ((58, 98, 168), (16, 25, 46)),   # 심야 남색
+    ((150, 76, 54), (32, 18, 14)),   # 잔불 갈색
+    ((44, 124, 112), (12, 32, 30)),  # 深 청록
+    ((112, 58, 138), (26, 15, 34)),  # 자정 보라
+    ((150, 116, 40), (34, 27, 11)),  # 황토
+    ((42, 90, 146), (12, 24, 39)),   # 서늘한 청
+]
+
+
+def make_card(seed: int, path: str) -> None:
+    """스톡 영상 대신 쓰는 자체 제작 배경.
+
+    유튜브 '비진정성 콘텐츠' 정책이 "스톡 영상 위 AI 음성"을 지목하므로,
+    일부 장면은 우리가 직접 그린 화면을 씁니다. 글자는 자막 레이어가 얹습니다.
+    """
+    from PIL import Image, ImageDraw, ImageFilter
+
+    w, h = SIZE
+    위, 아래 = CARD_PALETTES[seed % len(CARD_PALETTES)]
+    바탕 = Image.new("RGB", (1, h))
+    px =바탕.load()
+    for y in range(h):
+        t = y / (h - 1)
+        px[0, y] = tuple(round(위[i] + (아래[i] - 위[i]) * t) for i in range(3))
+    img = 바탕.resize((w, h), Image.BILINEAR)
+
+    # 은은한 무늬. 종류를 번갈아 써서 편마다 화면이 달라 보이게 합니다.
+    무늬 = img.copy()
+    d = ImageDraw.Draw(무늬)
+    선색 = tuple(min(255, round(c * 1.9) + 40) for c in 위)
+    종류 = seed % 4
+    if 종류 == 0:  # 동심원
+        cx, cy = w // 2, int(h * 0.42)
+        for r in range(150, 1600, 125):
+            d.ellipse([cx - r, cy - r, cx + r, cy + r], outline=선색, width=5)
+    elif 종류 == 1:  # 사선
+        for x in range(-h, w + h, 110):
+            d.line([(x, 0), (x + h, h)], fill=선색, width=5)
+    elif 종류 == 2:  # 가로 줄
+        for y in range(0, h, 96):
+            d.line([(0, y), (w, y)], fill=선색, width=5)
+    else:  # 점 격자
+        for y in range(60, h, 110):
+            for x in range(60, w, 110):
+                d.ellipse([x - 7, y - 7, x + 7, y + 7], fill=선색)
+    img = Image.blend(img, 무늬.filter(ImageFilter.GaussianBlur(1.2)), 0.5)
+
+    # 글자가 놓일 가운데를 은은하게 밝혀 가독성을 올립니다.
+    광 = Image.new("L", (w, h), 0)
+    ImageDraw.Draw(광).ellipse([-w // 2, int(h * 0.16), int(w * 1.5), int(h * 0.86)], fill=125)
+    img = Image.composite(Image.blend(img, Image.new("RGB", (w, h), 위), 0.42),
+                          img, 광.filter(ImageFilter.GaussianBlur(190)))
+    img.save(path, quality=92)
+
+
 def wrap_text(text: str, width: int) -> str:
     """쉼표·마침표 뒤에서 줄을 나누고, 긴 줄은 띄어쓰기 기준으로 줄바꿈합니다."""
     lines = []
@@ -397,6 +455,12 @@ def fetch_music_jamendo(path: str) -> str:
     return f"음악: {t['name']} - {t['artist_name']} (Jamendo, CC BY)"
 
 
+def 번호_of(out: str) -> int:
+    """출력 파일명 앞 번호. 편마다 다른 화면·연출을 뽑는 씨앗으로 씁니다."""
+    m = re.match(r"(\d+)", os.path.basename(out))
+    return int(m.group(1)) if m else 0
+
+
 def mood_of(out: str) -> str:
     """출력 파일명 앞 번호로 배경음악 무드를 정합니다. 예: 01_아침.mp4 -> 차분"""
     m = re.match(r"(\d+)", os.path.basename(out))
@@ -501,6 +565,14 @@ def make_video(scenes: list[dict], out: str) -> str:
         print("  (PEXELS_API_KEY 가 없어 대체 배경을 씁니다)")
 
     voice = voice_of(out)  # 한 영상은 한 음성으로 통일(홀수 편=여자, 짝수 편=남자).
+
+    # 편마다 확대량과 전환 길이를 조금씩 다르게 합니다. 전편이 똑같이 움직이면
+    # "템플릿으로 찍어냈다"는 인상을 주고, 유튜브 비진정성 콘텐츠 정책이 그 점을 짚습니다.
+    # 번호로 정하므로 다시 렌더해도 같은 값이 나옵니다(재현 가능).
+    global ZOOM_END, XFADE
+    n = 번호_of(out)
+    ZOOM_END = round(1.06 + (n * 7 % 13) / 100, 3)   # 1.06 ~ 1.18
+    XFADE = round(0.25 + (n * 11 % 7) / 20, 2)       # 0.25 ~ 0.55
     with tempfile.TemporaryDirectory() as work:
         clips = []
         for i, scene in enumerate(scenes):
@@ -513,6 +585,14 @@ def make_video(scenes: list[dict], out: str) -> str:
             print(f"  장면 {i + 1}/{len(scenes)} [{voice.split('-')[-1]}]: {scene['narration'][:24]}...")
             words = narrate(scene["narration"], audio, voice, RATE_LAST if last else RATE)
             gap = GAP_LAST if last else GAP
+
+            # 검색어 자리에 @card 를 쓰면 스톡 대신 우리가 그린 화면을 씁니다.
+            if query == "@card":
+                make_card(번호_of(out) + i, image)
+                render_clip(image, audio, clip, scene["narration"], gap, words,
+                            emphasis=scene.get("emphasis", ""))
+                clips.append(clip)
+                continue
 
             video_src = None
             if BROLL and use_photos and query:

@@ -1,5 +1,5 @@
 # 174_지구에서_바람이_가장_센_곳
 돌풍이 시속 삼백 킬로미터를 넘는 곳이 있습니다. | antarctica wind snow | 시속 300km
-남극의 커먼웰스 만입니다. | windy polar landscape | 커먼웰스 만
-고속도로 달리는 차보다 빠른 바람입니다. | blizzard snow storm | 차보다 빠르다
+남극의 커먼웰스 만입니다. | @card | 커먼웰스 만
+고속도로 달리는 차보다 빠른 바람입니다. | @card | 차보다 빠르다
 서 있는 것조차 가능할까요? | antarctic ice wind | 

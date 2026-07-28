@@ -1,5 +1,5 @@
 # 209_빵은_어떻게_부풀어_오를까
 반죽은 효모가 내뿜는 기체로 부풉니다. | bread dough rising | 효모의 기체
 효모가 당을 먹고 이산화탄소를 내놓습니다. | baking bread kitchen | 당을 먹는다
-빵의 구멍은 그 기체가 갇힌 자리입니다. | sliced bread bakery | 구멍 = 갇힌 기체
+빵의 구멍은 그 기체가 갇힌 자리입니다. | @card | 구멍 = 갇힌 기체
 빵을 먹는 건 효모의 숨을 먹는 셈일까요? | fresh baked bread | 
