@@ -16,3 +16,4 @@ output_sample/
 dist/
 build/
 .DS_Store
+analysis/
