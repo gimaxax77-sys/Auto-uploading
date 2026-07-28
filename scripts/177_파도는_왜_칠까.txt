@@ -1,5 +1,5 @@
 # 177_파도는_왜_칠까
 파도는 바람이 바다에 남긴 흔적입니다. | ocean waves crashing | 바람이 남긴 흔적
-바람이 바다 위를 스치며 에너지를 넘겨줍니다. | windy sea surface | 
-바람이 오래 불수록 파도는 더 커집니다. | big waves ocean | 
-파도 소리는, 멀리서 온 바람이에요. | calm beach waves | 
+바람이 물 위를 스치며 힘을 넘겨줍니다. | windy sea surface | 바람이 힘을 준다
+먼바다에서 시작한 파도가 며칠 뒤 도착하기도 합니다. | big waves ocean | 며칠 걸려 도착
+오늘 본 파도는 어디서 출발했을까요? | calm beach waves | 

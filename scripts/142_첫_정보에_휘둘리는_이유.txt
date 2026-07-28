@@ -1,5 +1,5 @@
 # 142_첫_정보에_휘둘리는_이유
-사람은 먼저 본 숫자를 기준으로 삼습니다. | price tag shop | 처음 본 숫자가 기준
-이를 앵커링, 닻 내림 효과라고 합니다. | anchor rope sea | 
-십만 원에서 오만 원이 싸 보이는 이유입니다. | discount price tag | 
-숫자를 볼 땐, 무엇이 기준인지부터 보세요. | person shopping thinking | 
+사람은 처음 본 숫자를 기준으로 삼습니다. | price tag shop | 처음 숫자가 기준
+십만 원에서 오만 원이면 싸게 느껴집니다. | discount price tag | 10만 → 5만
+처음부터 오만 원이었다면 비싸게 느꼈을 겁니다. | shopping mall store | 같은 5만 원인데
+그 기준, 누가 정해 준 걸까요? | person thinking shopping | 

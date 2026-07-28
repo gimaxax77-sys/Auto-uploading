@@ -1,5 +1,5 @@
 # 173_비가_가장_많이_오는_곳
 일 년 내내 비가 쏟아지는 마을이 있습니다. | heavy rain village | 세계 최다 강수
-인도의 마우신람입니다. | monsoon rain green | 
-주민들은 풀로 우산을 만들어 쓰기도 합니다. | rain umbrella person | 
-물이 넘치는, 비의 고향이에요. | rain forest waterfall | 
+인도의 마우신람입니다. | monsoon rain green | 마우신람
+주민들은 풀로 우산을 만들어 씁니다. | rain umbrella person | 풀로 만든 우산
+비가 그치는 날이 특별한 날이겠죠? | rainforest waterfall | 

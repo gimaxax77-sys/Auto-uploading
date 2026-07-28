@@ -1,5 +1,5 @@
 # 191_화성의_하루는_지구와_닮았다
-화성의 하루는 스물네 시간 삼십칠 분입니다. | mars planet red | 24시간 37분
-지구보다 겨우 삼십칠 분 깁니다. | mars surface rover | 
-자전 속도가 우연히 비슷하기 때문입니다. | planet orbit space | 
-화성의 하루는, 우리와 꽤 비슷해요. | mars horizon sky | 
+화성의 하루는 스물네 시간 삼십칠 분입니다. | mars planet surface | 24시간 37분
+화성에 살면 매일 삼십칠 분을 더 쓰는 셈입니다. | mars rover surface | 매일 +37분
+대신 일 년은 지구의 두 배입니다. | mars red planet | 1년은 2배
+생일을 절반만 맞는 셈인데, 이득일까요? | mars horizon sky | 

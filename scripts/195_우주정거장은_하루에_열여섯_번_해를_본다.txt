@@ -1,5 +1,5 @@
 # 195_우주정거장은_하루에_열여섯_번_해를_본다
-우주정거장에서는 하루에 해가 열여섯 번 뜹니다. | earth orbit space | 하루 16번 일출
-아흔 분이면 지구를 한 바퀴 돕니다. | space station orbit | 
-초속 칠 점 칠 킬로미터로 날기 때문입니다. | earth from orbit | 
-그곳의 하루는, 우리와 아주 달라요. | sunrise from space | 
+우주정거장에서는 하루에 해가 열여섯 번 뜹니다. | earth orbit space | 하루 16번
+아흔 분이면 지구를 한 바퀴 돌기 때문입니다. | space station orbit | 90분에 한 바퀴
+초속 칠 점 칠 킬로미터, 총알보다 빠릅니다. | earth from orbit | 총알보다 빠름
+그곳에서 하루는 며칠처럼 느껴질까요? | sunrise from space | 

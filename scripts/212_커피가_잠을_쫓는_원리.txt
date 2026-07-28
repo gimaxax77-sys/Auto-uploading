@@ -1,5 +1,5 @@
 # 212_커피가_잠을_쫓는_원리
-카페인은 잠을 부르는 신호를 가로막습니다. | coffee cup morning | 졸음 신호 차단
-깨어 있는 동안 졸음을 부르는 물질이 쌓입니다. | coffee beans close | 
-카페인이 그 자리를 대신 차지해 버립니다. | pouring coffee cup | 
-커피는, 피로를 잠시 미뤄 둘 뿐이에요. | warm coffee steam | 
+카페인은 잠을 부르는 신호를 가로막습니다. | coffee cup morning | 신호를 막는다
+졸음 물질이 앉을 자리를 대신 차지합니다. | coffee beans closeup | 자리를 뺏는다
+그동안 졸음은 사라지지 않고 계속 쌓입니다. | pouring coffee cup | 졸음은 쌓인다
+커피가 깨운 게 아니라 미룬 거라면요? | warm coffee steam | 

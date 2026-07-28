@@ -1,5 +1,5 @@
 # 170_바다에서_가장_깊은_곳
-가장 깊은 바다는 십일 킬로미터 아래입니다. | deep ocean blue | 깊이 11km
-태평양의 마리아나 해구입니다. | ocean deep water | 
-에베레스트를 통째로 넣어도 잠깁니다. | underwater dark deep | 
-바다는, 우리가 아는 것보다 훨씬 깊어요. | ocean surface horizon | 
+가장 깊은 바다는 십일 킬로미터 아래입니다. | deep ocean blue water | 깊이 11km
+태평양의 마리아나 해구입니다. | ocean deep water surface | 마리아나 해구
+에베레스트를 통째로 넣어도 이 킬로미터가 남습니다. | underwater dark deep | 에베레스트도 잠긴다
+달에 간 사람보다 여기 간 사람이 적습니다. | ocean surface horizon | 

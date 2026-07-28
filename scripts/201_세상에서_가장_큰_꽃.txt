@@ -1,5 +1,5 @@
 # 201_세상에서_가장_큰_꽃
 지름이 일 미터에 이르는 꽃이 있습니다. | large tropical flower | 지름 1m
-라플레시아는 잎도 줄기도 없이 붙어 삽니다. | rainforest jungle plants | 
-고약한 냄새로 파리를 불러 꽃가루를 옮깁니다. | jungle forest floor | 
-가장 큰 꽃은, 향기롭지 않아요. | exotic flower close | 
+잎도 줄기도 뿌리도 없습니다. | rainforest jungle plants | 잎·줄기 없음
+대신 썩은 냄새로 파리를 불러 모읍니다. | jungle forest floor | 썩은 고기 냄새
+가장 큰 꽃이 가장 안 예쁜 이유겠죠? | exotic flower closeup | 
