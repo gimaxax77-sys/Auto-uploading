@@ -1,5 +1,5 @@
 # 160_지구에서_가장_큰_생물
 지구에서 가장 큰 생물은 고래가 아닙니다. | forest floor mushroom | 고래가 아니다
-미국의 한 숲에 퍼진 거대한 버섯입니다. | @card | 정답은 버섯
+미국의 한 숲에 퍼진 거대한 버섯입니다. | mushroom forest ground | 정답은 버섯
 땅속 균이 수 제곱킬로미터를 덮고 있습니다. | deep forest trees | 수 제곱킬로미터
 가장 큰 생명이 눈에 안 보인다면, 어떤가요? | quiet forest moss | 

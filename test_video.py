@@ -67,6 +67,36 @@ def test_대본파일_읽기():
                              "emphasis": "하루 90cm"}
 
 
+def test_강조문구_어절_한가운데서_안_끊김():
+    # libass 는 한글을 CJK 로 보아 아무 글자에서나 줄을 끊는다. 우리가 직접 나눠야 한다.
+    최대폭 = video.SIZE[0] - 120 - 30
+    for 문구 in ["같은 만 원인데", "가장 가까운 이웃 = 우주인", "3조 vs 2천억",
+                "육지까지 2,600km", "3만℃", "안 그러면 자기를 녹인다"]:
+        본문, size = video.강조_배치(문구)
+        줄 = 본문.split("\\N")
+        assert len(줄) <= video.EMPHASIS_LINES, f"{문구} 가 {len(줄)}줄"
+        for l in 줄:
+            assert video.글자폭(l, size) <= 최대폭, f"{문구} 의 '{l}' 이 화면을 넘침"
+        # 붙여 놓으면 원문과 같아야 한다(글자가 사라지거나 늘면 안 됨)
+        assert " ".join(줄).split() == 문구.split(), f"{문구} -> {본문}"
+
+    # 금액과 기호는 갈라지지 않는다
+    assert video.강조_배치("같은 만 원인데")[0].split("\\N")[-1] == "만 원인데"
+    assert "\\N" not in video.강조_배치("나무 > 별")[0]
+
+    # 어절 묶기 자체
+    assert video.어절_묶기(["같은", "만", "원인데"]) == ["같은", "만 원인데"]
+    assert video.어절_묶기(["나무", ">", "별"]) == ["나무 > 별"]
+    assert video.어절_묶기(["빠른", "판단"]) == ["빠른", "판단"]  # 붙일 이유 없으면 그대로
+
+
+def test_전환목록_안전():
+    # squeezev 는 ffmpeg 이 접근 위반으로 죽는다. 목록에 들어가면 그 편 렌더가 통째로 실패한다.
+    assert "squeezev" not in video.TRANSITIONS, "죽는 전환이 목록에 들어갔습니다"
+    assert len(video.TRANSITIONS) == len(set(video.TRANSITIONS)), "전환 목록에 중복이 있습니다"
+    assert video.TRANSITION in video.TRANSITIONS
+
+
 def test_강조문구_자막파일에_들어감():
     with tempfile.TemporaryDirectory() as work:
         path = os.path.join(work, "s.ass")
@@ -140,6 +170,8 @@ def test_폴더음악_우선():
 if __name__ == "__main__":
     test_장면조립과_이어붙이기()
     test_대본파일_읽기()
+    test_강조문구_어절_한가운데서_안_끊김()
+    test_전환목록_안전()
     test_강조문구_자막파일에_들어감()
     test_빈_대본파일은_에러()
     test_배경음악_합성()

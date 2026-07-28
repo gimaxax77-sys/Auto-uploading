@@ -1,5 +1,5 @@
 # 167_비가_거의_안_오는_곳
 비 기록이 거의 없는 사막이 있습니다. | atacama desert chile | 비 기록 거의 없음
 칠레의 아타카마 사막입니다. | dry desert landscape | 아타카마
-너무 건조해 화성 탐사 장비를 여기서 시험합니다. | @card | 화성 실험장
+너무 건조해 화성 탐사 장비를 여기서 시험합니다. | mars rover test desert | 화성 실험장
 지구에서 가장 화성 같은 곳인 셈이죠. | desert night sky stars | 

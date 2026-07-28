@@ -1,5 +1,6 @@
 # 대본을 받아 이미지 + 내레이션 슬라이드쇼 영상을 만드는 도구
 import asyncio
+import functools
 import glob
 import os
 import random
@@ -28,7 +29,8 @@ MOOD_WOONGJANG = (set(range(81, 86)) | set(range(96, 101)) | set(range(106, 116)
 MOOD_CHABUN = (set(range(1, 21)) | set(range(25, 31)) | set(range(36, 41))
                | set(range(46, 56)) | set(range(61, 66)) | set(range(76, 81)) | set(range(91, 96)))  # 동기부여·위로·감성
 SUBTITLE = True  # 내레이션 문장을 자막으로 넣습니다.
-FONT = "C:/Windows/Fonts/malgunbd.ttf"  # 맑은 고딕 굵게 (가독성)
+FONT = "C:/Windows/Fonts/H2HDRM.TTF"  # HY헤드라인. 폭이 좁아 한 줄에 더 들어갑니다.
+FONT_NAME = "HYHeadLine-Medium"  # ASS 자막이 참조하는 폰트 이름(시스템에 설치된 이름과 같아야 함)
 FONT_SIZE = 90
 WRAP = 12  # 한 줄 최대 글자 수. 넘으면 다음 줄로 넘깁니다.
 SUB_TOP = 200  # 자막 위쪽 여백(px). 화면 상단에 배치합니다.
@@ -59,6 +61,15 @@ DARKEN = 0.05  # 사진을 이만큼 어둡게(0~1). 자막 가독성 향상.
 VIGNETTE = "PI/5"  # 가장자리 어둡게(비네팅) 강도.
 SUB_FADE = 0.4  # 자막이 나타나는 시간(초).
 XFADE = 0.4  # 장면 전환 겹침 시간(초).
+# 장면 전환 종류. 편 번호로 골라 편마다 다르게 넘어갑니다(전편 같은 fade 면 템플릿 티가 납니다).
+# squeezev 는 이 ffmpeg 에서 해상도와 무관하게 죽으므로 절대 넣지 마십시오.
+TRANSITIONS = [
+    "circleopen", "circleclose", "vertopen", "vertclose", "horzopen", "horzclose", "radial",
+    "diagtl", "diagtr", "diagbl", "diagbr",
+    "smoothleft", "smoothright", "smoothup", "smoothdown",
+    "fade", "fadefast", "fadeslow",
+]
+TRANSITION = TRANSITIONS[0]  # make_video 가 편 번호에 맞춰 바꿉니다.
 FPS = 30
 
 
@@ -202,61 +213,104 @@ def make_background(index: int, path: str) -> None:
 
 
 # 카드 배경 팔레트(위/아래 색). 편 번호로 골라 편마다 다른 색이 나오게 합니다.
-# 렌더 단계에서 어둡게(DARKEN)와 비네팅이 한 번 더 얹히므로 여기서는 넉넉히 밝게 잡습니다.
-CARD_PALETTES = [
-    ((58, 98, 168), (16, 25, 46)),   # 심야 남색
-    ((150, 76, 54), (32, 18, 14)),   # 잔불 갈색
-    ((44, 124, 112), (12, 32, 30)),  # 深 청록
-    ((112, 58, 138), (26, 15, 34)),  # 자정 보라
-    ((150, 116, 40), (34, 27, 11)),  # 황토
-    ((42, 90, 146), (12, 24, 39)),   # 서늘한 청
-]
+# 프레임 덧입히기 — 2026-07-28 현재 어느 대본에도 쓰지 않습니다(Gim 지시로 보류).
+# 되살리려면 대본 검색어 앞에 "@frame " 을 붙이면 됩니다. 배경은 사진으로 받고
+# 그 위에 테두리·무늬를 얹으며, 켄번즈는 자동으로 꺼집니다. 경위는 research.md 참고.
+FRAME_MARK = "@frame"
 
 
-def make_card(seed: int, path: str) -> None:
-    """스톡 영상 대신 쓰는 자체 제작 배경.
+def 사진_톤(img) -> tuple[int, int, int]:
+    """사진에서 화면을 대표하는 색을 뽑습니다. 프레임 색을 여기에 맞춥니다."""
+    import colorsys
 
-    유튜브 '비진정성 콘텐츠' 정책이 "스톡 영상 위 AI 음성"을 지목하므로,
-    일부 장면은 우리가 직접 그린 화면을 씁니다. 글자는 자막 레이어가 얹습니다.
+    작게 = img.convert("RGB").resize((48, 48))
+    화소 = list(작게.getdata())
+    # 회색에 가까운 픽셀은 톤을 대표하지 못하므로 채도가 있는 쪽에 무게를 둡니다.
+    뽑기 = sorted(화소, key=lambda p: (max(p) - min(p)) * (sum(p) / 3 + 40), reverse=True)
+    상위 = 뽑기[:len(뽑기) // 6] or 화소
+    r, g, b = (sum(c[i] for c in 상위) / len(상위) / 255 for i in range(3))
+    hue, _, _ = colorsys.rgb_to_hsv(r, g, b)
+    # 사진과 같은 계열이되 밝고 옅게 — 위에 얹혀도 사진을 죽이지 않습니다.
+    return tuple(round(c * 255) for c in colorsys.hsv_to_rgb(hue, 0.28, 0.97))
+
+
+def apply_frame(path: str, seed: int) -> None:
+    """배경 사진 위에 무늬와 테두리를 덧입힙니다(사진은 그대로 비칩니다).
+
+    배경을 통째로 갈아 끼우면 정보량이 줄어들어, 실사를 남기고 그 위에 얹습니다.
+    무늬 색은 사진에서 뽑아 톤을 맞춥니다.
     """
     from PIL import Image, ImageDraw, ImageFilter
 
     w, h = SIZE
-    위, 아래 = CARD_PALETTES[seed % len(CARD_PALETTES)]
-    바탕 = Image.new("RGB", (1, h))
-    px =바탕.load()
+    바탕 = Image.open(path).convert("RGB").resize((w, h))
+    톤 = 사진_톤(바탕)
+
+    # 1) 무늬 — 화면 전체에 옅게. 편마다 종류가 달라지도록 씨앗으로 고릅니다.
+    무늬 = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    d = ImageDraw.Draw(무늬)
+    선 = 톤 + (72,)
+    FRAME_PATTERNS[seed % len(FRAME_PATTERNS)](d, w, h, 선)
+    바탕 = Image.alpha_composite(바탕.convert("RGBA"),
+                                무늬.filter(ImageFilter.GaussianBlur(0.8))).convert("RGB")
+
+    # 2) 위아래를 어둡게 눌러 자막과 강조 글씨가 뜨게 만듭니다.
+    그늘 = Image.new("L", (1, h), 0)
+    px = 그늘.load()
     for y in range(h):
         t = y / (h - 1)
-        px[0, y] = tuple(round(위[i] + (아래[i] - 위[i]) * t) for i in range(3))
-    img = 바탕.resize((w, h), Image.BILINEAR)
+        px[0, y] = round(112 * max(0.0, 1 - t / 0.32) + 96 * max(0.0, (t - 0.64) / 0.36))
+    바탕 = Image.composite(Image.new("RGB", (w, h), (0, 0, 0)), 바탕,
+                          그늘.resize((w, h), Image.BILINEAR))
 
-    # 은은한 무늬. 종류를 번갈아 써서 편마다 화면이 달라 보이게 합니다.
-    무늬 = img.copy()
-    d = ImageDraw.Draw(무늬)
-    선색 = tuple(min(255, round(c * 1.9) + 40) for c in 위)
-    종류 = seed % 4
-    if 종류 == 0:  # 동심원
-        cx, cy = w // 2, int(h * 0.42)
-        for r in range(150, 1600, 125):
-            d.ellipse([cx - r, cy - r, cx + r, cy + r], outline=선색, width=5)
-    elif 종류 == 1:  # 사선
-        for x in range(-h, w + h, 110):
-            d.line([(x, 0), (x + h, h)], fill=선색, width=5)
-    elif 종류 == 2:  # 가로 줄
-        for y in range(0, h, 96):
-            d.line([(0, y), (w, y)], fill=선색, width=5)
-    else:  # 점 격자
-        for y in range(60, h, 110):
-            for x in range(60, w, 110):
-                d.ellipse([x - 7, y - 7, x + 7, y + 7], fill=선색)
-    img = Image.blend(img, 무늬.filter(ImageFilter.GaussianBlur(1.2)), 0.5)
+    # 3) 테두리 — 이중선에 네 모서리 강조. 화면에 '틀'을 만들어 줍니다.
+    d = ImageDraw.Draw(바탕)
+    m, m2 = 46, 68
+    d.rectangle([m, m, w - m, h - m], outline=톤, width=6)
+    d.rectangle([m2, m2, w - m2, h - m2], outline=톤, width=2)
+    for x, y in ((m, m), (w - m, m), (m, h - m), (w - m, h - m)):
+        sx = 1 if x == m else -1
+        sy = 1 if y == m else -1
+        d.line([(x, y), (x + 96 * sx, y)], fill=톤, width=14)
+        d.line([(x, y), (x, y + 96 * sy)], fill=톤, width=14)
+    바탕.save(path, quality=93)
 
-    # 글자가 놓일 가운데를 은은하게 밝혀 가독성을 올립니다.
-    광 = Image.new("L", (w, h), 0)
-    ImageDraw.Draw(광).ellipse([-w // 2, int(h * 0.16), int(w * 1.5), int(h * 0.86)], fill=125)
-    img = Image.composite(Image.blend(img, Image.new("RGB", (w, h), 위), 0.42),
-                          img, 광.filter(ImageFilter.GaussianBlur(190)))
-    img.save(path, quality=92)
+
+def _무늬_동심원(d, w, h, 선):
+    cx, cy = w // 2, int(h * 0.44)
+    for r in range(170, 1500, 135):
+        d.ellipse([cx - r, cy - r, cx + r, cy + r], outline=선, width=5)
+
+
+def _무늬_사선(d, w, h, 선):
+    for x in range(-h, w + h, 104):
+        d.line([(x, 0), (x + h, h)], fill=선, width=5)
+
+
+def _무늬_격자(d, w, h, 선):
+    for y in range(0, h, 100):
+        d.line([(0, y), (w, y)], fill=선, width=4)
+    for x in range(0, w, 100):
+        d.line([(x, 0), (x, h)], fill=선, width=4)
+
+
+def _무늬_점(d, w, h, 선):
+    for y in range(56, h, 104):
+        for x in range(56, w, 104):
+            d.ellipse([x - 8, y - 8, x + 8, y + 8], fill=선)
+
+
+def _무늬_역사선(d, w, h, 선):
+    for x in range(-h, w + h, 104):
+        d.line([(x + h, 0), (x, h)], fill=선, width=5)
+
+
+def _무늬_수직(d, w, h, 선):
+    for x in range(0, w, 88):
+        d.line([(x, 0), (x, h)], fill=선, width=5)
+
+
+FRAME_PATTERNS = [_무늬_동심원, _무늬_사선, _무늬_격자, _무늬_점, _무늬_역사선, _무늬_수직]
 
 
 def wrap_text(text: str, width: int) -> str:
@@ -316,19 +370,97 @@ def ass_time(t: float) -> str:
 # 단어별 자막 스타일: 안 부른 단어=흰색, 부른 단어=노란색(굵은 검은 테두리로 어디서든 잘 보임).
 _ASS_HEADER = (
     "[Script Info]\nScriptType: v4.00+\n"
-    f"PlayResX: {SIZE[0]}\nPlayResY: {SIZE[1]}\nWrapStyle: 0\n\n"
+    # WrapStyle 2 = 자동 줄바꿈 없음. libass 는 한글을 CJK 로 보아 어절 한가운데서도
+    # 줄을 끊습니다("같은 만 / 원인데"). 그래서 자동 줄바꿈을 끄고 우리가 \N 을 넣습니다.
+    f"PlayResX: {SIZE[0]}\nPlayResY: {SIZE[1]}\nWrapStyle: 2\n\n"
     "[V4+ Styles]\n"
     "Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, "
     "BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, "
     "BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding\n"
-    f"Style: Def,Malgun Gothic,{FONT_SIZE},&H0000FFFF,&H00FFFFFF,&H00000000,&H80000000,"
+    f"Style: Def,{FONT_NAME},{FONT_SIZE},&H0000FFFF,&H00FFFFFF,&H00000000,&H80000000,"
     f"-1,0,0,0,100,100,0,0,1,6,2,8,80,80,{SUB_TOP},1\n"
     # 강조 문구용. 화면 가운데에 큰 노란 글씨로 박아 스크롤을 멈추게 합니다.
-    f"Style: Big,Malgun Gothic,{EMPHASIS_SIZE},&H0000D5FF,&H00FFFFFF,&H00000000,&H80000000,"
+    f"Style: Big,{FONT_NAME},{EMPHASIS_SIZE},&H0000D5FF,&H00FFFFFF,&H00000000,&H80000000,"
     "-1,0,0,0,100,100,0,0,1,10,4,5,60,60,60,1\n\n"
     "[Events]\n"
     "Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text\n"
 )
+
+
+@functools.lru_cache(maxsize=8)
+def _잰폰트(size: int):
+    from PIL import ImageFont
+    return ImageFont.truetype(FONT, size)
+
+
+def 글자폭(text: str, size: int) -> int:
+    """실제 폰트로 잰 글자 폭(px). 줄바꿈 지점을 정하는 데 씁니다."""
+    bb = _잰폰트(size).getbbox(text)
+    return (bb[2] - bb[0]) if bb else 0
+
+
+단위 = ("원", "개", "년", "배", "도", "초", "분", "시간", "미터", "킬로", "살", "층", "회",
+        "번", "자", "명", "마리", "퍼센트", "기압", "cm", "m", "km", "kg", "℃", "%")
+기호 = (">", "<", "→", "←", "↔", "=", "vs", "·", "~")
+
+
+def 어절_묶기(어절들: list[str]) -> list[str]:
+    """갈라지면 어색한 어절을 한 덩어리로 붙입니다.
+
+    "같은 만 원인데" 를 "같은" + "만 원인데" 로 묶어, 금액이 두 줄로 찢기지 않게 합니다.
+    ">" 같은 기호는 앞뒤를 통째로 묶습니다.
+    """
+    덩어리: list[str] = []
+    for w in 어절들:
+        앞 = 덩어리[-1] if 덩어리 else ""
+        수사끝 = bool(re.search(r"[\d만천억조십백]$", 앞))
+        if 앞 and (
+            w in 기호                                    # 기호는 앞과 붙인다
+            or (앞.split()[-1] in 기호)                   # 기호 다음 어절도 함께
+            or (수사끝 and w.startswith(단위))            # 숫자·수사 + 단위
+        ):
+            덩어리[-1] = f"{앞} {w}"
+        else:
+            덩어리.append(w)
+    return 덩어리
+
+
+def 어절_줄나눔(어절들: list[str], 최대폭: int, size: int) -> list[list[str]]:
+    """공백으로 끊긴 어절만으로 줄을 나눕니다. 어절 한가운데서는 절대 끊지 않습니다."""
+    줄, 현재 = [], []
+    for w in 어절들:
+        if 현재 and 글자폭(" ".join(현재 + [w]), size) > 최대폭:
+            줄.append(현재)
+            현재 = [w]
+        else:
+            현재.append(w)
+    if 현재:
+        줄.append(현재)
+    return 줄
+
+
+EMPHASIS_MIN = 96   # 강조 문구 최소 글자 크기
+EMPHASIS_LINES = 2  # 강조 문구는 최대 이 줄 수까지만 허용합니다.
+
+
+def 강조_배치(text: str) -> tuple[str, int]:
+    """강조 문구를 두 줄 안에 들어가는 가장 큰 글자 크기로 배치합니다.
+
+    240pt 로는 한글이 한 줄에 서너 자밖에 안 들어가 긴 문구가 네 줄로 쪼개집니다.
+    문구 길이에 따라 크기를 낮춰 두 줄 안에 담고, 줄은 어절 경계에서만 끊습니다.
+    """
+    최대폭 = SIZE[0] - 120 - 30  # 좌우 여백 60씩, 굵게 처리로 번지는 몫 30
+    어절 = 어절_묶기(text.split())
+    size = EMPHASIS_SIZE
+    while size > EMPHASIS_MIN:
+        줄 = 어절_줄나눔(어절, 최대폭, size)
+        # 줄 수뿐 아니라 각 줄이 화면 폭 안에 들어가는지도 봐야 합니다. 묶은 덩어리는
+        # 쪼갤 수 없어서, 폭을 안 보면 화면 밖으로 삐져나갑니다.
+        if len(줄) <= EMPHASIS_LINES and all(글자폭(" ".join(x), size) <= 최대폭 for x in 줄):
+            break
+        size -= 8
+    줄 = 어절_줄나눔(어절, 최대폭, size)
+    return "\\N".join(" ".join(x) for x in 줄), size
 
 
 def build_ass(words: list[tuple[float, float, str]], duration: float, path: str,
@@ -337,11 +469,20 @@ def build_ass(words: list[tuple[float, float, str]], duration: float, path: str,
     parts = [f"{{\\fad({int(SUB_FADE * 1000)},{int(SUB_FADE * 1000)})}}"]
     if SUB_LAG > 0:  # 하이라이트를 소리보다 살짝 늦춰 어긋남을 줄입니다.
         parts.append(f"{{\\kf{round(SUB_LAG * 100)}}} ")
+    # 어절 단위로 미리 줄을 나눠 \N 을 직접 넣습니다(자동 줄바꿈은 꺼 두었습니다).
+    줄들 = 어절_줄나눔([w for _, _, w in words], SIZE[0] - 160 - 30, FONT_SIZE)
+    줄시작, 누적 = set(), 0
+    for 줄 in 줄들[:-1]:
+        누적 += len(줄)
+        줄시작.add(누적)
+
     prev_end = 0.0
-    for start, dur, word in words:
+    for i, (start, dur, word) in enumerate(words):
         gap_cs = round(max(0.0, start - prev_end) * 100)
         if gap_cs:  # 단어 사이 침묵만큼 하이라이트를 미룹니다.
             parts.append(f"{{\\kf{gap_cs}}} ")
+        if i in 줄시작:
+            parts.append("\\N")
         parts.append(f"{{\\kf{max(1, round(dur * 100))}}}{word} ")
         prev_end = start + dur
     text = "".join(parts).rstrip()
@@ -349,20 +490,31 @@ def build_ass(words: list[tuple[float, float, str]], duration: float, path: str,
         f.write(_ASS_HEADER)
         f.write(f"Dialogue: 0,{ass_time(0)},{ass_time(duration)},Def,,0,0,0,,{text}\n")
         if emphasis:
+            본문, size = 강조_배치(emphasis)
+            크기 = "" if size == EMPHASIS_SIZE else f"\\fs{size}"
             # 살짝 커지며 나타났다가 장면 끝까지 남습니다(\t = 시간에 따른 변화).
-            효과 = "{\\fad(200,250)\\fscx70\\fscy70\\t(0,260,\\fscx104\\fscy104)\\t(260,380,\\fscx100\\fscy100)}"
-            f.write(f"Dialogue: 1,{ass_time(0)},{ass_time(duration)},Big,,0,0,0,,{효과}{emphasis}\n")
+            효과 = ("{\\fad(200,250)" + 크기 + "\\fscx70\\fscy70"
+                    "\\t(0,260,\\fscx104\\fscy104)\\t(260,380,\\fscx100\\fscy100)}")
+            f.write(f"Dialogue: 1,{ass_time(0)},{ass_time(duration)},Big,,0,0,0,,{효과}{본문}\n")
 
 
 def render_clip(image: str | None, audio: str, out: str, subtitle: str = "", gap: float = GAP,
                 words: list[tuple[float, float, str]] | None = None,
-                video: str | None = None, emphasis: str = "") -> None:
-    """사진 한 장(또는 B-roll 영상)과 음성 하나를 붙여 장면 하나를 만듭니다."""
+                video: str | None = None, emphasis: str = "", still: bool = False) -> None:
+    """사진 한 장(또는 B-roll 영상)과 음성 하나를 붙여 장면 하나를 만듭니다.
+
+    still=True 면 켄번즈 확대를 끕니다. 프레임을 덧입힌 장면은 확대하면 테두리가
+    화면 밖으로 잘려 나가므로 그대로 보여야 합니다.
+    """
     w, h = SIZE
     duration = media_duration(audio) + gap  # 이 장면의 총 길이
     frames = max(1, round(duration * FPS))
 
-    if video:
+    if still:
+        vf = f"scale={w}:{h}:force_original_aspect_ratio=increase,crop={w}:{h}"
+        if EFFECTS:
+            vf += f",eq=brightness=-{DARKEN},vignette={VIGNETTE}"
+    elif video:
         # B-roll 영상: 실제 움직임이 있으니 켄번즈(zoompan) 없이 화면에 꽉 채우기만 합니다.
         vf = f"scale={w}:{h}:force_original_aspect_ratio=increase,crop={w}:{h}"
         if EFFECTS:
@@ -541,7 +693,8 @@ def concat_xfade(clips: list[str], out: str, t: float = XFADE) -> None:
         offset = acc - t
         vout, aout = f"v{i}", f"a{i}"
         v_filters.append(
-            f"[{vlabel}][{i}:v]xfade=transition=fade:duration={t}:offset={offset:.3f}[{vout}]"
+            f"[{vlabel}][{i}:v]xfade=transition={TRANSITION}:duration={t}"
+            f":offset={offset:.3f}[{vout}]"
         )
         a_filters.append(f"[{alabel}][{i}:a]acrossfade=d={t}[{aout}]")
         vlabel, alabel = vout, aout
@@ -569,10 +722,11 @@ def make_video(scenes: list[dict], out: str) -> str:
     # 편마다 확대량과 전환 길이를 조금씩 다르게 합니다. 전편이 똑같이 움직이면
     # "템플릿으로 찍어냈다"는 인상을 주고, 유튜브 비진정성 콘텐츠 정책이 그 점을 짚습니다.
     # 번호로 정하므로 다시 렌더해도 같은 값이 나옵니다(재현 가능).
-    global ZOOM_END, XFADE
+    global ZOOM_END, XFADE, TRANSITION
     n = 번호_of(out)
     ZOOM_END = round(1.06 + (n * 7 % 13) / 100, 3)   # 1.06 ~ 1.18
     XFADE = round(0.25 + (n * 11 % 7) / 20, 2)       # 0.25 ~ 0.55
+    TRANSITION = TRANSITIONS[n % len(TRANSITIONS)]   # 편마다 다른 전환
     with tempfile.TemporaryDirectory() as work:
         clips = []
         for i, scene in enumerate(scenes):
@@ -586,11 +740,18 @@ def make_video(scenes: list[dict], out: str) -> str:
             words = narrate(scene["narration"], audio, voice, RATE_LAST if last else RATE)
             gap = GAP_LAST if last else GAP
 
-            # 검색어 자리에 @card 를 쓰면 스톡 대신 우리가 그린 화면을 씁니다.
-            if query == "@card":
-                make_card(번호_of(out) + i, image)
+            # @frame 장면은 사진 위에 프레임을 덧입힙니다(현재 보류, 대본에 표시 없음).
+            # 영상(B-roll)에는 덧입힐 수 없어 사진으로 받고 켄번즈를 끕니다.
+            프레임 = query.startswith(FRAME_MARK)
+            if 프레임:
+                query = query[len(FRAME_MARK):].strip()
+                if use_photos and query:
+                    fetch_image(query, image)
+                else:
+                    make_background(i, image)
+                apply_frame(image, 번호_of(out) + i)
                 render_clip(image, audio, clip, scene["narration"], gap, words,
-                            emphasis=scene.get("emphasis", ""))
+                            emphasis=scene.get("emphasis", ""), still=True)
                 clips.append(clip)
                 continue
 

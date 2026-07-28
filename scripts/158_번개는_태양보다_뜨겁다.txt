@@ -1,5 +1,5 @@
 # 158_번개는_태양보다_뜨겁다
 번개 속 온도는 삼만 도입니다. | lightning strike night | 3만℃
 태양 표면보다 다섯 배 뜨겁습니다. | sun surface closeup | 태양의 5배
-공기가 순식간에 터지며 밀려나는 소리가 천둥입니다. | @card | 그 소리가 천둥
+공기가 순식간에 터지며 밀려나는 소리가 천둥입니다. | thunderstorm dark clouds | 그 소리가 천둥
 빛보다 소리가 늦게 오는 이유, 아시죠? | lightning bolt sky | 

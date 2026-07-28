@@ -1,5 +1,5 @@
 # 189_토성의_고리는_얼음이다
 토성 고리는 두께가 십 미터도 안 되는 곳이 있습니다. | saturn planet space | 두께 10m
-그런데 폭은 수십만 킬로미터입니다. | @card | 폭 수십만 km
-게다가 이 고리는 조금씩 사라지고 있습니다. | @card | 사라지는 중
+그런데 폭은 수십만 킬로미터입니다. | saturn rings closeup | 폭 수십만 km
+게다가 이 고리는 조금씩 사라지고 있습니다. | saturn planet rings | 사라지는 중
 우리 세대가 마지막으로 보는 걸까요? | saturn stars night | 

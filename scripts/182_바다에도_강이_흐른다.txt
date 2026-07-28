@@ -1,5 +1,5 @@
 # 182_바다에도_강이_흐른다
 바닷속 바닥에도 강처럼 흐르는 물길이 있습니다. | underwater sand floor | 바닥을 흐르는 강
 더 짜고 무거운 물이 바닥을 따라 흐릅니다. | ocean floor underwater | 무거운 물이 흐른다
-강둑과 굽이까지 생깁니다. | @card | 굽이까지 있다
+강둑과 굽이까지 생깁니다. | deep sea creatures | 굽이까지 있다
 바닷속에 또 바다가 있는 셈이죠. | blue ocean deep | 

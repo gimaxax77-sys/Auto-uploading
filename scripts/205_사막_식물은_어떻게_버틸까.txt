@@ -1,5 +1,5 @@
 # 205_사막_식물은_어떻게_버틸까
 선인장은 뜨거운 낮에 숨구멍을 닫아 둡니다. | desert cactus sand | 낮엔 닫는다
-낮에 열면 물이 다 날아가기 때문입니다. | @card | 물이 증발
+낮에 열면 물이 다 날아가기 때문입니다. | desert hot sun | 물이 증발
 대신 서늘한 밤에 열어 공기를 들이마십니다. | cactus closeup plant | 밤에 숨쉰다
 반대로 사는 편이 나을 때도 있는 걸까요? | desert sunset cactus | 
