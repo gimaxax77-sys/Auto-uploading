@@ -5,7 +5,7 @@ import sys
 from datetime import date
 
 STATE = "last_run.json"  # upload_batch.py 가 남기는 진행 상황
-GOAL = 12  # 하루 목표 편수
+GOAL = 3  # 하루 목표 편수
 
 
 def missing_count() -> int:

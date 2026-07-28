@@ -42,10 +42,15 @@ def get_service():
     return build("youtube", "v3", credentials=creds)
 
 
-def upload(video_path: str, title: str, description: str = "", private: bool = True) -> str:
-    """영상을 올리고 게시물 URL을 돌려줍니다. 기본은 비공개입니다."""
+def upload(video_path: str, title: str, description: str = "", private: bool = True,
+           tags: list[str] | None = None, category: str = "27") -> str:
+    """영상을 올리고 게시물 URL을 돌려줍니다. 기본은 비공개, 카테고리는 교육(27)입니다."""
+    snippet = {"title": title, "description": description, "categoryId": category,
+               "defaultLanguage": "ko"}
+    if tags:
+        snippet["tags"] = tags
     body = {
-        "snippet": {"title": title, "description": description, "categoryId": "22"},
+        "snippet": snippet,
         "status": {"privacyStatus": "private" if private else "public"},
     }
     media = MediaFileUpload(video_path, chunksize=-1, resumable=True)

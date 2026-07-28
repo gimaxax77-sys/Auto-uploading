@@ -10,9 +10,64 @@ from datetime import date
 from youtube import upload
 
 OUTPUT_DIR = "output"
+SCRIPTS_DIR = "scripts"
 LOG = "uploaded.json"  # 이미 올린 대본 이름 기록
 STATE = "last_run.json"  # 오늘 몇 편 목표로 몇 편 올렸는지(점검용)
-DESC = "매일 짧게 보는 이야기. #shorts #동기부여 #꿀팁 #일상"
+
+
+def scenes_of(name: str) -> list[tuple[str, str]]:
+    """대본에서 (문장, 강조문구) 목록을 읽습니다. 없으면 빈 목록."""
+    path = os.path.join(SCRIPTS_DIR, name + ".txt")
+    if not os.path.exists(path):
+        return []
+    out = []
+    for line in open(path, encoding="utf-8"):
+        line = line.strip()
+        if not line or line.startswith("#") or "|" not in line:
+            continue
+        문장, _, 뒤 = line.partition("|")
+        _, _, 강조 = 뒤.partition("|")
+        out.append((문장.strip(), 강조.strip()))
+    return out
+
+
+def is_current(name: str) -> bool:
+    """지금 채널 갈래(새 포맷)인지. 강조문구가 있는 대본만 올립니다.
+
+    비공개로 내린 옛 갈래(동기부여·생활꿀팁 등)가 다시 올라가지 않게 막습니다.
+    """
+    return any(강조 for _, 강조 in scenes_of(name))
+
+
+def desc_of(name: str) -> str:
+    """대본에서 영상별 소개글을 만듭니다. 편마다 다른 글이 붙습니다."""
+    scenes = scenes_of(name)
+    if not scenes:
+        return "지나쳤던 것들의 진짜 이유, 매일 하나씩.\n\n#Shorts #지식 #상식"
+    본문 = "\n".join(문장 for 문장, _ in scenes)
+    return f"{본문}\n\n지나쳤던 것들의 진짜 이유를 1분 안에.\n\n#Shorts #지식 #상식 #궁금증"
+
+
+def tags_of(name: str) -> list[str]:
+    """번호대에 맞는 태그를 붙입니다."""
+    m = re.match(r"(\d+)", name)
+    n = int(m.group(1)) if m else 0
+    t = ["지식", "상식", "궁금증", "1분지식"]
+    for rng, extra in (
+        (range(91, 101), ["자연현상", "계절", "과학상식"]),
+        (range(131, 136), ["과학상식", "신기한사실"]),
+        (range(141, 156), ["심리학", "행동경제학", "우리몸"]),
+        (range(156, 166), ["동물", "자연의신비", "지구"]),
+        (range(166, 176), ["극한환경", "지구", "세계기록"]),
+        (range(176, 186), ["바다", "해양", "지구"]),
+        (range(186, 196), ["우주", "천문", "과학상식"]),
+        (range(196, 206), ["식물", "나무", "자연의신비"]),
+        (range(206, 216), ["음식", "생활과학", "요리상식"]),
+    ):
+        if n in rng:
+            t += extra
+    t.append(title_of(name))
+    return t[:15]
 
 
 def load_log() -> set:
@@ -32,10 +87,37 @@ def save_state(goal: int, done: int) -> None:
         json.dump({"date": date.today().isoformat(), "goal": goal, "done": done}, f)
 
 
+# 번호대 -> 재생목록 이름. 올린 뒤 자동으로 담습니다(채널 페이지 정리 유지).
+PLAYLISTS = [
+    (set(range(96, 101)) | {132}, "하늘과 우주"),
+    (set(range(186, 196)), "하늘과 우주"),
+    ({99} | set(range(176, 186)), "바다의 비밀"),
+    ({134} | set(range(156, 166)) | set(range(166, 176)), "자연이 숨긴 사실"),
+    (set(range(196, 206)), "자연이 숨긴 사실"),
+    (set(range(146, 151)), "우리 몸의 이유"),
+    (set(range(141, 146)), "생각의 함정"),
+    (set(range(151, 156)), "돈이 새는 이유"),
+    ({131, 133, 135} | set(range(206, 216)), "생활 속 과학"),
+]
+
+
+def playlist_of(name: str) -> str:
+    """이 영상이 들어갈 재생목록 이름. 없으면 빈 문자열."""
+    m = re.match(r"(\d+)", name)
+    n = int(m.group(1)) if m else 0
+    for 번호들, 이름 in PLAYLISTS:
+        if n in 번호들:
+            return 이름
+    return ""
+
+
 def title_of(name: str) -> str:
-    """파일명에서 제목을 만듭니다. 예: 01_아침_마음가짐 -> 아침 마음가짐 #shorts"""
-    base = re.sub(r"^\d+_", "", name).replace("_", " ")
-    return f"{base} #shorts"
+    """파일명에서 제목을 만듭니다. 예: 01_아침_마음가짐 -> 아침 마음가짐
+
+    세로 60초 이하면 유튜브가 알아서 쇼츠로 분류하므로 제목에 #shorts 를 붙이지
+    않습니다(전수 확인함). 채널 목록에서 제목만 깔끔하게 보입니다.
+    """
+    return re.sub(r"^\d+_", "", name).replace("_", " ")
 
 
 def genre_of(path: str) -> str:
@@ -71,13 +153,48 @@ def spread(items: list) -> list:
     return out
 
 
+_재생목록_캐시: dict[str, str] = {}
+
+
+def 담기(video_id: str, 이름: str) -> None:
+    """올린 영상을 해당 재생목록에 담습니다. 없으면 만듭니다. 실패해도 업로드는 유지."""
+    if not 이름:
+        return
+    try:
+        from youtube import get_service
+        svc = get_service()
+        if not _재생목록_캐시:
+            tok = None
+            while True:
+                r = svc.playlists().list(part="snippet", mine=True, maxResults=50, pageToken=tok).execute()
+                for p in r["items"]:
+                    _재생목록_캐시[p["snippet"]["title"]] = p["id"]
+                tok = r.get("nextPageToken")
+                if not tok:
+                    break
+        if 이름 not in _재생목록_캐시:
+            p = svc.playlists().insert(part="snippet,status", body={
+                "snippet": {"title": 이름, "defaultLanguage": "ko"},
+                "status": {"privacyStatus": "public"}}).execute()
+            _재생목록_캐시[이름] = p["id"]
+        svc.playlistItems().insert(part="snippet", body={"snippet": {
+            "playlistId": _재생목록_캐시[이름],
+            "resourceId": {"kind": "youtube#video", "videoId": video_id}}}).execute()
+        print(f"    재생목록 '{이름}' 에 담음")
+    except Exception as e:
+        print(f"    (재생목록 담기 실패, 업로드는 정상: {e})")
+
+
 def main() -> None:
     count = int(sys.argv[1]) if len(sys.argv) > 1 else 5
     done = load_log()
     files = sorted(glob.glob(os.path.join(OUTPUT_DIR, "*.mp4")),
                    key=lambda p: os.path.basename(p))
 
-    todo = [f for f in files if os.path.splitext(os.path.basename(f))[0] not in done]
+    # 아직 안 올렸고, 지금 채널 갈래(새 포맷)인 것만 대상으로 삼습니다.
+    todo = [f for f in files
+            if os.path.splitext(os.path.basename(f))[0] not in done
+            and is_current(os.path.splitext(os.path.basename(f))[0])]
     if not todo:
         print("올릴 영상이 없습니다. 모두 업로드됨.")
         return
@@ -91,8 +208,9 @@ def main() -> None:
         name = os.path.splitext(os.path.basename(f))[0]
         title = title_of(name)
         try:
-            url = upload(f, title, DESC, private=False)
+            url = upload(f, title, desc_of(name), private=False, tags=tags_of(name))
             print(f"  공개 완료: {title} -> {url}")
+            담기(url.rsplit("/", 1)[-1], playlist_of(name))
             done.add(name)
             save_log(done)  # 하나 올릴 때마다 기록(중간에 멈춰도 안전)
             올린수 += 1

@@ -6,6 +6,7 @@ from datetime import date, timedelta
 
 import check_upload
 
+G = check_upload.GOAL  # 하루 목표 편수(바뀌어도 테스트가 따라갑니다)
 오늘 = date.today().isoformat()
 어제 = (date.today() - timedelta(days=1)).isoformat()
 
@@ -28,11 +29,11 @@ def 계산(기록) -> int:
             os.remove(path)
 
 
-assert 계산({"date": 오늘, "goal": 12, "done": 12}) == 0, "정상 완료면 추가 업로드 없음"
-assert 계산({"date": 오늘, "goal": 12, "done": 5}) == 7, "5편만 올라갔으면 7편 더"
-assert 계산({"date": 어제, "goal": 12, "done": 12}) == 12, "오늘 실행 흔적이 없으면 12편 전량"
-assert 계산({"date": 오늘, "goal": 7, "done": 7}) == 0, "점검이 이어올린 뒤 재점검하면 0"
-assert 계산(None) == 12, "기록이 없으면 12편 전량"
-assert 계산("깨진파일") == 12, "기록이 깨졌으면 12편 전량"
-assert 계산({"date": 오늘, "goal": 99, "done": 0}) == 12, "하루 12편을 넘겨 올리지 않음"
+assert 계산({"date": 오늘, "goal": G, "done": G}) == 0, "정상 완료면 추가 업로드 없음"
+assert 계산({"date": 오늘, "goal": G, "done": 1}) == G - 1, "덜 올라갔으면 모자란 만큼"
+assert 계산({"date": 어제, "goal": G, "done": G}) == G, "오늘 실행 흔적이 없으면 목표 전량"
+assert 계산({"date": 오늘, "goal": 2, "done": 2}) == 0, "점검이 이어올린 뒤 재점검하면 0"
+assert 계산(None) == G, "기록이 없으면 목표 전량"
+assert 계산("깨진파일") == G, "기록이 깨졌으면 목표 전량"
+assert 계산({"date": 오늘, "goal": 99, "done": 0}) == G, "하루 목표를 넘겨 올리지 않음"
 print("통과: 7/7")
