@@ -5,7 +5,8 @@ import sys
 from datetime import date
 
 STATE = "last_run.json"  # upload_batch.py 가 남기는 진행 상황
-GOAL = 3  # 하루 목표 편수
+# 하루 목표는 upload_batch 한 곳에서만 정합니다. 두 곳에 적으면 어긋납니다(7/26 사고).
+from upload_batch import DAILY_MAX as GOAL  # noqa: E402
 
 
 def missing_count() -> int:

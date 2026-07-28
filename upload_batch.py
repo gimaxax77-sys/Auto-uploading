@@ -12,7 +12,8 @@ from youtube import upload
 OUTPUT_DIR = "output"
 SCRIPTS_DIR = "scripts"
 LOG = "uploaded.json"  # 이미 올린 대본 이름 기록
-STATE = "last_run.json"  # 오늘 몇 편 목표로 몇 편 올렸는지(점검용)
+STATE = "last_run.json"  # 오늘 몇 편 올렸는지(점검·상한용)
+DAILY_MAX = 3  # 하루 상한. 손으로 돌리든 스케줄러가 돌리든 하루에 이 수를 넘지 않는다.
 
 
 def scenes_of(name: str) -> list[tuple[str, str]]:
@@ -81,10 +82,21 @@ def save_log(done: set) -> None:
         json.dump(sorted(done), f, ensure_ascii=False, indent=0)
 
 
-def save_state(goal: int, done: int) -> None:
-    """오늘 진행 상황을 기록합니다. check_upload.py 가 이 파일만 보고 판단합니다."""
+def 오늘올린수() -> int:
+    """오늘 이미 올린 편수. 날짜가 바뀌면 0부터 다시 셉니다."""
+    if not os.path.exists(STATE):
+        return 0
+    try:
+        s = json.load(open(STATE, encoding="utf-8"))
+    except (ValueError, OSError):
+        return 0
+    return int(s.get("done", 0)) if s.get("date") == date.today().isoformat() else 0
+
+
+def save_state(done: int) -> None:
+    """오늘 누적 업로드 수를 기록합니다. check_upload.py 가 이 파일만 보고 판단합니다."""
     with open(STATE, "w", encoding="utf-8") as f:
-        json.dump({"date": date.today().isoformat(), "goal": goal, "done": done}, f)
+        json.dump({"date": date.today().isoformat(), "goal": DAILY_MAX, "done": done}, f)
 
 
 # 번호대 -> 재생목록 이름. 올린 뒤 자동으로 담습니다(채널 페이지 정리 유지).
@@ -186,7 +198,13 @@ def 담기(video_id: str, 이름: str) -> None:
 
 
 def main() -> None:
-    count = int(sys.argv[1]) if len(sys.argv) > 1 else 5
+    count = int(sys.argv[1]) if len(sys.argv) > 1 else DAILY_MAX
+    # 손으로 미리 올린 날에도 스케줄러가 또 올려 하루치를 넘기지 않도록 상한을 겁니다.
+    이미 = 오늘올린수()
+    count = min(count, max(0, DAILY_MAX - 이미))
+    if count == 0:
+        print(f"오늘 이미 {이미}편을 올렸습니다. 하루 상한({DAILY_MAX}편)을 채웠으므로 건너뜁니다.")
+        return
     done = load_log()
     files = sorted(glob.glob(os.path.join(OUTPUT_DIR, "*.mp4")),
                    key=lambda p: os.path.basename(p))
@@ -201,8 +219,8 @@ def main() -> None:
 
     todo = spread(todo)  # 장르 안 겹치게 랜덤 배치
     batch = todo[:count]
-    print(f"오늘 {len(batch)}편을 공개로 올립니다. (남은 미업로드: {len(todo)}편)\n")
-    save_state(len(batch), 0)
+    print(f"오늘 {len(batch)}편을 공개로 올립니다. "
+          f"(오늘 이미 {이미}편 · 남은 미업로드 {len(todo)}편)\n")
     올린수 = 0
     for f in batch:
         name = os.path.splitext(os.path.basename(f))[0]
@@ -214,7 +232,7 @@ def main() -> None:
             done.add(name)
             save_log(done)  # 하나 올릴 때마다 기록(중간에 멈춰도 안전)
             올린수 += 1
-            save_state(len(batch), 올린수)
+            save_state(이미 + 올린수)
         except Exception as e:
             print(f"  실패: {name} - {e}")
             break
