@@ -194,3 +194,97 @@ Gim이 "업로드 수 대비 조회수가 너무 저조하다"고 지적. 감으
 - 분석·보고서류 → **웹 아티팩트 링크**로 전달
 - 원문·대용량·저작권 있는 자료 → **`G:\내 드라이브\영상분석\`** 에 복사(폰 드라이브 앱에서 열림)
 - PC 앞 조작(설치·로그인·Studio 설정)은 평일 22시 이후 또는 주말에 안내
+
+---
+
+## 상태 점검 — 2026-07-28(화) 23:40
+
+**요청**: "상태점검". 코드 변경 없음. 조회·확인만 수행.
+
+### 확인 방법
+
+`git status`/`git log` · `output/*.mp4` 개수 · `uploaded.json`+`upload_batch.is_current` 로 대기열 재계산 ·
+`upload_log.txt`(UTF-8 로 다시 읽음) · `last_run.json` · `Get-ScheduledTaskInfo` · 시스템 이벤트 로그.
+
+### 사실
+
+| 항목 | 값 | 근거 |
+|---|---|---|
+| 렌더 완료 | 215편 | `output/*.mp4` 개수 |
+| 새 포맷(업로드 대상) | 85편 | `is_current()` 로 전수 판정 |
+| 공개됨 | 3편 — 158·193·211 | `uploaded.json` ∩ 새 포맷 |
+| 대기열 | 82편 (하루 3편 → 약 27일) | 위 둘의 차 |
+| 오늘(07-28) | 3/3 완료 (21:50 수동분) | `last_run.json` = `{date:2026-07-28, goal:3, done:3}` |
+| 23:00 자동 업로드 | 정상 — 상한 도달로 건너뜀 | 로그 "오늘 이미 3편…건너뜁니다", exit=0 |
+| 23:10 점검 | 정상 완료, 추가 없음 | 로그 exit=0 |
+| 스케줄러 | 둘 다 Ready, 다음 07-29 23:00/23:10 | `Get-ScheduledTaskInfo` |
+| git | `atup` = `origin/atup`, 작업트리 깨끗 | `git status -sb` |
+| 수익화 지표 | 공개 3편·누적 84회. 주간 1,000회 기준에 한참 못 미침 | 보고 조건 미달 |
+
+**로그 읽는 법 정정** — `upload_log.txt` 는 실행 **출력이 먼저**, `[시각] exit=0` 헤더가 **나중에**
+붙는다. 헤더 아래 글을 그 실행의 결과로 읽으면 하루씩 밀려 오독한다.
+
+### 발견한 문제 — 07-27 하루가 통째로 비었다
+
+- `upload_log.txt` 에 **2026-07-27 항목이 하나도 없다.** 07-26 다음이 바로 07-28 23:00 이다.
+- 즉 그날 `run_upload.bat` 이 **아예 실행되지 않았다**(실행됐다면 실패해도 `exit=N` 헤더는 남는다).
+- 결과 피해는 **업로드 3편 밀림**뿐. 데이터 손상·중복 없음. 대기열이 하루 늘었다.
+
+**원인은 확인하지 못했다.** 이유:
+
+- 작업 스케줄러 기록(History)이 **꺼져 있어** 해당 시각 실행 이력이 없다.
+- `Get-ScheduledTaskInfo` 는 **마지막 실행 1건**만 보여 준다(07-28 23:00, 결과 0).
+- 배제된 가설: 재부팅(마지막 부팅 07-25 12:42, 그 뒤 무재부팅) · 배터리(데스크톱이라 무관).
+- 남은 가설(미검증): 07-27 23:00 에 PC 절전 상태였고, `WakeToRun=False` 라 깨우지 못함.
+  `StartWhenAvailable=True` 지만 이후 실행 흔적이 없어 이 가설도 확정 못 한다.
+- `check_upload.py` 는 **당일 날짜만** 보므로 지나간 날의 누락은 원리적으로 못 메운다(설계대로).
+
+### 권고
+
+1. (우선) **작업 스케줄러 기록 켜기** — 관리자 PowerShell 에서
+   `wevtutil sl Microsoft-Windows-TaskScheduler/Operational /e:true`.
+   다음에 또 비면 그때는 원인을 특정할 수 있다. 지금은 추측만 가능하다.
+2. 절전이 원인일 경우의 대비는 `WakeToRun=True` 한 줄이지만, **원인 확정 전에는 손대지 않는다**.
+3. 대기열 82편은 약 27일치. 216번부터의 신규 대본은 그 전에 보충하면 된다. 지금은 급하지 않다.
+
+---
+
+## 2026-07-30(목) 01:17 — 업로드 상태 점검
+
+**요청** — "업로드 상태 체크". 코드 변경 없음, 조회만.
+
+**확인한 것과 근거**
+
+| 항목 | 결과 | 확인 수단 |
+|---|---|---|
+| 07-29 23:00 업로드 | **정상 3편** (`첫 정보에 휘둘리는 이유` / `뒤로 나는 유일한 새` / `우유가 치즈가 되는 법`) | `upload_log.txt` exit=0, 각 편 재생목록 편입까지 기록 |
+| 07-29 23:10 점검 | 정상 완료, 추가 업로드 없음 | 같은 로그 `check exit=0` |
+| 하루 상한 | 3편, 당일 소진 | `last_run.json` = `{"date":"2026-07-29","goal":3,"done":3}` |
+| 누적 진행 | **64 / 215편** (남은 대기열 151편) | `uploaded.json` 64건 · `output/*.mp4` 215개 · `scripts/` 215개 |
+| 스케줄러 | 둘 다 Ready. 다음 **07-30 23:00**(업로드) / **23:10**(점검) | `schtasks /query /fo CSV` |
+| 오늘(07-30) 실행 | 아직 없음 — 예정 시각 전 | 현재 01:17 |
+| git | `atup` 브랜치에 미커밋 5개(문서 4 + `.bat` 경로 수정 2) | `git diff --stat` |
+
+**`.bat` 경로 수정은 실제 반영돼 있다** — 작업트리의 `run_upload.bat` · `check_upload.bat` 은
+`axdata_13` → `axdata_13_auto_upload` 로 고쳐진 상태이고, 스케줄러는 이 파일을 그대로 호출한다.
+커밋만 안 됐을 뿐 동작에는 문제 없다(07-28·07-29 연속 성공이 그 증거).
+
+**미해결 — 07-27 공백의 원인은 여전히 모른다**
+
+- 권고 1번(스케줄러 기록 켜기)이 **아직 적용되지 않았다**. `wevtutil gl Microsoft-Windows-TaskScheduler/Operational` → `enabled: false`.
+- 켜지 않으면 다음에 또 비어도 원인을 특정할 수 없다. 관리자 권한 PowerShell 이 필요해 Gim 이 직접 눌러야 한다.
+
+**결론** — 파이프라인 정상. 07-28·07-29 연속 정상 실행. 조치할 것은 스케줄러 기록 켜기 하나.
+
+**후속(같은 날 01:2x) — 스케줄러 기록 켜기 완료.** Gim 이 관리자 PowerShell 에서 실행.
+처음 안내한 `wevtutil sm ...` 은 **오타**였고(`sm` 명령 없음), 올바른 verb 는 **`sl`**(set-log) 이다.
+
+```
+wevtutil sl Microsoft-Windows-TaskScheduler/Operational /e:true
+wevtutil gl Microsoft-Windows-TaskScheduler/Operational   → enabled: true
+```
+
+로그 파일 `%SystemRoot%\System32\Winevt\Logs\Microsoft-Windows-TaskScheduler%4Operational.evtx`,
+최대 10MB, retention=false(가득 차면 오래된 것부터 덮어씀). 07-27 같은 공백이 재발하면
+`Get-WinEvent -LogName Microsoft-Windows-TaskScheduler/Operational` 으로 그 시각을 추적할 수 있다.
+**단, 소급 적용은 안 된다** — 07-27 공백의 원인은 앞으로도 확정 불가.
