@@ -40,7 +40,7 @@
   3. **자연·동물 경이 10편(156~165) 업로드** — 생성 완료됨. 위 재인증(②) 끝난 뒤, 비공개 업로드 → Gim 검토 → 공개 전환 흐름으로 처리(Gim이 "10시 이후"에 진행하기로).
 - **자동 업로드 스케줄러 (설정 완료)** — Windows 작업 스케줄러 `AXdata_YouTube_DailyUpload`, 매일 밤 11시 `run_upload.bat`(=`upload_batch.py 7`) 실행. PC 꺼져 있으면 다음 부팅 시 실행. 기록은 `upload_log.txt`. 위 동의화면 게시가 되어야 7일 이후에도 지속됨.
 
-- **YouTube 업로드 설정 (PC 필요)** — 코드는 완성됨(`youtube.py`). Google Cloud에서 프로젝트 생성 → YouTube Data API v3 사용 설정 → OAuth 동의 화면(테스트 사용자에 본인 이메일 추가) → `client_secret.json` 받아 `axdata_13` 폴더에 넣기 → 첫 실행 시 브라우저 로그인. 폰에서는 인증·업로드가 안 되어 PC 전용.
+- **YouTube 업로드 설정 (PC 필요)** — 코드는 완성됨(`youtube.py`). Google Cloud에서 프로젝트 생성 → YouTube Data API v3 사용 설정 → OAuth 동의 화면(테스트 사용자에 본인 이메일 추가) → `client_secret.json` 받아 `axdata_13_auto_upload` 폴더에 넣기 → 첫 실행 시 브라우저 로그인. 폰에서는 인증·업로드가 안 되어 PC 전용.
 - **140편 실제 업로드 (PC 필요)** — 위 설정 완료 후. `output` 폴더에 영상 140편 대기 중. 비공개로 몇 개 먼저 확인 후 공개. 하루 한도 약 100개.
 - **배경음악 (PC 필요, 선택)** — 유튜브 스튜디오 오디오 보관함에서 곡 받아 `music` 폴더에 넣으면 자동으로 깔림.
 - **Pexels 키 → `.env` (완료)** — 이미 넣어 사진 배경 동작 확인함.

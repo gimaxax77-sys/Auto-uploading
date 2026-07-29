@@ -9,7 +9,7 @@
 
 ## 프로젝트
 
-- 위치: `D:\.CODE\AXdata\axdata_13` (작업은 이 폴더에서)
+- 위치: `D:\.CODE\AXdata\axdata_13_auto_upload` (작업은 이 폴더에서)
 - GitHub: `gimaxax77-sys/Auto-uploading`, 브랜치 `atup`
 - 채널: **`1분 궁금증`** (유튜브 계정 `gimfjq06@gmail.com`)
 - 흐름: 대본 → 구글 TTS(Neural2) → Pexels 세로영상 → 단어별 자막 + 강조 오버레이 → BGM → 자동 업로드
