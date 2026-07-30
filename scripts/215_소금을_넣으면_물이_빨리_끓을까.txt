@@ -1,0 +1,5 @@
+# 215_소금을_넣으면_물이_빨리_끓을까
+소금을 넣으면 물은 오히려 늦게 끓습니다. | boiling water pot | 늦게 끓는다
+끓는점이 아주 조금 올라가기 때문입니다. | salt spoon kitchen | 끓는점 상승
+한 줌으로는 영 점 일 도도 차이 나지 않습니다. | cooking pot stove | 0.1도 미만
+그럼 소금은 왜 넣을까요? 간 때문입니다. | pasta cooking water | 
