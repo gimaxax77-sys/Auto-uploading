@@ -4,9 +4,28 @@ import os
 import sys
 from datetime import date
 
+import requests
+from dotenv import load_dotenv
+
 STATE = "last_run.json"  # upload_batch.py 가 남기는 진행 상황
 # 하루 목표는 upload_batch 한 곳에서만 정합니다. 두 곳에 적으면 어긋납니다(7/26 사고).
-from upload_batch import DAILY_MAX as GOAL  # noqa: E402
+from upload_batch import DAILY_MAX as GOAL, pending  # noqa: E402
+
+load_dotenv()  # 텔레그램 토큰은 .env 에 둡니다(저장소에 올리지 않음)
+
+
+def notify(text: str) -> None:
+    """결과 한 줄을 텔레그램으로 보냅니다. 키가 없으면 아무 일도 하지 않습니다."""
+    token = os.environ.get("TELEGRAM_BOT_TOKEN")
+    chat = os.environ.get("TELEGRAM_CHAT_ID")
+    if not (token and chat):
+        return
+    try:
+        requests.post(f"https://api.telegram.org/bot{token}/sendMessage",
+                      data={"chat_id": chat, "text": text}, timeout=10)
+    except Exception as e:
+        # 알림이 실패해도 업로드 점검 자체는 정상으로 끝나야 합니다.
+        print(f"(알림 전송 실패: {e})")
 
 
 def missing_count() -> int:
@@ -31,6 +50,7 @@ def main() -> None:
     stamp = date.today().isoformat()
     if need == 0:
         print(f"[점검 {stamp}] 정상 완료. 추가 업로드 없음.")
+        notify(f"[1분 궁금증] {stamp} 업로드 {GOAL}편 정상 완료\n남은 대기열 {len(pending())}편")
         return
 
     print(f"[점검 {stamp}] {need}편이 덜 올라갔습니다. 지금 이어서 올립니다.")
@@ -38,6 +58,14 @@ def main() -> None:
 
     sys.argv = ["upload_batch.py", str(need)]
     upload_batch.main()
+
+    남은 = missing_count()  # 재시도가 실제로 메웠는지 다시 잽니다
+    if 남은 == 0:
+        notify(f"[1분 궁금증] {stamp} {need}편이 빠져 있었으나 재시도로 복구했습니다\n"
+               f"남은 대기열 {len(pending())}편")
+    else:
+        notify(f"[1분 궁금증] {stamp} 업로드 실패. {남은}편이 아직 안 올라갔습니다\n"
+               f"upload_log.txt 를 확인해 주세요.")
 
 
 if __name__ == "__main__":

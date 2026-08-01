@@ -197,6 +197,20 @@ def 담기(video_id: str, 이름: str) -> None:
         print(f"    (재생목록 담기 실패, 업로드는 정상: {e})")
 
 
+def pending() -> list[str]:
+    """아직 안 올렸고, 지금 채널 갈래(새 포맷)인 영상 목록.
+
+    업로드 대상 판정은 여기 한 곳에만 둡니다. 점검·알림도 이 함수를 씁니다
+    (하루 목표를 두 곳에 적었다가 어긋난 7/26 사고와 같은 종류를 막습니다).
+    """
+    done = load_log()
+    files = sorted(glob.glob(os.path.join(OUTPUT_DIR, "*.mp4")),
+                   key=lambda p: os.path.basename(p))
+    return [f for f in files
+            if os.path.splitext(os.path.basename(f))[0] not in done
+            and is_current(os.path.splitext(os.path.basename(f))[0])]
+
+
 def main() -> None:
     count = int(sys.argv[1]) if len(sys.argv) > 1 else DAILY_MAX
     # 손으로 미리 올린 날에도 스케줄러가 또 올려 하루치를 넘기지 않도록 상한을 겁니다.
@@ -208,11 +222,7 @@ def main() -> None:
     done = load_log()
     files = sorted(glob.glob(os.path.join(OUTPUT_DIR, "*.mp4")),
                    key=lambda p: os.path.basename(p))
-
-    # 아직 안 올렸고, 지금 채널 갈래(새 포맷)인 것만 대상으로 삼습니다.
-    todo = [f for f in files
-            if os.path.splitext(os.path.basename(f))[0] not in done
-            and is_current(os.path.splitext(os.path.basename(f))[0])]
+    todo = pending()
     if not todo:
         print("올릴 영상이 없습니다. 모두 업로드됨.")
         return
