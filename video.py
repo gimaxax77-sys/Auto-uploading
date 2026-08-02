@@ -36,11 +36,16 @@ WRAP = 12  # 한 줄 최대 글자 수. 넘으면 다음 줄로 넘깁니다.
 SUB_TOP = 200  # 자막 위쪽 여백(px). 화면 상단에 배치합니다.
 SUB_LAG = 0.1  # 단어별 자막 하이라이트를 소리보다 이 초만큼 늦춥니다(어긋남 보정).
 LINE_SPACING = 4  # 줄 간격(px). 작을수록 줄이 붙습니다.
+# ASS 스타일에는 행간 항목이 없어 libass 가 폰트 line-height 를 그대로 씁니다. HY헤드라인은
+# 한글이 네모칸을 꽉 채워 줄이 붙어 버립니다(실측 여백 2px). 그래서 줄마다 Dialogue 를 따로
+# 쓰고 이 간격으로 직접 내립니다. 글자 88px 기준으로 36px 가 뜹니다.
+SUB_LINE_PITCH = 124
 # 배경 밝기에 따라 고르는 자막 색. 밝으면 노란 글씨, 어두우면 흰 글씨+초록 테두리.
 STYLE_BRIGHT = "fontcolor=yellow:borderw=6:bordercolor=black:shadowcolor=black@0.7:shadowx=3:shadowy=3"
 STYLE_DARK = "fontcolor=white:borderw=6:bordercolor=0x00aa00:shadowcolor=black@0.7:shadowx=3:shadowy=3"
 BRIGHT_THRESHOLD = 128  # 자막 영역 평균 밝기가 이 값보다 크면 밝은 배경으로 봅니다.
 EMPHASIS_SIZE = 240  # 강조 문구(핵심 숫자) 글자 크기. 대본 3번째 칸에 적으면 화면 가운데 뜹니다.
+EMPHASIS_PITCH = 1.22  # 강조 문구 줄 간격(글자 크기 배수). 1.0 이면 줄이 맞닿습니다.
 # 장면마다 이 순서로 번갈아 씁니다. 하나만 두면 그 음성만 씁니다.
 VOICES = ["ko-KR-SunHiNeural", "ko-KR-InJoonNeural"]
 # 음성 엔진: "edge"(무료) 또는 "google"(Neural2, 더 자연스러움, GOOGLE_TTS_API_KEY 필요).
@@ -61,6 +66,10 @@ DARKEN = 0.05  # 사진을 이만큼 어둡게(0~1). 자막 가독성 향상.
 VIGNETTE = "PI/5"  # 가장자리 어둡게(비네팅) 강도.
 SUB_FADE = 0.4  # 자막이 나타나는 시간(초).
 XFADE = 0.4  # 장면 전환 겹침 시간(초).
+# 마지막(반전) 장면 전용 연출. 앞 장면들과 달라야 반전이 반전으로 읽힙니다.
+CLIMAX_CUT = 0.08   # 반전 진입은 크로스페이드 대신 사실상 하드컷.
+CLIMAX_ZOOM = 0.10  # 켄번즈 확대량을 이만큼 더 줍니다(밀고 들어가는 느낌).
+CLIMAX_DARKEN = 0.06  # 배경을 이만큼 더 어둡게 해 강조 문구만 남깁니다.
 # 장면 전환 종류. 편 번호로 골라 편마다 다르게 넘어갑니다(전편 같은 fade 면 템플릿 티가 납니다).
 # squeezev 는 이 ffmpeg 에서 해상도와 무관하게 죽으므로 절대 넣지 마십시오.
 TRANSITIONS = [
@@ -464,69 +473,97 @@ def 강조_배치(text: str) -> tuple[str, int]:
 
 
 def build_ass(words: list[tuple[float, float, str]], duration: float, path: str,
-              emphasis: str = "") -> None:
-    """단어 타이밍으로 노래방식(부르는 단어가 노랗게 채워지는) ASS 자막을 만듭니다."""
-    parts = [f"{{\\fad({int(SUB_FADE * 1000)},{int(SUB_FADE * 1000)})}}"]
-    if SUB_LAG > 0:  # 하이라이트를 소리보다 살짝 늦춰 어긋남을 줄입니다.
-        parts.append(f"{{\\kf{round(SUB_LAG * 100)}}} ")
-    # 어절 단위로 미리 줄을 나눠 \N 을 직접 넣습니다(자동 줄바꿈은 꺼 두었습니다).
-    줄들 = 어절_줄나눔([w for _, _, w in words], SIZE[0] - 160 - 30, FONT_SIZE)
-    줄시작, 누적 = set(), 0
-    for 줄 in 줄들[:-1]:
-        누적 += len(줄)
-        줄시작.add(누적)
+              emphasis: str = "", climax: bool = False) -> None:
+    """단어 타이밍으로 노래방식(부르는 단어가 노랗게 채워지는) ASS 자막을 만듭니다.
 
-    prev_end = 0.0
-    for i, (start, dur, word) in enumerate(words):
-        gap_cs = round(max(0.0, start - prev_end) * 100)
-        if gap_cs:  # 단어 사이 침묵만큼 하이라이트를 미룹니다.
-            parts.append(f"{{\\kf{gap_cs}}} ")
-        if i in 줄시작:
-            parts.append("\\N")
-        parts.append(f"{{\\kf{max(1, round(dur * 100))}}}{word} ")
-        prev_end = start + dur
-    text = "".join(parts).rstrip()
+    줄마다 Dialogue 를 따로 씁니다. ASS 스타일에 행간 항목이 없어 한 Dialogue 안에서
+    `\\N` 으로 줄을 나누면 폰트 line-height 그대로 붙어 버리기 때문입니다(실측 여백 2px).
+
+    자막은 전환이 시작되기 전에 걷습니다. 자막을 클립에 구운 뒤 크로스페이드로 잇는 구조라,
+    끝까지 남겨 두면 전환 동안 앞뒤 장면 자막이 겹쳐 보입니다.
+
+    다만 **말이 끝나기 전에 걷히면 안 됩니다.** 편에 따라 XFADE(0.25~0.55)가 GAP(0.3)보다
+    길어져 그런 일이 생깁니다. 그래서 마지막 단어가 끝날 때까지는 무조건 남깁니다
+    (겹침을 조금 감수하더라도 말이 잘리는 쪽이 나쁩니다).
+    """
+    단어끝 = max((s + d for s, d, _ in words), default=0.0)
+    끝 = min(duration, max(단어끝 + 0.15, duration - XFADE))
+    줄들 = 어절_줄나눔([w for _, _, w in words], SIZE[0] - 160 - 30, FONT_SIZE)
+    # 사라지는 시간은 짧게. 길면 전환에 걸쳐 잔상으로 남습니다.
+    페이드 = f"{{\\fad({int(SUB_FADE * 1000)},200)}}"
+
     with open(path, "w", encoding="utf-8", newline="\n") as f:
         f.write(_ASS_HEADER)
-        f.write(f"Dialogue: 0,{ass_time(0)},{ass_time(duration)},Def,,0,0,0,,{text}\n")
+        몫시작 = 0
+        for li, 줄 in enumerate(줄들):
+            몫, 몫시작 = words[몫시작:몫시작 + len(줄)], 몫시작 + len(줄)
+            if not 몫:
+                continue
+            parts = [페이드]
+            대기 = 몫[0][0] + SUB_LAG  # 이 줄 첫 단어가 나올 때까지 하이라이트를 미룹니다.
+            if 대기 > 0:
+                parts.append(f"{{\\kf{round(대기 * 100)}}} ")
+            prev_end = 몫[0][0]
+            for start, dur, word in 몫:
+                gap_cs = round(max(0.0, start - prev_end) * 100)
+                if gap_cs:  # 단어 사이 침묵만큼 하이라이트를 미룹니다.
+                    parts.append(f"{{\\kf{gap_cs}}} ")
+                parts.append(f"{{\\kf{max(1, round(dur * 100))}}}{word} ")
+                prev_end = start + dur
+            여백 = SUB_TOP + li * SUB_LINE_PITCH
+            f.write(f"Dialogue: 0,{ass_time(0)},{ass_time(끝)},Def,,0,0,{여백},,"
+                    f"{''.join(parts).rstrip()}\n")
+
         if emphasis:
             본문, size = 강조_배치(emphasis)
+            줄목록 = 본문.split("\\N")
+            간격 = round(size * EMPHASIS_PITCH)
+            첫줄y = SIZE[1] // 2 - 간격 * (len(줄목록) - 1) // 2
             크기 = "" if size == EMPHASIS_SIZE else f"\\fs{size}"
             # 살짝 커지며 나타났다가 장면 끝까지 남습니다(\t = 시간에 따른 변화).
-            효과 = ("{\\fad(200,250)" + 크기 + "\\fscx70\\fscy70"
-                    "\\t(0,260,\\fscx104\\fscy104)\\t(260,380,\\fscx100\\fscy100)}")
-            f.write(f"Dialogue: 1,{ass_time(0)},{ass_time(duration)},Big,,0,0,0,,{효과}{본문}\n")
+            # 반전 장면은 더 작게 시작해 더 크게 튀어나옵니다.
+            팝 = ("\\fscx40\\fscy40\\t(0,200,\\fscx114\\fscy114)\\t(200,320,\\fscx100\\fscy100)"
+                  if climax else
+                  "\\fscx70\\fscy70\\t(0,260,\\fscx104\\fscy104)\\t(260,380,\\fscx100\\fscy100)")
+            for li, 한줄 in enumerate(줄목록):
+                효과 = (f"{{\\an5\\pos({SIZE[0] // 2},{첫줄y + li * 간격})"
+                        f"\\fad(200,250){크기}{팝}}}")
+                f.write(f"Dialogue: 1,{ass_time(0)},{ass_time(끝)},Big,,0,0,0,,{효과}{한줄}\n")
 
 
 def render_clip(image: str | None, audio: str, out: str, subtitle: str = "", gap: float = GAP,
                 words: list[tuple[float, float, str]] | None = None,
-                video: str | None = None, emphasis: str = "", still: bool = False) -> None:
+                video: str | None = None, emphasis: str = "", still: bool = False,
+                climax: bool = False) -> None:
     """사진 한 장(또는 B-roll 영상)과 음성 하나를 붙여 장면 하나를 만듭니다.
 
     still=True 면 켄번즈 확대를 끕니다. 프레임을 덧입힌 장면은 확대하면 테두리가
     화면 밖으로 잘려 나가므로 그대로 보여야 합니다.
+    climax=True 면 마지막 반전 장면입니다. 더 밀고 들어가고 더 어둡게 해 강조만 남깁니다.
     """
     w, h = SIZE
     duration = media_duration(audio) + gap  # 이 장면의 총 길이
     frames = max(1, round(duration * FPS))
+    어둡게 = round(DARKEN + (CLIMAX_DARKEN if climax else 0), 3)
+    확대 = round(ZOOM_END + (CLIMAX_ZOOM if climax else 0), 3)
 
     if still:
         vf = f"scale={w}:{h}:force_original_aspect_ratio=increase,crop={w}:{h}"
         if EFFECTS:
-            vf += f",eq=brightness=-{DARKEN},vignette={VIGNETTE}"
+            vf += f",eq=brightness=-{어둡게},vignette={VIGNETTE}"
     elif video:
         # B-roll 영상: 실제 움직임이 있으니 켄번즈(zoompan) 없이 화면에 꽉 채우기만 합니다.
         vf = f"scale={w}:{h}:force_original_aspect_ratio=increase,crop={w}:{h}"
         if EFFECTS:
-            vf += f",eq=brightness=-{DARKEN},vignette={VIGNETTE}"  # 어둡게 + 비네팅
+            vf += f",eq=brightness=-{어둡게},vignette={VIGNETTE}"  # 어둡게 + 비네팅
     elif EFFECTS:
         # 켄번즈: 사진을 크게 키운 뒤 천천히 확대(zoompan)합니다.
-        step = (ZOOM_END - 1.0) / frames
+        step = (확대 - 1.0) / frames
         vf = (
             f"scale={w * 2}:{h * 2}:force_original_aspect_ratio=increase,crop={w * 2}:{h * 2},"
-            f"zoompan=z='min(zoom+{step:.6f},{ZOOM_END})':d={frames}"
+            f"zoompan=z='min(zoom+{step:.6f},{확대})':d={frames}"
             f":x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':s={w}x{h}:fps={FPS},"
-            f"eq=brightness=-{DARKEN},vignette={VIGNETTE}"  # 어둡게 + 비네팅
+            f"eq=brightness=-{어둡게},vignette={VIGNETTE}"  # 어둡게 + 비네팅
         )
     else:
         vf = f"scale={w}:{h}:force_original_aspect_ratio=increase,crop={w}:{h}"
@@ -535,7 +572,7 @@ def render_clip(image: str | None, audio: str, out: str, subtitle: str = "", gap
     if SUBTITLE and subtitle and words:
         # 단어별 자막: 단어 타이밍으로 ASS 자막을 만들어 ass 필터로 렌더합니다.
         subtitle_file = out + ".ass"
-        build_ass(words, duration, subtitle_file, emphasis)
+        build_ass(words, duration, subtitle_file, emphasis, climax)
         af = subtitle_file.replace("\\", "/").replace(":", "\\:")
         vf += f",ass='{af}'"
     elif SUBTITLE and subtitle:
@@ -676,8 +713,13 @@ def concat(clips: list[str], out: str) -> None:
     )
 
 
-def concat_xfade(clips: list[str], out: str, t: float = XFADE) -> None:
-    """장면들을 크로스페이드로 부드럽게 이어붙입니다."""
+def concat_xfade(clips: list[str], out: str, t: float = XFADE,
+                 last_t: float | None = None) -> None:
+    """장면들을 크로스페이드로 부드럽게 이어붙입니다.
+
+    last_t 를 주면 마지막 전환만 그 길이로 넘깁니다. 반전 장면은 툭 끊고 들어가야
+    반전으로 읽히므로 여기에 아주 짧은 값(CLIMAX_CUT)을 넣어 하드컷처럼 보이게 합니다.
+    """
     if len(clips) == 1:
         shutil.copy(clips[0], out)
         return
@@ -690,15 +732,19 @@ def concat_xfade(clips: list[str], out: str, t: float = XFADE) -> None:
     vlabel, alabel = "0:v", "0:a"
     acc = durs[0]
     for i in range(1, len(clips)):
-        offset = acc - t
+        막 = last_t is not None and i == len(clips) - 1
+        tt = last_t if 막 else t
+        # 짧은 전환에 circleopen 같은 도형 전환을 쓰면 튀어 보입니다. 컷은 fade 로 고정합니다.
+        효과 = "fade" if 막 else TRANSITION
+        offset = acc - tt
         vout, aout = f"v{i}", f"a{i}"
         v_filters.append(
-            f"[{vlabel}][{i}:v]xfade=transition={TRANSITION}:duration={t}"
+            f"[{vlabel}][{i}:v]xfade=transition={효과}:duration={tt}"
             f":offset={offset:.3f}[{vout}]"
         )
-        a_filters.append(f"[{alabel}][{i}:a]acrossfade=d={t}[{aout}]")
+        a_filters.append(f"[{alabel}][{i}:a]acrossfade=d={tt}[{aout}]")
         vlabel, alabel = vout, aout
-        acc += durs[i] - t
+        acc += durs[i] - tt
 
     filter_complex = ";".join(v_filters + a_filters)
     subprocess.run(
@@ -751,7 +797,7 @@ def make_video(scenes: list[dict], out: str) -> str:
                     make_background(i, image)
                 apply_frame(image, 번호_of(out) + i)
                 render_clip(image, audio, clip, scene["narration"], gap, words,
-                            emphasis=scene.get("emphasis", ""), still=True)
+                            emphasis=scene.get("emphasis", ""), still=True, climax=last)
                 clips.append(clip)
                 continue
 
@@ -766,18 +812,23 @@ def make_video(scenes: list[dict], out: str) -> str:
             강조 = scene.get("emphasis", "")
             if video_src:
                 render_clip(None, audio, clip, scene["narration"], gap, words,
-                            video=video_src, emphasis=강조)
+                            video=video_src, emphasis=강조, climax=last)
             else:
                 if use_photos and query:
                     fetch_image(query, image)
                 else:
                     make_background(i, image)
-                render_clip(image, audio, clip, scene["narration"], gap, words, emphasis=강조)
+                render_clip(image, audio, clip, scene["narration"], gap, words,
+                            emphasis=강조, climax=last)
             clips.append(clip)
 
         joined = os.path.join(work, "joined.mp4")
         # 효과가 켜져 있으면 크로스페이드로, 아니면 그대로 이어붙입니다.
-        (concat_xfade if EFFECTS else concat)(clips, joined)
+        # 마지막 전환만 하드컷으로 끊어 반전에 타격감을 줍니다.
+        if EFFECTS:
+            concat_xfade(clips, joined, last_t=CLIMAX_CUT)
+        else:
+            concat(clips, joined)
 
         # 배경음악을 준비해 깝니다. 없으면 그대로 둡니다.
         music = os.path.join(work, "bgm.mp3")

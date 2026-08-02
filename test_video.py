@@ -111,6 +111,63 @@ def test_강조문구_자막파일에_들어감():
         assert open(path, encoding="utf-8").read().count("Dialogue:") == 1
 
 
+def test_자막_줄마다_행간을_띄운다():
+    # ASS 스타일에는 행간 항목이 없어 한 Dialogue 에 \N 으로 나누면 줄이 맞닿는다(실측 2px).
+    # 줄마다 Dialogue 를 따로 쓰고 MarginV 로 내리는지 확인한다.
+    긴말 = [(i * 0.2, 0.2, w) for i, w in enumerate(["가나다라마"] * 8)]
+    with tempfile.TemporaryDirectory() as work:
+        path = os.path.join(work, "s.ass")
+        video.build_ass(긴말, 5.0, path)
+        줄 = [x for x in open(path, encoding="utf-8").read().splitlines()
+              if x.startswith("Dialogue:")]
+        assert len(줄) >= 2, "여러 줄로 쪼개져야 하는 문장이 한 줄로 나왔습니다"
+        assert "\\N" not in "".join(줄), "\\N 으로 줄을 나누면 행간이 0 이 됩니다"
+        # Dialogue: Layer,Start,End,Style,Name,MarginL,MarginR,MarginV,Effect,Text → MarginV 는 7번
+        여백 = [int(x.split(",")[7]) for x in 줄]
+        assert 여백[0] == video.SUB_TOP, f"첫 줄이 SUB_TOP 이 아닙니다: {여백[0]}"
+        간격 = [b - a for a, b in zip(여백, 여백[1:])]
+        assert all(g == video.SUB_LINE_PITCH for g in 간격), f"행간이 고르지 않습니다: {간격}"
+
+
+def test_자막은_전환_시작_전에_걷힌다():
+    # 자막을 클립에 구운 뒤 크로스페이드로 잇는 구조라, 끝까지 남기면 전환 동안 두 겹으로 보인다.
+    with tempfile.TemporaryDirectory() as work:
+        path = os.path.join(work, "s.ass")
+        video.build_ass([(0.0, 0.5, "가")], 3.0, path, "강조")
+        끝들 = {x.split(",")[2] for x in open(path, encoding="utf-8").read().splitlines()
+                if x.startswith("Dialogue:")}
+        assert len(끝들) == 1, "자막과 강조가 같은 시각에 걷혀야 합니다"
+        끝 = 끝들.pop()
+        assert 끝 == video.ass_time(3.0 - video.XFADE), f"전환 전에 안 걷힙니다: {끝}"
+
+        # 말이 끝나기 전에 걷히면 안 된다. XFADE 가 GAP 보다 긴 편에서 실제로 났던 문제다.
+        긴전환 = video.XFADE
+        try:
+            video.XFADE = 0.55
+            video.build_ass([(0.0, 1.8, "가")], 2.1, path)  # 말은 1.8 에 끝, 2.1-0.55=1.55
+            끝2 = [x.split(",")[2] for x in open(path, encoding="utf-8").read().splitlines()
+                   if x.startswith("Dialogue:")][0]
+            assert 끝2 == video.ass_time(1.95), f"말이 끝나기 전에 자막이 걷힙니다: {끝2}"
+        finally:
+            video.XFADE = 긴전환
+
+        # 장면보다 길게 남기지 않는다.
+        video.build_ass([(0.0, 0.2, "가")], 0.3, path)
+        짧은끝 = [x.split(",")[2] for x in open(path, encoding="utf-8").read().splitlines()
+                 if x.startswith("Dialogue:")][0]
+        assert 짧은끝 == video.ass_time(0.3), f"장면 길이를 넘겼습니다: {짧은끝}"
+
+
+def test_반전장면은_연출이_다르다():
+    with tempfile.TemporaryDirectory() as work:
+        보통, 반전 = os.path.join(work, "a.ass"), os.path.join(work, "b.ass")
+        video.build_ass([(0.0, 0.5, "가")], 2.0, 보통, "강조", climax=False)
+        video.build_ass([(0.0, 0.5, "가")], 2.0, 반전, "강조", climax=True)
+        assert open(보통, encoding="utf-8").read() != open(반전, encoding="utf-8").read(), \
+            "반전 장면인데 강조 연출이 같습니다"
+        assert "\\fscx40" in open(반전, encoding="utf-8").read(), "반전 펀치인이 안 들어갔습니다"
+
+
 def test_빈_대본파일은_에러():
     with tempfile.TemporaryDirectory() as work:
         path = os.path.join(work, "empty.txt")
@@ -173,6 +230,9 @@ if __name__ == "__main__":
     test_강조문구_어절_한가운데서_안_끊김()
     test_전환목록_안전()
     test_강조문구_자막파일에_들어감()
+    test_자막_줄마다_행간을_띄운다()
+    test_자막은_전환_시작_전에_걷힌다()
+    test_반전장면은_연출이_다르다()
     test_빈_대본파일은_에러()
     test_배경음악_합성()
     test_폴더음악_우선()
