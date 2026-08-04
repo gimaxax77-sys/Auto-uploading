@@ -1,5 +1,5 @@
 # 164_순식간에_변신하는_바다생물
-문어는 피부색과 무늬를 즉시 바꿉니다. | octopus underwater | 즉시 변신
-몸의 질감까지 바꿔 바위처럼 보입니다. | underwater rocks sea | 질감까지 바꾼다
-그런데 문어는 색을 구분하지 못합니다. | coral reef underwater | 색맹인데 색을 맞춘다
-색을 못 보면서 어떻게 맞추는 걸까요? | octopus swimming ocean | 
+문어는 색을 구분하지 못합니다. | octopus underwater | 문어는 색맹
+그런데 주변 색에 완벽하게 맞춰 변합니다. | underwater rocks sea | 완벽하게 맞춘다
+피부색은 물론 질감까지 바꿉니다. | coral reef underwater | 질감까지
+색을 못 보면서 어떻게 맞추는 걸까요? | octopus swimming ocean

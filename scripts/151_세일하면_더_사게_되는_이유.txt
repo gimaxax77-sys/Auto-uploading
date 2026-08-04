@@ -1,5 +1,5 @@
 # 151_세일하면_더_사게_되는_이유
-세일가는 원래 가격을 기준으로 싸 보입니다. | sale sign store | 원래 가격이 기준
-얼마를 쓰는지보다 얼마를 아꼈는지를 봅니다. | shopping cart mall | 아낀 돈만 본다
-정작 살 계획이 없던 물건까지 담게 됩니다. | shopping bags person | 계획에 없던 것도
-아낀 걸까요, 쓴 걸까요? | person checking receipt | 
+세일에서 우리는 쓴 돈이 아니라 아낀 돈을 봅니다. | sale sign store | 아낀 돈만 본다
+원래 가격이 기준이 되어 싸 보입니다. | shopping cart mall | 원래 가격이 기준
+살 계획이 없던 물건까지 담게 됩니다. | shopping bags person | 계획에 없던 것도
+아낀 걸까요, 쓴 걸까요? | person checking receipt
