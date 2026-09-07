@@ -175,8 +175,8 @@ API 응답 수만 셌습니다. 「커먼즈면 해결된다」고 단정하면 
 
 ## 다른 프로젝트
 
-**`axdata_15_news_brief`** — 뉴스 브리핑, 가동 중.
-<https://gimaxax77-sys.github.io/news-brief/> · 매시 05분 자동 갱신. 상세는 그 폴더 `HANDOFF.md`.
+**`axdata_15_news_brief`** — 뉴스 브리핑, ⛔ **2026-09-08 Gim 지시로 잠정 중단**(스케줄러 `AXdata_NewsBrief` = `Disabled`).
+<https://gimaxax77-sys.github.io/news-brief/> 는 마지막 갱신 시점에서 멈춘 채 떠 있습니다. 상세는 그 폴더 `HANDOFF.md`.
 **`axdata_14_capcut_agent`** — 캡컷 에이전트, 별개 폴더. 여기서 세션을 열면 안 보입니다.
 
 **시작하는 법** — `research.md` 끝부분(「2026-08-21 롱폼 계획서 재검토」)과
