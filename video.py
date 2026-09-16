@@ -29,8 +29,11 @@ MOOD_WOONGJANG = (set(range(81, 86)) | set(range(96, 101)) | set(range(106, 116)
 MOOD_CHABUN = (set(range(1, 21)) | set(range(25, 31)) | set(range(36, 41))
                | set(range(46, 56)) | set(range(61, 66)) | set(range(76, 81)) | set(range(91, 96)))  # 동기부여·위로·감성
 SUBTITLE = True  # 내레이션 문장을 자막으로 넣습니다.
-FONT = "C:/Windows/Fonts/H2HDRM.TTF"  # HY헤드라인. 폭이 좁아 한 줄에 더 들어갑니다.
-FONT_NAME = "HYHeadLine-Medium"  # ASS 자막이 참조하는 폰트 이름(시스템에 설치된 이름과 같아야 함)
+# 2026-09-16: 옛 PC 의 HY헤드라인(H2HDRM.TTF)이 이 PC 에 없어 맑은 고딕 굵게로 바꿨습니다.
+# ⛔ 본고딕(NotoSansKR-VF.ttf)은 쓰지 마십시오 — 가변폰트라 libass 가 아래 Bold 항목(-1)을
+# 무시하고 기본 굵기로 그립니다(실측: 자막이 눈에 띄게 가늘어짐). 굵은 정적 파일이라야 합니다.
+FONT = "C:/Windows/Fonts/malgunbd.ttf"  # 맑은 고딕 굵게. HY헤드라인보다 11% 넓어 줄이 조금 더 자주 넘어갑니다.
+FONT_NAME = "Malgun Gothic"  # ASS 자막이 참조하는 폰트 이름(시스템에 설치된 이름과 같아야 함)
 FONT_SIZE = 90
 WRAP = 12  # 한 줄 최대 글자 수. 넘으면 다음 줄로 넘깁니다.
 SUB_TOP = 200  # 자막 위쪽 여백(px). 화면 상단에 배치합니다.
