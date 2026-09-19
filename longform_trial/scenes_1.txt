@@ -1,0 +1,149 @@
+# 1단계 시험 대본 — 퉁구스카 대폭발(1908). 한 줄 = 한 장면: 장|내레이션|그림 설명(영문)
+# 수치 출처: en.wikipedia.org/wiki/Tunguska_event (2026-09-19 조회). 서울 면적 605㎢ 는 서울시 통계.
+1|1908년 6월 30일 아침, 시베리아의 깊은 숲은 여느 날처럼 조용했습니다.|dense Siberian taiga forest at dawn, calm river, mist
+1|새들이 울고, 강물은 천천히 흘렀습니다.|birds on pine branches above a slow river in the morning
+1|그리고 아침 7시 14분, 하늘이 둘로 갈라졌습니다.|the morning sky splitting open with a blinding streak of light over the forest
+1|태양보다 밝은 불덩이가 북쪽 하늘을 가로질렀습니다.|a huge fireball brighter than the sun streaking across the northern sky
+1|몇 초 뒤, 숲 위의 하늘에서 거대한 폭발이 일어났습니다.|a gigantic explosion flash in the air high above the forest
+1|폭풍 같은 바람이 사방으로 퍼져 나갔습니다.|a shockwave ring spreading outward over the treetops
+1|나무들이 한꺼번에 누웠습니다.|thousands of trees being flattened at once by a wind blast
+1|쓰러진 숲의 넓이는 약 2,150제곱킬로미터였습니다.|aerial view of a vast area of fallen trees radiating outward
+1|서울 전체 면적의 세 배가 넘는 크기입니다.|a small city seen from far above next to a much larger flattened forest area
+1|그런데 이상한 일이 있었습니다.|a puzzled scientist silhouette looking at a mysterious forest
+1|그렇게 큰 폭발이 있었는데, 땅에는 구덩이가 없었습니다.|forest ground with no crater, only flattened trees
+1|하늘에서 떨어진 돌도, 쇳덩이도 찾을 수 없었습니다.|explorers searching the swampy ground with shovels, finding nothing
+1|도대체 그날 아침, 시베리아 하늘에서는 무슨 일이 일어났을까요?|a giant question mark glowing in the Siberian sky
+1|오늘은 지금까지도 과학자들이 토론을 이어가는 사건, 퉁구스카 대폭발 이야기입니다.|a lone river winding through a wounded forest
+2|폭발이 일어난 곳은 러시아 시베리아 한가운데였습니다.|a globe zoomed on central Siberia with a small marker
+2|지금 이름으로는 크라스노야르스크 지방의 에벤키 지역입니다.|a map of a huge Russian region with rivers and forests
+2|포드카멘나야 퉁구스카 강이라는 강 근처였습니다.|a wide wild river winding through endless taiga
+2|이곳은 사람이 아주 드물게 사는 땅이었습니다.|empty wilderness with only a tiny hut far away
+2|길도 없고, 철도도 멀었습니다.|dense forest with no roads, a distant railway far on the horizon
+2|숲과 늪과 강이 끝없이 이어지는 곳이었습니다.|endless swamps, forests and rivers stretching to the horizon
+2|이 땅에는 에벤키 사람들이 살고 있었습니다.|Evenki people in traditional fur clothing beside a conical tent
+2|그들은 순록을 기르며 숲을 옮겨 다니며 살았습니다.|a herder leading reindeer through a forest
+2|그날 아침, 몇몇 에벤키 사람들이 하늘을 보고 있었습니다.|people outside tents looking up at the sky in surprise
+2|한 목격자는 하늘에 두 번째 태양이 떴다고 말했습니다.|two suns in the sky above a forest camp
+2|갑작스러운 바람에 천막이 무너졌다는 증언도 남아 있습니다.|tents being blown away by a sudden violent wind
+2|폭발 지점에서 남쪽으로 약 65킬로미터 떨어진 곳에 작은 교역소가 있었습니다.|a small wooden trading post in a clearing, distance arrow
+2|바나바라라는 이름의 마을이었습니다.|a small log-cabin village by a river
+2|그곳에 세묘노프라는 남자가 있었습니다.|a bearded man in old Russian peasant clothes sitting on a porch
+2|그는 아침을 먹고 현관에 앉아 있었습니다.|a man resting on the steps of a log house in the morning
+2|그의 증언은 지금까지 남아 있습니다.|an old wooden desk with a quill pen and a candle, rolled up papers tied with string
+2|갑자기 북쪽 하늘이 둘로 갈라지고, 숲 위로 불이 넓게 퍼졌다고 합니다.|the northern sky splitting with fire spreading above the forest, seen from a porch
+2|그는 셔츠에 불이 붙은 것처럼 뜨거웠다고 했습니다.|a man shielding himself from intense heat, glowing sky
+2|이어서 엄청난 소리와 함께 그는 의자에서 날아가 떨어졌습니다.|a man being thrown off his chair by a blast of air
+2|창문 유리가 깨지고, 땅이 흔들렸습니다.|windows shattering in a wooden house, ground shaking
+2|65킬로미터 떨어진 곳에서도 이 정도였습니다.|a long distance line from a village to a distant explosion
+2|폭발 바로 아래에 있었다면 어떤 일이 벌어졌을지 짐작하기도 어렵습니다.|an overwhelming bright blast above a flattened forest
+2|다행히 그곳에는 사람이 거의 살지 않았습니다.|a vast empty forest with nobody around
+2|기록된 사망자는 많아야 세 명 정도로 추정됩니다.|three small candles in the dark, remembrance mood
+2|만약 이 폭발이 도시 위에서 일어났다면 이야기는 완전히 달라졌을 겁니다.|a peaceful old city skyline under an ominous sky
+3|폭발의 흔적은 시베리아에만 남은 것이 아니었습니다.|a map of Eurasia with waves spreading from Siberia
+3|유라시아 곳곳의 지진계가 이 폭발을 기록했습니다.|an old seismograph drawing a sharp spike on paper
+3|공기의 진동은 독일, 덴마크, 크로아티아, 영국에서도 잡혔습니다.|old barometers in European laboratories with needles jumping
+3|그런데 그날 밤, 더 이상한 일이 일어났습니다.|a night sky over a European town with a strange glow
+3|유럽과 아시아의 밤하늘이 환하게 빛났습니다.|a glowing bright night sky over old European rooftops
+3|그 빛은 며칠 동안 이어졌다는 기록이 남아 있습니다.|people walking outside at midnight under a bright sky
+3|스웨덴과 스코틀랜드에서는 한밤중에 사진을 찍을 수 있었다고 합니다.|a photographer with an old camera on a tripod at midnight
+3|사람들은 무슨 일인지 전혀 몰랐습니다.|curious townspeople pointing at the bright night sky
+3|당시 신문들은 이 빛을 신기한 자연 현상으로만 전했습니다.|a newspaper boy on an old European street at night, glowing sky above
+3|수천 킬로미터 떨어진 시베리아의 숲과 이 빛을 연결한 사람은 거의 없었습니다.|a thread connecting a Siberian forest and a European city on an old map, loose ends
+3|이 빛이 어디에서 왔는지는 오랫동안 수수께끼로 남았습니다.|a mysterious glowing sky with a question mark shaped cloud
+4|폭발 뒤 거의 20년 동안 과학자들은 이곳을 찾지 않았습니다.|an untouched fallen forest under falling autumn leaves and then snow
+4|러시아는 곧 전쟁과 혁명의 시대에 들어섰습니다.|old soldiers and revolutionary flags in a Russian city
+4|멀고 험한 시베리아 숲까지 조사단을 보낼 여유가 없었습니다.|a closed door of a science academy covered with dust
+4|그 사이 숲은 조용히 쓰러진 채로 남아 있었습니다.|fallen trees covered in moss and snow
+4|그러다 한 과학자가 이 사건에 빠져들었습니다.|a scientist reading old reports by lamp light
+4|광물학자 레오니드 쿨릭입니다.|a determined scientist with glasses and a beard, early 20th century clothes
+4|쿨릭은 하늘에서 커다란 운석이 떨어졌다고 믿었습니다.|a scientist imagining a huge iron meteorite falling
+4|그렇다면 땅에는 거대한 구덩이와 쇳덩이가 있어야 했습니다.|an imagined giant crater with a metal meteorite inside
+4|그는 조사단을 꾸려 1927년 드디어 폭발 지점으로 향했습니다.|an expedition group with packs and horses setting off into the taiga
+4|길은 상상 이상으로 험했습니다.|explorers struggling through thick swamp and mud
+4|늪과 모기, 추위가 조사단을 괴롭혔습니다.|explorers swatting mosquitoes in a misty swamp
+4|조사단은 고된 길 끝에 마침내 폭발 지점 가까이에 닿았습니다.|explorers emerging onto a hill overlooking a devastated forest
+4|그리고 눈앞의 광경에 말을 잃었습니다.|explorers staring in shock at a huge field of fallen trees
+5|나무들이 끝도 없이 누워 있었습니다.|endless rows of fallen trees lying on the ground
+5|그런데 쓰러진 방향이 이상했습니다.|a scientist kneeling to examine the direction of a fallen trunk
+5|나무들은 모두 한 점을 등지고 바깥쪽으로 누워 있었습니다.|diagram-like aerial view of trees fallen outward from a center
+5|마치 누군가 한가운데에서 거대한 바람을 불어낸 것 같았습니다.|a giant wind blowing outward from a central point
+5|쿨릭은 나무가 쓰러진 방향을 따라 중심을 찾아갔습니다.|a scientist following lines of fallen trees with a compass
+5|중심에 가면 운석 구덩이가 있을 거라 믿었습니다.|a scientist hopefully walking toward the center of devastation
+5|그러나 중심에서 그가 본 것은 전혀 뜻밖의 모습이었습니다.|a scientist stopping in surprise in a strange standing forest
+5|한가운데의 나무들은 쓰러지지 않고 서 있었습니다.|burnt trees still standing upright at the center
+5|다만 가지와 잎이 모두 떨어져 나가 있었습니다.|tall bare trunks with no branches, like telegraph poles
+5|마치 전봇대가 늘어선 숲 같았습니다.|a forest of bare poles under a grey sky
+5|나무 껍질은 불에 그을려 있었습니다.|close-up of scorched tree bark
+5|그리고 구덩이는 어디에도 없었습니다.|a flat swampy ground with no crater
+5|쿨릭은 포기하지 않았습니다.|a determined scientist looking at a map in a tent
+5|늪 아래에 운석이 묻혀 있을지도 모른다고 생각했습니다.|a cross-section of a swamp with an imagined meteorite hidden below
+5|조사단은 늪의 물을 빼고 땅을 파기 시작했습니다.|workers digging trenches and draining a swamp
+5|파고 또 팠지만 나오는 것은 나무 그루터기뿐이었습니다.|workers disappointed pulling out an old tree stump
+5|이후 10년 동안 조사가 세 번 더 이어졌습니다.|a series of expedition camps across different years
+5|하지만 끝내 운석 덩어리는 찾지 못했습니다.|an empty open wooden crate in a tent, nothing inside
+5|구덩이도 없고, 운석도 없는 대폭발이었습니다.|a vast mysterious forest with a question mark in the clouds
+5|이 수수께끼가 그 뒤 백 년 동안 수많은 가설을 낳았습니다.|many different colored thought bubbles rising from a forest
+6|과학자들이 먼저 떠올린 것은 역시 하늘에서 온 돌이었습니다.|a rocky asteroid flying through space toward Earth
+6|하지만 구덩이가 없다는 점이 설명되어야 했습니다.|a scientist at a chalkboard with a crossed out crater drawing
+6|두 번째 후보는 혜성이었습니다.|a comet with a long glowing tail in space
+6|혜성은 얼음과 먼지로 된 덩어리입니다.|a cutaway of a comet showing ice and dust
+6|얼음이라면 공중에서 모두 증발해 흔적이 남지 않을 수 있다는 생각이었습니다.|an icy comet evaporating into steam in the atmosphere
+6|이 설명은 한동안 널리 받아들여졌습니다.|scientists nodding in an old lecture hall
+6|하지만 이후 연구는 다른 쪽을 가리켰습니다.|a scientist at a blackboard drawing a rocky asteroid instead of a comet
+6|2001년의 한 연구는 이 천체가 지나온 길을 계산했습니다.|orbit lines drawn around the sun on a star chart
+6|그 결과, 소행성의 길을 따랐을 확률이 83퍼센트로 나왔습니다.|a large rocky asteroid glowing brightly next to a faint small comet
+6|혜성일 확률은 17퍼센트였습니다.|a small faint comet far away in space
+6|이탈리아 연구진은 현장의 흙과 나무에서 성분을 조사했습니다.|researchers taking soil samples and tree resin in a forest
+6|돌로 된 소행성에 흔한 물질이 많이 나왔습니다.|a microscope view of tiny glittering rock particles
+6|혜성에서는 드물게 나오는 물질이었습니다.|a comparison of two sample jars, one rocky, one icy
+6|그렇다면 왜 구덩이가 없을까요?|a question mark over an empty flat forest
+6|2007년, 이탈리아 볼로냐 대학 연구진이 새로운 주장을 내놓았습니다.|researchers on a boat on a calm forest lake
+6|폭발 지점 근처의 체코 호수가 바로 그 구덩이라는 주장이었습니다.|a small round lake surrounded by forest, seen from above
+6|호수의 모양과 바닥이 충돌 흔적처럼 보인다는 것이었습니다.|a cross-section of a lake bottom with a funnel shape
+6|하지만 2017년 러시아 연구진은 이 가설에 반박했습니다.|scientists debating across a table with lake core samples
+6|호수 바닥의 퇴적층을 조사해 보니 호수가 280년 이상 되었다는 것이었습니다.|a long sediment core with many layers being measured
+6|1908년보다 훨씬 오래된 호수라면 그날 생긴 구덩이일 수 없습니다.|a timeline with the lake existing long before 1908
+6|이 논쟁은 아직 완전히 끝나지 않았습니다.|two groups of scientists with question marks between them
+6|과학자들 밖에서는 훨씬 기묘한 이야기들도 나왔습니다.|a comic-style scene of wild imaginative theories floating around
+6|외계인의 우주선이 폭발했다는 이야기가 있었습니다.|a cartoon flying saucer exploding in the sky
+6|작은 블랙홀이 지구를 뚫고 지나갔다는 가설까지 나왔습니다.|a tiny black hole passing through a cartoon Earth
+6|반물질 덩어리가 공기와 만나 사라졌다는 주장도 있었습니다.|a glowing sphere dissolving in a flash of light in the atmosphere
+6|이런 가설들은 증거가 없어 과학계에서 받아들여지지 않습니다.|a judge's gavel stamping rejected on colorful theory posters
+6|하지만 퉁구스카가 얼마나 사람들의 상상력을 자극했는지 보여 줍니다.|people reading sci-fi books under a starry night sky
+7|지금 가장 널리 받아들여지는 설명은 공중폭발입니다.|a bright explosion high in the atmosphere above a forest
+7|돌로 된 소행성이 땅에 닿기 전에 하늘에서 터졌다는 것입니다.|a rocky asteroid breaking apart in the sky before reaching the ground
+7|크기는 약 50에서 60미터로 추정됩니다.|a rocky asteroid beside a small building for scale
+7|아파트 20층 정도 되는 크기의 돌덩이입니다.|an asteroid next to a 20-story apartment building for scale
+7|이 돌은 엄청난 속도로 대기에 들어왔습니다.|an asteroid entering the atmosphere with a fiery trail
+7|공기가 앞을 막으면서 돌의 앞면은 엄청난 압력을 받습니다.|diagram of air pressure building in front of a falling rock
+7|공기가 순식간에 눌리며 뜨겁게 달아오릅니다.|glowing hot air compressed in front of a meteor
+7|결국 돌은 견디지 못하고 산산조각 납니다.|an asteroid shattering into countless fragments in the air
+7|쪼개진 조각들은 한순간에 모든 에너지를 쏟아냅니다.|a burst of light as fragments release energy at once
+7|그 높이는 땅에서 5에서 10킬로미터 위였다고 추정됩니다.|a vertical scale showing an explosion high above mountains and clouds
+7|비행기가 날아다니는 높이와 비슷합니다.|an airplane flying at the same height as a distant explosion
+7|이렇게 하늘에서 터졌기 때문에 땅에는 구덩이가 생기지 않았습니다.|a flat forest below a sky explosion, no crater
+7|대신 위에서 아래로 내리친 폭풍이 숲을 눕혔습니다.|a downward blast wave pressing trees flat
+7|폭발 바로 아래의 나무는 위에서 바람을 맞았습니다.|trees directly under an explosion hit from above
+7|그래서 쓰러지지 않고 가지만 꺾인 채 서 있었던 것입니다.|a standing tree losing its branches under a vertical blast
+7|조금 떨어진 곳의 나무는 옆에서 바람을 맞아 쓰러졌습니다.|trees farther away knocked sideways by the wind
+7|쿨릭이 본 이상한 숲의 모양이 이렇게 설명됩니다.|a diagram of standing trees in the center and fallen trees around
+7|폭발의 힘은 얼마나 됐을까요?|a big energy meter needle rising
+7|추정치는 연구마다 크게 다릅니다.|several scientists arguing around a table with rocks of different sizes
+7|적게는 TNT 3메가톤에서 많게는 50메가톤까지 나옵니다.|a row of explosions from small to enormous, side by side
+7|1메가톤은 TNT 100만 톤이 터지는 힘입니다.|a mountain of dynamite crates
+7|최근 계산에서는 3에서 5메가톤 정도로 보는 연구가 있습니다.|a modern scientist watching a glowing 3D simulation of an explosion over a forest
+7|어느 쪽이든 사람이 만든 어떤 재래식 폭탄보다 훨씬 강한 힘입니다.|a tiny cartoon bomb next to a giant sky explosion
+7|이 설명이 확실해진 데에는 2013년에 일어난 다른 사건이 큰 역할을 했습니다.|a modern winter city in the morning
+8|2013년 2월, 러시아의 첼랴빈스크라는 도시였습니다.|a snowy modern Russian city with apartment buildings
+8|아침 하늘에 눈부신 불덩이가 나타났습니다.|a blinding fireball crossing a winter morning sky
+8|이번에는 수많은 사람이 그 장면을 영상으로 남겼습니다.|people filming the sky with phones and dashboard cameras
+8|차량 블랙박스와 휴대전화에 불덩이가 찍혔습니다.|a dashboard camera view of a bright streak over a highway
+8|이 돌은 폭이 약 17에서 20미터였습니다.|a rock beside a bus for scale
+8|퉁구스카보다 훨씬 작은 돌이었습니다.|a size comparison of a small rock and a large rock
+8|그런데도 하늘에서 터지며 약 500킬로톤의 힘을 냈습니다.|a bright flash in the sky above a city
+8|잠시 뒤 도착한 충격파가 도시의 유리창을 깨뜨렸습니다.|shattered windows in apartment buildings
+8|많은 사람이 깨진 유리에 다쳤습니다.|people helping each other among broken glass
+8|이 사건은 과학자들에게 귀중한 자료가 되었습니다.|scientists analyzing videos on multiple monitors
+8|하늘에서 터지는 돌이 어떻게 움직이는지 처음으로 자세히 기록됐기 때문입니다.|a detailed trajectory drawn over a city map
+8|이 자료로 퉁구스카를 다시 계산하는 연구들이 이어졌습니다.|a split screen of 1908 forest and 2013 city
+8|100년이 넘게 떨어진 두 사건이 서로의 수수께끼를 풀어 준 셈입니다.|two puzzle pieces fitting together, one showing a forest, one showing a snowy city

@@ -1,0 +1,65 @@
+# 1단계 시험 대본 2부 — 형식은 scenes_1.txt 와 같음.
+# 수치 출처: 퉁구스카·첼랴빈스크·소행성의 날 = en.wikipedia.org/wiki/Tunguska_event. DART = NASA 공개 발표(2022, 공전주기 32분 단축).
+9|그렇다면 퉁구스카 같은 일은 다시 일어날 수 있을까요?|a calm Earth seen from space with a small rock drifting nearby
+9|답은 그렇다입니다.|a scientist nodding seriously in front of a star map
+9|우주에는 지구 가까이를 지나는 돌들이 아주 많습니다.|many small asteroids floating around Earth's orbit
+9|과학자들은 이런 돌들을 지구 근접 천체라고 부릅니다.|a diagram of orbits crossing near Earth
+9|크기가 큰 것일수록 드물고, 작은 것일수록 흔합니다.|a row of rocks from tiny pebbles to huge boulders
+9|작은 돌은 거의 매일 대기에 들어와 타 버립니다.|shooting stars burning up in a night sky
+9|우리가 보는 별똥별의 대부분이 이런 작은 조각입니다.|a family watching shooting stars on a hill
+9|하지만 수십 미터 크기의 돌은 이야기가 다릅니다.|a large rocky asteroid approaching in space
+9|이런 돌이 도시 위에서 터진다면 큰 피해가 날 수 있습니다.|a modern city under a bright fireball in the sky
+9|퉁구스카는 운이 좋았던 경우였습니다.|a vast empty forest with a lucky four-leaf clover in the foreground
+9|폭발이 사람이 거의 없는 숲 위에서 일어났기 때문입니다.|a remote forest seen from high above
+9|첼랴빈스크의 돌은 퉁구스카보다 훨씬 작았지만, 도시 근처였기에 많은 사람이 다쳤습니다.|a city with broken windows and a fading trail in the sky
+9|그래서 오늘날 과학자들은 하늘을 계속 지켜보고 있습니다.|a large telescope dome under a starry sky
+9|전 세계의 망원경들이 밤마다 하늘을 훑습니다.|several observatories on mountains scanning the night sky
+9|새로운 돌이 발견되면 그 길을 계산합니다.|astronomers plotting an orbit on a computer screen
+9|지구와 부딪칠 가능성이 있는지 미리 확인하는 것입니다.|a highlighted orbit line passing near Earth with a check mark
+9|이 일을 행성 방어라고 부릅니다.|a shield drawn around a cartoon Earth
+9|지구를 지키는 방법은 발견하는 것에서 끝나지 않습니다.|a shield with a telescope and a rocket icon
+9|2022년, 사람들은 처음으로 실제 소행성의 길을 바꾸는 실험을 했습니다.|a small spacecraft flying toward a pair of asteroids
+9|미국 항공우주국의 다트라는 우주선이었습니다.|a box-shaped spacecraft with long solar panels in space
+9|다트는 디모르포스라는 작은 소행성에 일부러 부딪쳤습니다.|a spacecraft crashing into a small asteroid with a flash
+9|디모르포스는 더 큰 소행성 주위를 도는 작은 달 같은 돌입니다.|a small moonlet orbiting a larger asteroid
+9|충돌 뒤, 디모르포스가 한 바퀴 도는 시간이 32분 줄었습니다.|a small moonlet orbiting a larger asteroid on a slightly tighter circular path
+9|사람이 우주의 돌이 가는 길을 바꿀 수 있다는 것을 처음 보여 준 것입니다.|people cheering in a control room
+9|물론 이것은 첫걸음입니다.|a single footprint on a rocky surface
+9|위험한 돌을 일찍 찾아낼수록 대응할 시간이 길어집니다.|an hourglass beside a telescope
+9|그래서 발견이 가장 중요합니다.|a magnifying glass over a star field revealing a hidden rock
+10|유엔은 2016년, 6월 30일을 국제 소행성의 날로 정했습니다.|people around the world looking up at the sky together
+10|바로 퉁구스카 대폭발이 일어난 날입니다.|an old Siberian forest at dawn with a faint streak of light
+10|소행성과 행성 방어를 사람들에게 알리기 위한 날입니다.|people at a science fair looking at asteroid models
+10|100년도 더 전에 시베리아 숲에서 일어난 일이 지금은 세계가 기억하는 날이 된 것입니다.|a forest and a modern city side by side under the same sky
+10|그렇다면 지금 그 숲은 어떤 모습일까요?|a present-day forest seen from a helicopter
+10|쓰러졌던 숲에는 새 나무들이 자라났습니다.|young green trees growing among old fallen trunks
+10|하지만 자세히 보면 아직도 그날의 흔적이 남아 있다고 합니다.|a close-up of an old fallen trunk half hidden under moss
+10|이 지역의 일부는 지금 자연보호구역으로 지정되어 있습니다.|a quiet protected forest with a wooden boardwalk
+10|과학자들은 지금도 이곳을 찾아 흙과 나무를 조사합니다.|modern researchers with backpacks taking samples in a forest
+10|그리고 아직 풀리지 않은 질문들도 남아 있습니다.|a scientist looking thoughtfully at a misty forest
+10|정확히 얼마나 큰 돌이었는지는 아직 논쟁 중입니다.|two different sized rocks on a scale, balance tilting
+10|폭발의 힘도 연구마다 다르게 나옵니다.|scientists comparing different glowing explosion models
+10|돌의 조각이 어디로 갔는지도 확실히 밝혀지지 않았습니다.|tiny fragments scattering into the wind over a forest
+10|퉁구스카는 여전히 진행 중인 과학 이야기입니다.|a young scientist walking into a misty forest with a backpack
+11|이제 처음 질문으로 돌아가 보겠습니다.|the same dawn forest from the beginning, calm river
+11|1908년 6월 30일 아침, 시베리아 하늘에서는 무슨 일이 일어났을까요?|the morning sky over Siberia with a faint streak of light
+11|지금까지 알게 된 것을 정리해 보겠습니다.|a scientist sitting by a campfire thinking, the forest behind
+11|첫째, 폭이 수십 미터쯤 되는 돌이 엄청난 속도로 대기에 들어왔습니다.|an asteroid entering the atmosphere with a trail of fire
+11|둘째, 이 돌은 땅에 닿기 전에 하늘에서 터졌습니다.|a burst of light high in the sky
+11|셋째, 그 폭풍이 2,150제곱킬로미터의 숲을 눕혔습니다.|an aerial view of a huge circle of fallen trees
+11|넷째, 하늘에서 터졌기 때문에 구덩이가 남지 않았습니다.|a flat forest floor without any crater
+11|다섯째, 폭발 바로 아래의 나무들은 가지만 잃은 채 서 있었습니다.|tall bare trees standing like poles
+11|이것이 지금 과학자들이 가장 많이 받아들이는 설명입니다.|scientists agreeing and smiling around a table
+11|하지만 과학은 한 번에 답을 내지 않았습니다.|a winding path through a forest toward a light
+11|쿨릭은 운석을 찾으려고 늪을 팠습니다.|a scientist digging in a swamp, old sepia mood
+11|다른 사람들은 혜성을 떠올렸고, 누군가는 호수를 구덩이라고 보았습니다.|a comet, a lake and a scientist thinking in thought bubbles
+11|틀린 생각들도 모두 다음 연구의 발판이 되었습니다.|a staircase made of books leading upward
+11|그리고 100년 뒤 첼랴빈스크의 영상이 마지막 조각을 채워 주었습니다.|a missing puzzle piece being placed into a puzzle of a forest
+11|우리가 사는 지구는 넓은 우주 속을 지나고 있습니다.|Earth moving through space among stars
+11|그 길 위에는 수많은 돌들이 함께 떠돌고 있습니다.|many small asteroids drifting along Earth's path
+11|대부분은 조용히 스쳐 지나갑니다.|a small rock passing far away from Earth
+11|하지만 가끔은 하늘로 들어옵니다.|a shooting star over a quiet village at night
+11|퉁구스카는 그 사실을 가장 크게 알려 준 사건이었습니다.|the flattened forest seen from above with a soft sunrise
+11|오늘 밤 하늘에서 별똥별을 보게 된다면, 1908년의 시베리아를 한 번 떠올려 보셔도 좋겠습니다.|a child and parent looking at a shooting star from a rooftop
+11|지금까지 퉁구스카 대폭발 이야기였습니다.|a peaceful forest at sunset with a river
+11|끝까지 함께해 주셔서 고맙습니다.|a warm closing scene, a campfire under stars
