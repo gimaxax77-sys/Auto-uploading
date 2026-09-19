@@ -1900,3 +1900,12 @@ Gim 지시는 «롱폼 생성 프로세스와 컨텐츠 시장조사 하고 보�
 - 소급: 숏 215 + 롱 1 = 216개 복사(H: 103G 사용 / 1.9T). 숏 날짜는 전부 2026-08-30 — 파일 수정일이 **새 PC 로 옮긴 날**이라 실제 제작일이 아니다.
 - H: = U100 Ultra(외장). 빠져 있으면 경고만 하고 건너뛴다. H: 의 Keystores·_자격증명_이전용 은 건드리지 않았다.
 - 테스트 test_*.py 5개 통과.
+
+# 2026-09-19 21:0x KST 작업 스케줄표 강제 — claude-guard 규칙 gpu-queue
+- 질문: work-queue 를 상시 프로세스로 띄워야 다른 세션도 타지 않나 → 아님. 대기열은 파일 하나(queue.json)라 어느 세션이든 같은 것을 본다. 상시 감시기는 사후 탐지만 하고 실행을 못 막는다.
+- 한 것: PreToolUse 게이트 `_TOOLS/claude-guard/claude-guard.mjs` 에 `gpu-queue` 규칙. GPU 실행 명령(ComfyUI main.py · 05 wanrun/bench_comfy/gate4_face/gate6_anim/gate6_seq/lora_train/st_run/st_blockswap/flf_sample run.py · 21 vfxrun · 13 longform_trial gen.py)을 대기열에 state=running 이 하나도 없으면 차단.
+- 목록 근거: 작업공간 전수 검색(8188 호출·torch import, _ENV/ComfyUI 본체 제외).
+- 판정: 명령 조각 맨 앞이 python/py/Start-Process/&/*.exe 일 때만 실행으로 본다(cat·git diff 는 통과). heredoc 본문은 제외(기록을 붙이다 2회 오탐 → 그 자리에서 고침). 대기열 파일을 못 읽으면 통과.
+- 한계: 어느 세션의 등록인지 구분 못 함 · 목록에 없는 새 GPU 스크립트는 못 잡음 · Gim 수동 실행·Codex 는 못 막음.
+- 시험: test.mjs 66/66(신규 13) · stop-check.test.mjs 28/28 · q.test.mjs 통과 · 실제 queue.json(빈 상태)으로 차단 확인.
+- 문서: 전역 CLAUDE.md work-queue 절 · _TOOLS/TOOLS.md claude-guard 줄.
