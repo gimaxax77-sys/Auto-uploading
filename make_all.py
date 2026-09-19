@@ -6,6 +6,9 @@ import sys
 
 from video import make_video, read_script
 
+sys.path.insert(0, r"D:\.CODE\AXdata\_TOOLS\content-archive")
+from archive import archive  # 완성본을 H:\AX_Contents 에 복사 보관
+
 SCRIPTS_DIR = "scripts"
 OUTPUT_DIR = "output"
 
@@ -46,6 +49,11 @@ def main() -> None:
             # 하나가 실패해도 나머지는 계속 만듭니다.
             print(f"  실패: {e}")
             failed.append(name)
+            continue
+        try:
+            archive(out, re.sub(r"^\d+_", "", name), "숏")
+        except Exception as e:
+            print(f"  보관 실패(영상은 output 에 있음): {e}")
 
     print(f"\n완료 {len(done)}개, 건너뜀 {len(skipped)}개, 실패 {len(failed)}개")
     if failed:

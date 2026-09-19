@@ -2,9 +2,13 @@
 import glob, os, subprocess, sys, time
 from tts import scenes
 
+sys.path.insert(0, r"D:\.CODE\AXdata\_TOOLS\content-archive")
+from archive import archive  # 완성본을 H:\AX_Contents 에 복사 보관
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(HERE, "out")
 MUSIC = os.path.join(HERE, "..", "music", "웅장")
+TOPIC = "퉁구스카 대폭발"
 FPS, W, H, GAP = 30, 1920, 1080, 0.45   # GAP = 장면 사이 숨(초)
 MOVES = [   # 켄번스 네 가지를 돌려 쓴다. zoompan 떨림을 줄이려 4배로 키운 뒤 움직인다
     "z='1+0.10*on/{n}':x='iw/2-iw/zoom/2':y='ih/2-ih/zoom/2'",
@@ -75,6 +79,7 @@ def main(style, limit=None):
         f"[0:v]subtitles='{srt.replace(chr(92), '/').replace(':', chr(92) + ':')}'[v]",
         "-map", "[v]", "-map", "[a]", "-c:v", "libx264", "-preset", "veryfast", "-crf", "20", "-c:a", "aac", "-b:a", "160k", "-shortest", final])
     dur = float(subprocess.check_output(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", final]).strip())
+    archive(final, TOPIC, "롱")
     print(f"{final} · {dur/60:.1f}분 · {os.path.getsize(final)/2**20:.0f}MB · 클립 {t_clips/60:.1f}분 · 전체 {(time.time()-t0)/60:.1f}분")
 
 
