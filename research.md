@@ -1909,3 +1909,12 @@ Gim 지시는 «롱폼 생성 프로세스와 컨텐츠 시장조사 하고 보�
 - 한계: 어느 세션의 등록인지 구분 못 함 · 목록에 없는 새 GPU 스크립트는 못 잡음 · Gim 수동 실행·Codex 는 못 막음.
 - 시험: test.mjs 66/66(신규 13) · stop-check.test.mjs 28/28 · q.test.mjs 통과 · 실제 queue.json(빈 상태)으로 차단 확인.
 - 문서: 전역 CLAUDE.md work-queue 절 · _TOOLS/TOOLS.md claude-guard 줄.
+
+# 2026-09-19 21:18~21:50 KST 롱폼 개선 60초 샘플 (도입부 장면 1~14)
+- 계기: Gim 시청 판정 «재생 루즈 · TTS 지루 · 이펙트 없음 · 퀄리티 낮음 → 로컬 최선이냐». 답: 아니다(1단계는 바닥선).
+- 바꾼 것(longform_trial/sample60.py): 말 속도 +10%·문장 사이 0.15초(전 -5%·0.45초) · 문장당 1~2컷 → 평균 컷 2.3~3.0초(전 5.3초) · 이펙트 5종(push·pan·punch·flash 흰 번쩍·shake 흔들림) · 공통 색감+비네트+필름 입자 · 효과음 합성(boom·rumble·whoosh, ffmpeg 소음 합성) · 그래픽 카드 3장(숫자 2150 올라가기·서울 3배·제목) · 자막 60pt · 리미터(alimiter level=false — 기본값 level=true 는 0dB 로 끌어올려 첫 시도 max 0.0dB).
+- 음성: neural2(구글 ko-KR-Neural2-C, 무료 한도 안) 50.9초 · hyunsu(edge Multilingual) 61.3초 · injoon 66.5초.
+- 그림: klein 4B 23장 장당 3.3~3.6초 · Illustrious-XL v2.0 23장 장당 7.3~7.6초(28스텝). 대기열 #1 등록→done, ComfyUI 종료·VRAM 962MiB 확인.
+- 육안: klein 은 지시를 잘 따름(공중폭발 04_0 이 이번엔 하늘에서 터짐). 결함 03_1 순록치기가 «순록 얼굴 사람»으로 나옴 · 07_0 «나비 모양 숲»을 글자 그대로 그림. Illustrious 는 색감은 풍부하나 지시 이탈 큼(애니 소녀가 4컷에 등장: 02_0·10_1·11_0·13_0, 07_0 진짜 나비).
+- 산출: out/s60/s60_{klein_neural2,klein_hyunsu,klein_injoon,illu_neural2}.mp4 · 드라이브 AX_Desk/롱폼_1단계_퉁구스카/60초샘플 · H:/AX_Contents «…_샘플_롱».
+- 미확인: 소리를 직접 듣지 못함(음량만 측정 mean -15~-16dB, peak -0.9dB). Wan 움직임 없음(램 격리 전 금지).
