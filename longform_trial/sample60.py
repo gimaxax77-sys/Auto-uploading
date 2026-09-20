@@ -1,5 +1,7 @@
 # 롱폼 개선 60초 샘플 — 도입부(장면 1~14)를 빠른 컷·이펙트·효과음·그래픽 카드로 다시 만들어 음성·그림 모델을 비교한다
-# 사용: python sample60.py tts | img <klein|illu> | build <klein|illu> <voice>   (voice = neural2 | hyunsu | injoon)
+# 사용: python sample60.py tts | img <화풍> | build <화풍> <voice>
+#       화풍 = doc(다큐 실사) · cine(영화 시네마틱) · arch(1908 흑백 기록사진) · klein(만화) · illu(애니)
+#       voice = neural2 | hyunsu | injoon
 import asyncio, os, subprocess, sys, time
 import edge_tts
 from gen import run, workflow as klein_wf
@@ -58,6 +60,15 @@ CARDS = {   # 그래픽 카드 — 숫자는 그림이 아니라 글자로 넣�
 MODELS = {
     "klein": "flat 2D cartoon illustration, clean bold outlines, soft muted color palette, cinematic documentary animation style, dramatic lighting",
     "illu": "anime illustration, detailed painted background, cinematic lighting, dramatic atmosphere, masterpiece, best quality",
+    # 실사 3종 — 같은 장면을 서로 다른 «느낌»으로 (2026-09-21, 만화풍 4편 불합격 후)
+    "doc": "documentary photograph, shot on 35mm film, natural overcast daylight, muted earth tones, photojournalism, realistic textures, sharp focus, photorealistic",
+    "cine": "cinematic film still, anamorphic widescreen, dramatic volumetric god rays, shallow depth of field, rich contrast, epic scale, color graded teal and warm amber, photorealistic, 8k",
+    "arch": "vintage photograph taken in 1908, silver gelatin print, black and white, heavy film grain, soft period lens, slight sepia tone, aged paper edges, historical archive photo, photorealistic",
+}
+GRADE = {   # 조립 단계 색감 — 화풍마다 다르게
+    "doc": "eq=saturation=0.92:contrast=1.04,vignette=PI/6,noise=alls=4:allf=t",
+    "cine": "eq=saturation=1.22:contrast=1.12,vignette=PI/5,noise=alls=3:allf=t",
+    "arch": "hue=s=0,eq=contrast=1.15:brightness=0.02,vignette=PI/4,noise=alls=7:allf=t",   # alls=14 는 53초에 806MB — 입자가 압축을 못 먹는다
 }
 NEG = "text, letters, words, watermark, signature, logo, lowres, blurry, bad anatomy, extra fingers"
 VOICES = {"neural2": ("google", "ko-KR-InJoonNeural"), "hyunsu": ("edge", "ko-KR-HyunsuMultilingualNeural"), "injoon": ("edge", "ko-KR-InJoonNeural")}
@@ -118,13 +129,19 @@ def img(model):
         if os.path.exists(dst):
             continue
         prompt, t0 = f"{p}. {MODELS[model]}", time.time()
-        wf = klein_wf(prompt + ", no text, no letters, no watermark", 2000 + n, 1536, 864, f"s60_{model}") if model == "klein" else illu_wf(prompt, 2000 + n, f"s60_{model}")
+        if model == "illu":
+            wf = illu_wf(prompt, 2000 + n, f"s60_{model}")
+        else:
+            w, h = (1920, 1088) if model in GRADE else (1536, 864)   # 실사는 원본을 크게 뽑는다
+            wf = klein_wf(prompt + ", no text, no letters, no watermark", 2000 + n, w, h, f"s60_{model}")
+            if model in GRADE:
+                wf["9"]["inputs"]["steps"] = 8                        # 4스텝은 실사에서 뭉갠다(시험: 같은 시간에 더 선명)
         run(wf, dst)
         print(f"{model} {si:02d}_{k} {time.time() - t0:.1f}s", flush=True)
 
 
 # ---- 조립 ----
-def vf_for(fx, n):
+def vf_for(fx, n, grade="eq=saturation=1.15:contrast=1.06,vignette=PI/5,noise=alls=6:allf=t"):
     base = f"scale={W*2}:{H*2}:flags=lanczos,"
     if fx == "push" or fx.startswith("card"):
         zp = f"zoompan=z='1+0.16*on/{n}':x='iw/2-iw/zoom/2':y='ih/2-ih/zoom/2'"
@@ -144,8 +161,7 @@ def vf_for(fx, n):
         for text, size, dy, col in CARDS[fx.split(":")[1]]:
             v += (f",drawtext=fontfile='{FONT}':text='{text}':fontsize={size}:fontcolor={col}:borderw=6:bordercolor=black"
                   f":x=(w-tw)/2:y=(h-th)/2+{dy}:alpha='min(1,t/0.3)'")
-    # 공통 색감 — 채도·대비 약간, 비네트, 필름 입자
-    return v + ",eq=saturation=1.15:contrast=1.06,vignette=PI/5,noise=alls=6:allf=t,format=yuv420p"
+    return v + "," + grade + ",format=yuv420p"
 
 
 def sfx(kind, path):
@@ -167,7 +183,7 @@ def build(model, voice):
         cuts = [total // len(ps) + (1 if k < total % len(ps) else 0) for k in range(len(ps))]
         for k, ((_, fx), n) in enumerate(zip(ps, cuts)):
             c = os.path.join(work, f"{si:02d}_{k}.mp4")
-            sh(["ffmpeg", "-y", "-loop", "1", "-i", os.path.join(S, f"img_{model}", f"{si:02d}_{k}.png"), "-vf", vf_for(fx, n),
+            sh(["ffmpeg", "-y", "-loop", "1", "-i", os.path.join(S, f"img_{model}", f"{si:02d}_{k}.png"), "-vf", vf_for(fx, n, *([GRADE[model]] if model in GRADE else [])),
                 "-frames:v", str(n), "-c:v", "libx264", "-preset", "veryfast", "-crf", "18", c])
             clips.append(c)
         subs.append((acc, acc + lens[si], text))
@@ -205,7 +221,9 @@ def build(model, voice):
     fc = ";".join(mix) + f";{''.join(labels)}amix=inputs={len(labels)}:duration=first:normalize=0,alimiter=limit=0.89:level=false[a];[0:v]subtitles='{subpath}'[v]"
     final = os.path.join(S, f"s60_{model}_{voice}.mp4")
     sh(["ffmpeg", "-y", "-f", "concat", "-safe", "0", "-i", os.path.join(work, "clips.txt"), *ins, "-filter_complex", fc,
-        "-map", "[v]", "-map", "[a]", "-c:v", "libx264", "-preset", "veryfast", "-crf", "18", "-c:a", "aac", "-b:a", "192k", "-shortest", final])
+        "-map", "[v]", "-map", "[a]", "-c:v", "libx264", "-preset", "veryfast",
+        "-crf", "23" if model == "arch" else "18",   # 필름 입자는 압축을 못 먹어 용량이 터진다 — 입자가 가려 주므로 arch 만 낮춘다
+        "-c:a", "aac", "-b:a", "192k", "-shortest", final])
     print(final, f"{dur(final):.1f}초 · 컷 {len(clips)}개 · 평균 {acc / len(clips):.2f}초")
 
 
