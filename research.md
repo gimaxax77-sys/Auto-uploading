@@ -1921,7 +1921,8 @@ Gim 지시는 «롱폼 생성 프로세스와 컨텐츠 시장조사 하고 보�
 
 # 2026-09-21 00:15~00:35 KST 롱폼 60초 실사 샘플 3편 (만화풍 4편 불합격 후 재생성)
 - 계기: Gim 판정 «60초 샘플 4편 전부 불합격 · 영상 자체가 퀄리티 아웃 · 다른 방법으로 실사 느낌, 서로 다른 느낌 3편».
-- 모델 조사: z_image_turbo(실사 전용)는 이 ComfyUI 버전이 CLIPLoader 형식을 지원하지 않아 못 씀(형식 28종에 z_image 없음). Illustrious 는 애니라 제외. 결국 flux-2-klein 4B 하나로 화풍을 갈랐다.
+- 모델 조사: Illustrious 는 애니라 제외. flux-2-klein 4B 하나로 화풍을 갈랐다.
+  ⚠ **정정(09-22)** — 이 자리에 «z_image 는 이 ComfyUI 가 지원하지 않는다»고 적었으나 **틀렸다.** ComfyUI 0.34.0 본체에 ZImage 정의(`comfy/supported_models.py:1202`)·전용 토크나이저(`comfy/text_encoders/z_image.py`)·int8 양자화(`comfy/quant_ops.py`)가 모두 있고, 필요한 글자 해석기 `qwen_3_4b.safetensors` 와 VAE `ae.safetensors` 도 이미 받아져 있다. CLIPLoader 형식 목록에 «z_image» 이름이 없는 것은 **z_image 가 FLUX 와 같은 Qwen3-4B 해석기를 공유해 형식 이름 없이 자동으로 갈리기** 때문이다(`comfy/sd.py:1869~1875` — clip_type 이 FLUX·FLUX2 가 아니면 z_image 경로). 목록에 이름이 없다는 것만 보고 «미지원»으로 단정한 것이 원인이다.
 - 시험: 같은 장면을 4스텝 10.4초 / 8스텝 8.2초(모델 워밍업 차). 8스텝이 더 선명해 실사는 8스텝·1920x1088 로 고정(전 4스텝·1536x864).
 - 화풍 3종(sample60.py MODELS·GRADE): doc=다큐 사진(35mm·흐린 자연광·저채도) · cine=영화 한 장면(아나모픽·빛내림·얕은 심도·청록 대 호박) · arch=1908 흑백 기록사진(은염 인화·입자·세피아).
 - 결과: 3편 모두 53.0초 · 컷 23개 · 평균 2.31초. 음량 mean -15.5dB, peak -1.0/-0.8dB. 그림 69장.
@@ -1930,3 +1931,42 @@ Gim 지시는 «롱폼 생성 프로세스와 컨텐츠 시장조사 하고 보�
 - 산출: out/s60/s60_{doc,cine,arch}_neural2.mp4 · sheet_real.jpg · 드라이브 AX_Desk/롱폼_1단계_퉁구스카/60초샘플_실사 · H:/AX_Contents 3건.
 - 미확인: 소리 직접 청취 없음(음량만). 인물 얼굴이 시베리아 원주민이 아니라 유럽계로 나온다(프롬프트에 민족 지정 없음). Wan 움직임 없음(램 격리 전 금지).
 - 대기열 #1 등록→done · ComfyUI 종료·포트 닫힘·VRAM 604MiB 확인 · 테스트 5개 통과.
+
+## z_image turbo 실사 비교 시험 (2026-09-22)
+
+### 왜 했나
+09-22 점검에서 «ComfyUI 0.34.0 이 이미 z_image 를 지원한다»를 소스로 확인했으나 **실제로 한 장도 뽑아 본 적이 없었다.**
+승인받은 klein 시네마틱으로 20분 전편을 가기 전에, z_image 가 더 나은지 한 번 재고 넘어가기로 했다.
+
+### 방법
+- 대기열 #4 확보(앞선 axdata_30_slime #2·#3 은 그 세션이 스스로 `done` 처리 — 이미 끝난 작업인데 `done` 번호를 잘못 넣어 남아 있던 것).
+- `longform_trial/zprobe.py` — 승인받은 시네마틱 프롬프트·화풍·해상도(1920x1088)를 **그대로** 쓰고 모델만 바꿔 4장.
+  - 워크플로 — UNETLoader `z_image_turbo_int8_convrot.safetensors` · CLIPLoader `qwen_3_4b.safetensors` type `lumina2` · VAELoader `ae.safetensors` · EmptySD3LatentImage · KSampler(euler/simple, steps 8, cfg 1.0).
+  - CLIPLoader 의 type 은 **flux·flux2 만 아니면 무엇이든** z_image 경로로 붙는다(`comfy/sd.py:1869~1875`). 목록에 `z_image` 라는 이름이 없는 이유가 이것이다.
+  - ZImage 는 Lumina2 를 상속하고 latent_format 이 Flux(16채널)라 `EmptySD3LatentImage` 가 맞다(`comfy/supported_models.py:1173,1202`).
+- 고른 네 컷 — 풍경(00_0) · 사람 얼굴(03_1) · 공중폭발(04_0) · 쓰러진 숲(06_0). 약점이 갈리는 지점을 골랐다.
+- 비교 시트 `out/zprobe/sheet_zimage.jpg` (윗줄 klein · 아랫줄 z_image). G드라이브 `AX_Desk/롱폼_1단계_퉁구스카/z_image_비교/` 에 사본.
+
+### 결과 — z_image 탈락
+| 항목 | klein 4B (승인본) | z_image turbo |
+|---|---|---|
+| 1장 생성 시간 | **8.2초** | **25.7~31.7초** (약 3.4배) |
+| 공중폭발 | 하늘 높이 뜬 불덩이 — **맞다** | **땅에서 솟은 버섯구름 — 틀렸다** |
+| 풍경 | 선명, 해 뜨는 방향 뚜렷 | 부드럽지만 안개에 묻힘 |
+| 쓰러진 숲 | 쓰러진 줄기가 읽힘 | 대부분 연기, 형체 불명 |
+
+- 퉁구스카의 핵심은 **공중폭발**인데 z_image 는 지상 핵폭발 도상으로 그렸다. 프롬프트에 "high up in the sky ... the ground below untouched" 가 그대로 들어 있는데도 그랬다.
+- 속도까지 3.4배 느리다. 390장이면 klein 53분 대 z_image 3시간이다. **채택하지 않는다.**
+
+### ⛔ 함께 드러난 것 — 승인본에 «머리에 뿔 달린 사람»이 남아 있다
+- `out/s60/img_cine/03_1.png` — 털옷 입은 사람들의 머리에 **순록 뿔과 사슴 귀**가 달려 있다. 승인받은 60초 샘플 4초 지점에 그대로 들어가 있다.
+  ⚠ 09-21 에 내가 «순록 얼굴 결함이 해소됐다»고 적은 것은 **틀렸다.** 축소 시트로만 보고 단정했다. 원본을 열었어야 했다.
+- 원인 — 프롬프트 `reindeer herders in fur clothes` 에서 `reindeer` 가 사람에게 붙는다. 모델 문제가 아니라 낱말 문제다.
+- 교정 시험(`out/zprobe/sheet_fix.jpg`, klein 8.8~12.5초) — 사람과 동물을 **문장에서 떼면** 사라진다.
+  - 채택안 → `a group of Evenki nomad men and women in thick fur coats and fur hats, looking up at the sky in shock, a few domestic reindeer standing behind them, Siberian forest`
+  - 부수 효과 — 얼굴이 유럽계에서 **시베리아 원주민 인상**으로 바뀌었다. 09-21 에 남겨 둔 «얼굴이 시베리아 원주민이 아니다» 항목도 같은 한 줄로 해소된다.
+  - 탈락안 → `Siberian indigenous people ...` 는 뿔은 사라지나 배경이 **설산**이 된다(사건은 6월 30일이라 틀렸다).
+
+### 남은 것
+- 20분 전편은 **klein 시네마틱 유지**. `build20.py` 는 그대로 쓰되 `sample60.SHOTS` 의 04번째 장면 두 번째 컷 프롬프트를 위 채택안으로 고치고, 그 그림 한 장만 다시 뽑는다.
+- 210장면 전체 프롬프트에 `reindeer herders`·유사 표현이 더 있는지 훑어야 한다(아직 안 봤다).
