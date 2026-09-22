@@ -1,15 +1,57 @@
 # 1단계 시험 — 장면 그림을 로컬 ComfyUI(FLUX.2 klein 4B distilled)로 만든다. 사용: python gen.py <화풍키> <장면번호들|all> [--w 1536 --h 864]
-import json, os, shutil, sys, time, urllib.request
+import json, os, re, shutil, sys, time, urllib.request
 from tts import scenes
 
 HOST = "http://127.0.0.1:8188"
 COMFY_OUT = "D:/.CODE/AXdata/_TOOLS/ComfyUI/output"
 HERE = os.path.dirname(os.path.abspath(__file__))
-NO_TEXT = "no text, no letters, no words, no watermark"
+NO_TEXT = "no text, no letters, no words, no numbers, no watermark, no signature, no caption"
 STYLES = {
     "flat": "flat 2D cartoon illustration, clean bold outlines, simple shapes, soft muted color palette, educational documentary animation style",
     "book": "hand-drawn storybook illustration, ink lines with warm watercolor wash, textured paper, gentle cinematic lighting",
 }
+
+# ── 프롬프트 규칙층 ────────────────────────────────────────────────────────────
+# 장면 설명에 조건별 문장을 얹어 되풀이되는 결함을 막는다. 방식(층을 순서대로 덧붙이기)은
+# 아트스튜디오(09) app/services/gemini_service.py:160~210 에서 가져왔고 문장은 다큐용으로 다시 썼다.
+# 막으려는 것 — ① 공중폭발을 지상폭발로 그림 ② 인물이 장면마다 딴사람 ③ 가짜 글자
+#              ④ 동물 낱말이 사람에게 붙음(순록치기 → 머리에 뿔) ⑤ 시대·민족 이탈
+ERA = ("Period and place: 1908 in the remote Siberian taiga of the Russian Empire, period-accurate clothing; "
+       "any indigenous people are Evenki with East Asian facial features")
+ONE_HEAD = ("each person has exactly one human head and one human body, "
+            "no antlers, horns or animal ears on any person, no duplicated faces")
+# 이 이야기의 폭발은 언제나 공중이다. ⚠ «blast» 는 충격파를 뜻하는 자리가 많아(바람·아래로 누르는) 방아쇠에서 뺐다.
+AIRBURST = ("the explosion is a fireball hanging high in the open sky with clear air beneath it, "
+            "never a mushroom cloud and never touching the ground")
+# 이름난 인물은 묘사를 고정해 장면마다 같은 사람으로 나오게 한다(현황판 에셋 탭의 «머리글 고정»).
+# ⚠ 영문 그림 설명에는 이름이 한 번도 안 나오고 «a scientist» 로만 적혀 있다(실측). 그래서 **한국어 내레이션**으로 가른다 —
+#    영문의 scientist 로 가르면 현대 연구자 장면(132·186 등)에까지 1908년 인물 얼굴이 박힌다.
+ANCHOR = {
+    "쿨릭": "Leonid Kulik, a Russian scientist in his forties with a short dark beard, round wire-rimmed glasses, "
+           "a heavy canvas field coat and a flat cap",
+}
+# 동물 낱말이 사람 낱말을 꾸미면 모델이 사람에게 뿔을 단다. 문장에서 떼어 놓는다.
+SPLIT = [(r"\breindeer (herders?|people|men|women|families|tribe)\b", r"\1 with their reindeer")]
+PEOPLE = (r"\b(people|persons?|m[ae]n|wom[ae]n|herders?|villagers?|crowd|famil(y|ies)|scientists?|hunters?"
+          r"|witnesses?|children|boys?|girls?|workers?|soldiers?|peasants?|figures?)\b")
+BLAST = r"\b(explosions?|fireballs?|detonations?|explod(es|ing))\b"
+
+
+def build(desc, style, ko=""):
+    """장면 설명·화풍·그 장면의 한국어 내레이션을 받아 최종 프롬프트를 만든다. 규칙층을 순서대로 얹는다."""
+    p = desc.strip().rstrip(".")
+    for pat, rep in SPLIT:
+        p = re.sub(pat, rep, p, flags=re.I)
+    for key, who in ANCHOR.items():
+        if key in ko and who not in p:
+            p = f"{who}. {p}"
+    parts = [p, style]
+    if re.search(PEOPLE, p, re.I):
+        parts += [ONE_HEAD, ERA]
+    if re.search(BLAST, p, re.I):
+        parts.append(AIRBURST)
+    parts += [NO_TEXT, f"entirely rendered as {style.split(',')[0]}, no other rendering style"]
+    return ". ".join(parts)
 
 
 def api(path, body=None):
@@ -61,7 +103,7 @@ def main(argv):
         dst = os.path.join(out, f"{i:03d}.png")
         if os.path.exists(dst):
             continue
-        prompt = f"{rows[i-1][2]}. {STYLES[style]}, {NO_TEXT}"
+        prompt = build(rows[i - 1][2], STYLES[style], rows[i - 1][1])
         t0 = time.time()
         run(workflow(prompt, 1000 + i, w, h, f"lf_{style}_{i:03d}"), dst)
         dt = time.time() - t0
