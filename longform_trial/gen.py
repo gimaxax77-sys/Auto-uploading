@@ -32,9 +32,15 @@ ANCHOR = {
 }
 # 동물 낱말이 사람 낱말을 꾸미면 모델이 사람에게 뿔을 단다. 문장에서 떼어 놓는다.
 SPLIT = [(r"\breindeer (herders?|people|men|women|families|tribe)\b", r"\1 with their reindeer")]
-PEOPLE = (r"\b(people|persons?|m[ae]n|wom[ae]n|herders?|villagers?|crowd|famil(y|ies)|scientists?|hunters?"
-          r"|witnesses?|children|boys?|girls?|workers?|soldiers?|peasants?|figures?)\b")
+PEOPLE = (r"\b(people|persons?|m[ae]n|wom[ae]n|herders?|villagers?|crowd|famil(y|ies)|scientists?|researchers?"
+          r"|hunters?|witnesses?|children|boys?|girls?|workers?|soldiers?|peasants?|figures?|nomads?"
+          r"|expedition|crew|team|guides?|riders?|officials?)\b")
 BLAST = r"\b(explosions?|fireballs?|detonations?|explod(es|ing))\b"
+# ⛔ 오늘날을 그리는 장면에 1908 옷을 입히면 안 된다. 전후 비교에서 실제로 현대 연구자가 모피 차림으로 나왔다.
+MODERN = (r"\bmodern\b|\btoday\b|\bcontemporary\b|\bsimulation\b|\b3D\b|\bcomputer\b|\blaptop\b|\bscreen\b"
+          r"|오늘날|지금도|현대|요즘|최근|지금 과학자")
+# ⛔ 폭발을 «그린 것»(시뮬레이션·모형)을 말하는 장면에 위 문장을 붙이면 화면이 진짜 폭발로 바뀐다. 전후 비교에서 2장면이 그렇게 됐다.
+MOCK = r"\b(simulations?|models?)\b"
 
 
 def build(desc, style, ko=""):
@@ -47,8 +53,10 @@ def build(desc, style, ko=""):
             p = f"{who}. {p}"
     parts = [p, style]
     if re.search(PEOPLE, p, re.I):
-        parts += [ONE_HEAD, ERA]
-    if re.search(BLAST, p, re.I):
+        parts.append(ONE_HEAD)
+        if not re.search(MODERN, p + " " + ko, re.I):
+            parts.append(ERA)
+    if re.search(BLAST, p, re.I) and not re.search(MOCK, p, re.I):
         parts.append(AIRBURST)
     parts += [NO_TEXT, f"entirely rendered as {style.split(',')[0]}, no other rendering style"]
     return ". ".join(parts)

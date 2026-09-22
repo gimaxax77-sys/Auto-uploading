@@ -38,7 +38,7 @@
 10|과학자들은 지금도 이곳을 찾아 흙과 나무를 조사합니다.|modern researchers with backpacks taking samples in a forest
 10|그리고 아직 풀리지 않은 질문들도 남아 있습니다.|a scientist looking thoughtfully at a misty forest
 10|정확히 얼마나 큰 돌이었는지는 아직 논쟁 중입니다.|two different sized rocks on a scale, balance tilting
-10|폭발의 힘도 연구마다 다르게 나옵니다.|scientists comparing different glowing explosion models
+10|폭발의 힘도 연구마다 다르게 나옵니다.|modern scientists comparing different glowing explosion models
 10|돌의 조각이 어디로 갔는지도 확실히 밝혀지지 않았습니다.|tiny fragments scattering into the wind over a forest
 10|퉁구스카는 여전히 진행 중인 과학 이야기입니다.|a young scientist walking into a misty forest with a backpack
 11|이제 처음 질문으로 돌아가 보겠습니다.|the same dawn forest from the beginning, calm river

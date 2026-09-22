@@ -38,4 +38,13 @@ assert ANCHOR["쿨릭"] not in build("a modern scientist watching a glowing 3D s
 for q in (p, land, k1):
     assert NO_TEXT in q and "no other rendering style" in q
 
+# ⛔ 오늘날을 그리는 장면에는 1908 문장을 붙이지 않는다(전후 비교에서 현대 연구자가 모피 차림으로 나왔다)
+mod = build("modern researchers with backpacks taking samples in a forest", S, "과학자들은 지금도 이곳을 찾습니다.")
+assert ONE_HEAD in mod and ERA not in mod, mod
+assert ERA not in build("scientists agreeing and smiling around a table", S, "이것이 지금 과학자들이 받아들이는 설명입니다.")
+# 1908 장면은 그대로 붙는다
+assert ERA in build("a scientist digging in a swamp", S, "쿨릭은 운석을 찾으려고 늪을 팠습니다.")
+# ⛔ 폭발을 «그린 것»(시뮬레이션·모형)은 진짜 폭발로 바꾸지 않는다
+assert AIRBURST not in build("a modern scientist watching a glowing 3D simulation of an explosion", S, "최근 계산에서는")
+assert AIRBURST not in build("modern scientists comparing different glowing explosion models", S, "연구마다 다르게 나옵니다.")
 print("통과")
