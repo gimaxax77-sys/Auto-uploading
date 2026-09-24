@@ -1,6 +1,7 @@
 # 참조 이미지 시험 — klein 4B 가 참조 그림(ReferenceLatent)으로 같은 얼굴을 지키는지, 글 묘사만 쓴 경우와 나란히 비교한다
 # 사용: python refprobe.py        (참조 1장 + 참조 사용 3장 + 글만 3장 + 비교 시트)
 #       python refprobe.py two    (참조 2장 — 두 사람 한 장면 3컷 + 글만 3컷 + 비교 시트)
+#       python refprobe.py face   (표정 4종 — 주인 참조·주인 글만·손님 참조 + 비교 시트)
 import os, shutil, sys, time
 
 import sample60 as S6
@@ -27,10 +28,10 @@ def tail(p):
     return f"{p}. {STYLE}. {NO_TEXT}"
 
 
-def ref_wf(prompt, seed, tag):
+def ref_wf(prompt, seed, tag, img=REF_IN):
     """gen.workflow 에 참조 그림을 얹는다 — 불러오기 → VAE 부호화 → ReferenceLatent 를 긍정 조건에 붙임"""
     wf = workflow(prompt, seed, W, H, tag)
-    wf["20"] = {"class_type": "LoadImage", "inputs": {"image": REF_IN}}
+    wf["20"] = {"class_type": "LoadImage", "inputs": {"image": img}}
     wf["21"] = {"class_type": "VAEEncode", "inputs": {"pixels": ["20", 0], "vae": ["3", 0]}}
     wf["22"] = {"class_type": "ReferenceLatent", "inputs": {"conditioning": ["4", 0], "latent": ["21", 0]}}
     wf["7"]["inputs"]["positive"] = ["22", 0]
@@ -113,5 +114,41 @@ def main2():
     print(f"시트 {sheet} (윗줄 참조 2장 사용 · 아랫줄 글만)")
 
 
+# ── 표정 — 참조가 무표정까지 복사해 감정이 굳는지. 주인(참조) · 주인(글만) · 손님(참조) 세 줄 ──────────
+EXPR = [
+    "laughing loudly with {p} mouth wide open and eyes squeezed shut, head tilted back",
+    "crying, tears streaming down {p} cheeks, eyebrows raised in grief, mouth trembling",
+    "furious, shouting with {p} mouth open, eyebrows sharply furrowed, fists clenched",
+    "shocked, eyes wide open, mouth agape, both hands raised beside {p} face",
+]
+
+
+def main3():
+    inp = os.path.join(os.path.dirname(COMFY_OUT), "input")
+    shutil.copy(os.path.join(OUT, "ref.png"), os.path.join(inp, REF_IN))
+    shutil.copy(os.path.join(OUT, "ref2.png"), os.path.join(inp, REF2_IN))
+    shot = "close-up, inside the curio shop"
+    for k, ex in enumerate(EXPR, 1):
+        m, w = ex.format(p="his"), ex.format(p="her")
+        jobs = (("s", ref_wf(tail(f"The same man as in the reference image, same face, hair, spectacles and coat, now {m}, {shot}"), 3200 + k, f"refprobe_s{k}")),
+                ("t", workflow(tail(f"{WHO}, {m}, {shot}"), 3200 + k, W, H, f"refprobe_t{k}")),
+                ("w", ref_wf(tail(f"The same woman as in the reference image, same face, hair, hairpin and cardigan, now {w}, {shot}"), 3200 + k, f"refprobe_w{k}", REF2_IN)))
+        for kind, wf in jobs:
+            dst = os.path.join(OUT, f"{kind}{k}.png")
+            if os.path.exists(dst):
+                continue
+            t0 = time.time()
+            run(wf, dst)
+            print(f"{kind}{k} {time.time()-t0:.1f}s", flush=True)
+    # 시트 — 줄마다 참조 + 표정 4장 (주인 참조 / 주인 글만 / 손님 참조)
+    names = ["ref", "s1", "s2", "s3", "s4", "ref", "t1", "t2", "t3", "t4", "ref2", "w1", "w2", "w3", "w4"]
+    ins = [x for n in names for x in ("-i", os.path.join(OUT, f"{n}.png"))]
+    lay = "|".join(f"{'+'.join(f'w{j}' for j in range(i % 5)) or 0}_{'+'.join(f'h{j}' for j in range(0, i // 5 * 5, 5)) or 0}" for i in range(15))
+    fc = "".join(f"[{i}:v]scale=640:-1[v{i}];" for i in range(15)) + "".join(f"[v{i}]" for i in range(15)) + f"xstack=inputs=15:layout={lay}"
+    sheet = os.path.join(OUT, "sheet_expr.jpg")
+    S6.sh(["ffmpeg", "-y", *ins, "-filter_complex", fc, "-frames:v", "1", "-q:v", "3", sheet])
+    print(f"시트 {sheet} (줄: 주인 참조 · 주인 글만 · 손님 참조 / 열: 참조·웃음·울음·분노·놀람)")
+
+
 if __name__ == "__main__":
-    main2() if sys.argv[1:] == ["two"] else main()
+    {"two": main2, "face": main3}.get(sys.argv[1] if sys.argv[1:] else "", main)()
