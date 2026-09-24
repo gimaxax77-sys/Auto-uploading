@@ -1,6 +1,7 @@
 # 참조 이미지 시험 — klein 4B 가 참조 그림(ReferenceLatent)으로 같은 얼굴을 지키는지, 글 묘사만 쓴 경우와 나란히 비교한다
-# 사용: python refprobe.py   (참조 1장 + 참조 사용 3장 + 글만 3장 + 비교 시트)
-import os, shutil, time
+# 사용: python refprobe.py        (참조 1장 + 참조 사용 3장 + 글만 3장 + 비교 시트)
+#       python refprobe.py two    (참조 2장 — 두 사람 한 장면 3컷 + 글만 3컷 + 비교 시트)
+import os, shutil, sys, time
 
 import sample60 as S6
 from gen import COMFY_OUT, NO_TEXT, STYLES, run, workflow
@@ -61,5 +62,56 @@ def main():
     print(f"시트 {sheet} (윗줄 참조 사용 · 아랫줄 글만)")
 
 
+# ── 참조 2장 — 두 사람이 한 장면에 나올 때 각자 얼굴을 지키는지, 서로 섞이지 않는지 ──────────────
+# 성별·나이·색을 주인과 정반대로 잡아 섞이면 바로 보이게 한다
+WHO2 = ("a young Korean woman with a short black bob haircut, a single red hairpin, freckles across her nose, "
+        "wearing a mustard-yellow cardigan over a white blouse")
+REF2 = f"Waist-up portrait of {WHO2}, standing in a plain sunlit room, facing the viewer"
+REF2_IN = "refprobe_ref2.png"
+DUO = [
+    "the young woman places a small wooden box on the shop counter while the old shopkeeper leans in to look at it, inside the curio shop, medium shot",
+    "the old shopkeeper hands the young woman a glowing pocket watch across the counter, close two-shot, warm lamplight",
+    "the old shopkeeper and the young woman standing side by side outside the shop door on a snowy night street, full body",
+]
+
+
+def duo_wf(prompt, seed, tag):
+    """참조 두 장을 ReferenceLatent 두 번 이어 붙인다(1번 = 주인, 2번 = 손님)"""
+    wf = ref_wf(prompt, seed, tag)
+    wf["23"] = {"class_type": "LoadImage", "inputs": {"image": REF2_IN}}
+    wf["24"] = {"class_type": "VAEEncode", "inputs": {"pixels": ["23", 0], "vae": ["3", 0]}}
+    wf["25"] = {"class_type": "ReferenceLatent", "inputs": {"conditioning": ["22", 0], "latent": ["24", 0]}}
+    wf["7"]["inputs"]["positive"] = ["25", 0]
+    return wf
+
+
+def main2():
+    ref, ref2 = os.path.join(OUT, "ref.png"), os.path.join(OUT, "ref2.png")
+    if not os.path.exists(ref2):
+        run(workflow(tail(REF2), 3100, W, H, "refprobe_ref2"), ref2)
+    inp = os.path.join(os.path.dirname(COMFY_OUT), "input")
+    shutil.copy(ref, os.path.join(inp, REF_IN))
+    shutil.copy(ref2, os.path.join(inp, REF2_IN))
+    for k, scene in enumerate(DUO, 1):
+        a = ("The old shopkeeper is exactly the man from the first reference image and the young woman is exactly "
+             f"the woman from the second reference image, each keeping their own face, hair and clothes; {scene}")
+        b = f"The old shopkeeper is {WHO}. The young woman is {WHO2}. {scene}"
+        for kind, wf in (("c", duo_wf(tail(a), 3100 + k, f"refprobe_c{k}")), ("d", workflow(tail(b), 3100 + k, W, H, f"refprobe_d{k}"))):
+            dst = os.path.join(OUT, f"{kind}{k}.png")
+            if os.path.exists(dst):
+                continue
+            t0 = time.time()
+            run(wf, dst)
+            print(f"{kind}{k} {time.time()-t0:.1f}s", flush=True)
+    # 시트 — 윗줄 참조1·참조2·c1·c2·c3 · 아랫줄 참조1·참조2·d1·d2·d3
+    names = ["ref", "ref2", "c1", "c2", "c3", "ref", "ref2", "d1", "d2", "d3"]
+    ins = [x for n in names for x in ("-i", os.path.join(OUT, f"{n}.png"))]
+    lay = "|".join(f"{'+'.join(f'w{j}' for j in range(i % 5)) or 0}_{'h0' if i >= 5 else 0}" for i in range(10))
+    fc = "".join(f"[{i}:v]scale=640:-1[v{i}];" for i in range(10)) + "".join(f"[v{i}]" for i in range(10)) + f"xstack=inputs=10:layout={lay}"
+    sheet = os.path.join(OUT, "sheet_duo.jpg")
+    S6.sh(["ffmpeg", "-y", *ins, "-filter_complex", fc, "-frames:v", "1", "-q:v", "3", sheet])
+    print(f"시트 {sheet} (윗줄 참조 2장 사용 · 아랫줄 글만)")
+
+
 if __name__ == "__main__":
-    main()
+    main2() if sys.argv[1:] == ["two"] else main()
