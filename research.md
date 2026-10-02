@@ -2277,3 +2277,73 @@ F 선택·분기 — 전례를 못 찾음. 기록만
 **권고(채팅 보고)** — ① A-1 「이름 없는 가게」 틀 유지 + 손님을 «기묘한 물건·괴담 거래»로 교체(참조 캐릭터 시험 결과 그대로 씀) ② «만약에» 과학 다큐(캐릭터 불필요, 썸네일=불가능한 한 장면). 다음 단계로 후보별 썸네일 시안 3장씩 로컬 생성해 Gim 판정 제안.
 
 **추가 수집(02:20~)** — 구글 올해의 검색어 2025 한국 · 유튜브 트렌드 리포트 2026(PDF 원문, 팬덤 풀이 시청 71%) · 유튜브 블로그 리미널(«backrooms» 제목 8개월 20억 회+) · 플레이보드 급상승 · 녹스 24시간 · 구글 실시간 RSS(뉴스뿐, 소재로 무용). 아이템 15개·상위 5는 `longform_trial/stories/01_아이템_수집_0926.md`. 상위: 한국판 백룸 · 케데헌 신화→요괴 도감 · 기묘한 가게 · 만약에 지구 · 창작 타임슬립.
+
+## 2026-10-01 09:35~09:40 — 결과 보고 덩어리 한 줄 45자 (Gim «40줄마다 45줄 내로 줄바꿈, 항상»)
+- 해석 확인(선택박스) → 한 줄 40자쯤 끊고 45자 상한. 줄 상한은 처음 «15줄 유지» 선택.
+- `_TOOLS/claude-guard/stop-check.mjs` 에 45자 검사 추가(언어 표시 붙은 ```bash 울타리는 제외), `stop-check.test.mjs` 에 시험 3건(46자 막음·45자 통과·bash 통과)과 REPORT 고정값을 짧은 줄로.
+- 같은 시각 다른 세션이 같은 지시로 같은 파일을 고치며 줄 상한을 15→40 으로 올림(09:37). 내 45자 검사는 그대로 쓰임. 시험 52/52 통과(그 세션 수정 포함 상태).
+- Gim 재선택 «40줄 그대로» → 이 세션은 더 손대지 않음. 루트 CLAUDE.md 7번 문구·커밋은 그 세션 몫(_TOOLS 저장소에 23 세션의 미커밋 변경도 섞여 있어 내가 커밋하지 않음).
+- 09:45 멤 기록 — 루트 키에 `concurrent-sessions-same-workspace.md` 두 번째 사례(공용 게이트 동시 수정) 추가, `d-drive-cleanup-candidates.md` 새로(09-27 D 드라이브 실측·3등급, Gim 결정 대기). 루트 색인 21,499자(한도 25,000자의 86%)·134줄, 고아 0.
+
+## 2026-10-01 09:53~10:10 — 사용량 줄 게이트 확장 (Gim «작업결과 정리 후 usage 를 썼는지 게이트»)
+- 계기: 09:45 멤 기록 보고가 표만 써서 울타리 판정(stop-check.mjs 옛 210줄 «``` + 400자 + 안 잼»)을 빠져나가 사용량 줄이 빠짐.
+- 바꾼 것(`_TOOLS/claude-guard/stop-check.mjs`): 보고 = 400자 초과 + (울타리 | 마크다운 표 | 이 턴 파일 편집 | research.md 기록). 통과 조건 = 잼 + 마지막 답에 «주간 N%» 와 «턴당/턴마다/반복 청구/다시 청구» 가 함께. 메시지는 «안 잼» / «잼, 줄 없음» 으로 갈림.
+- 덤으로 고친 빈틈: 턴당 값 실측 대조 정규식이 «턴당 반복 청구» 만 잡아 내 표기 «턴마다 다시 청구되는 양» 보고는 대조를 안 거쳤음 → 둘 다 잡게.
+- 시험: stop-check 52→58 통과(표 보고 측정 없음 막음 · 쟀지만 줄 없음 막음 · 표+측정+줄 통과 · 짧은 표 답 통과 · 턴마다 표기 막음/통과), claude-guard 130/130. 커밋 212c186 + 후속 fix(_TOOLS 저장소, 23 세션의 미커밋 claude-guard.mjs·test.mjs 는 안 섞음).
+- 로그 재생(전 AXdata 키 7일 jsonl 28개, 8,763턴, 스크래치 replay.py): 옛 규칙 울림 597 → 새 규칙 2,029(+1,432, 전체 턴의 약 16%). 표본 12개는 전부 «작업 결과 보고인데 사용량 줄 없음» 꼴(회신 전달·반영 완료·판정판 링크 등) = 규칙 6 기준 참 위반으로 읽힘. ⚠ 옛 울림 597 이 왜 이렇게 많은지(막힌 뒤 고쳐 쓴 턴을 어떻게 세는지)는 미확인 — 재생 수치는 상대 비교로만 씀.
+- 영향: 당분간 보고 턴마다 한 번 더 막히는 일이 늘 수 있음(막히면 사용량을 재고 한 줄 붙이면 끝). 루트 CLAUDE.md 답변·기록 6번 문구에 «그 줄을 안 쓰고 · 울타리·표·파일 고친 턴» 반영.
+
+## 2026-10-02 22:50 — 영상 생성 툴 벤치 (Gim «상용 툴 상세 벤치 → 정리 → 영상 생성 툴 개발 계획»)
+- 범위(선택박스): 자동 영상 제작기 + AI 영상 모델 둘 다, 목표 = 지금 PC 로컬 생성. 조사 = Sonnet 서브 3개 병렬(Gim 승인), 토큰 128k·151k·258k.
+- 결과물: `PLAN_VIDEOGEN.md` (초안 v1). 아래는 근거 요약과 출처. ⚠ 서브가 웹 요약으로 모은 수치이며 원문 대조는 일부만 — 가격·라이선스는 실행 전 공식 페이지 재확인.
+
+### A. 상용 자동 제작기 11곳 (조사 2026-10-02)
+- InVideo AI: 에이전트(대본·스토리보드·생성·편집), 스톡 1,600만+생성 모델 200+, 채팅+타임라인, 프로젝트 Context 공통 기억. $20/36/75(연간, 크레딧 400/2,000/5,000, 이월 없음). 크레딧 소모·환불 불만. https://invideo.io/pricing · https://invideo.io/agent-two/
+- Pictory: 문장 단위 장면 분할, 장면별 소재 교체, 최대 30분(리뷰), API 있음. $29/59/199, 영상 200/600/1,800분. «단어만 맞추고 의미는 못 맞춘다» 불만. https://pictory.ai/pricing · https://docs.pictory.ai/
+- Fliki: 장면 태그([Scene]/[Visual: …]), 80+ 언어 TTS(한국어 포함), 5/15/40분. 월 가격 공식 미확인(리뷰 $28~88). 실패 생성도 차감. https://fliki.ai/pricing
+- Vrew: 주제 한 줄→대본·이미지, 텍스트 편집, 무음 제거. 통합 크레딧 무료 200 · Light 14,900원(2,000) · Standard 23,900원(10,000). API 미확인. https://vrew.ai/ko/feature/text-to-video/
+- CapCut: 대본→초안(리뷰 «초안 수준»), 단어 강조 자막, Pro $19.99. 한국어 TTS 미확인. https://www.eesel.ai/blog/capcut-pricing
+- VEED: 외부 모델(Veo 3.1·Kling·Sora 2·Seedance) 선택, Fabric 말하는 영상 API, $19/29. https://www.veed.io/api
+- HeyGen: 아바타·립싱크, $29/49/149, 종량 API. https://www.heygen.com/pricing
+- Revid.ai: 최대 35분, 바이럴 분석 리믹스, 예약 게시, REST·MCP·CLI, $39~199, 캐릭터 변형 불만. https://www.revid.ai/pricing
+- Visla $18(텍스트 1초≈1크레딧) · Steve AI $10~40(캐릭터 300+) · Opus Clip $15/29(1크레딧=원본 1분, 클립 20~40% 폐기 리뷰). https://www.visla.us/pricing · https://app.steve.ai/pricing · https://www.opus.pro/pricing
+- 공통: 장면 분할+자동 매칭+장면별 교체 · AI 내레이션 · 단어 강조 자막 · 다중 화면비 · 크레딧제. 공통 불만: 스톡 의미 불일치(Pictory·Fliki·InVideo·CapCut). **소재 관련성 자동 검사를 공식 문서에 둔 곳 0.**
+
+### B. 상용 영상 모델 (2026-10 기준)
+- Gemini Omni 1.1 Flash(Veo 후속): 10초·누적 40초·720p, 소리, 캐릭터 일관성, $0.10/초. Veo 3.1: Standard $0.40·Fast $0.10~0.12·Lite $0.05~0.08/초. https://ai.google.dev/gemini-api/docs/pricing
+- Sora 2: 앱 2026-04-26·API 2026-09-24 종료. https://www.opus.pro/blog/best-sora-2-alternatives-after-openai-shutdown
+- Runway Gen-4.5 $0.12/초 · Aleph 2.0 $0.28 · Act-Two $0.05. Kling 3.0 Omni: 참조 이미지 9·영상 3·소리 3, 멀티샷, $0.084~0.42/초. MiniMax H3(07-31): 2K·4~15초·소리, $0.08~0.13/초. Seedance 2.5: 30초 한 컷·참조 50. Luma Ray 3.2: 20초·1080p·키프레임 16. Pika 2.5 $0.04~0.06/초. Midjourney Video 5~21초·소리 없음.
+- 아레나(Artificial Analysis, 2026-08 페이지 확인): I2V 1 H3 Max 1195 · 2 MiniMax H3 1181(오픈) · 3 Gemini Omni Flash 1178 · 4 Seedance 2.0 1176 · 9 MAGI-2 Preview 1093(오픈) · 11 Veo 3.1 1082. 오픈은 상위 20 안에 H3·MAGI-2 둘뿐, LTX-2.5 Fast 22위. https://artificialanalysis.ai/video/leaderboard/image-to-video
+
+### C. 로컬 공개 모델 (16GB VRAM 관점)
+- Wan 2.2: Apache 2.0. 16GB 는 GGUF/fp8+오프로드. lightx2v 4스텝 LoRA(Apache). ComfyUI 네이티브. Wan 2.5~3.0 가중치 공개는 공식 근거 없음. https://github.com/Wan-Video/Wan2.2 · https://huggingface.co/lightx2v/Wan2.2-Distill-Loras
+- LTX-2.3/2.5: 22B 영상+소리, Community License(연매출 1,000만 달러 미만 무료), distilled 8스텝, 업스케일러, GGUF Q4 13~16.5GB·Q3 9.7~13.5GB, ComfyUI 네이티브(T2V·I2V·FLF2V·립싱크). https://huggingface.co/Lightricks/LTX-2.3 · https://huggingface.co/unsloth/LTX-2.3-GGUF
+- HunyuanVideo 1.5: 라이선스가 EU·영국·**한국** 제외 → 불가. MiniMax H3 공개판: 미국·EU·영국·**한국** 제외 → 불가. https://huggingface.co/tencent/HunyuanVideo-1.5 · https://huggingface.co/MiniMaxAI/MiniMax-H3
+- FramePack: Apache 2.0 코드, HunyuanVideo 기반(원 모델 라이선스 확인 필요), 6GB 에서 60초. https://github.com/lllyasviel/FramePack
+- SkyReels V3(라이선스 미확인) · CogVideoX(2B Apache, 5B 자체 라이선스) · MAGI-2(307GB, 불가) · Mochi(60GB, 불가).
+- 소리: MuseTalk 1.5(자유 이용, 4GB) · InfiniteTalk(Apache, 24GB 권장) · LatentSync 1.6(18GB) · MMAudio 체크포인트 CC-BY-NC(불가) · HunyuanVideo-Foley(라이선스 미확인).
+
+### D. 작업공간 선행 사례 (읽기 전수)
+- axdata_13: 쇼츠 렌더 19초/편, 215편 렌더·112편 업로드, 스톡 불일치 40%(HANDOFF.md:44). 롱폼 1단계 flat 20분 = 음성 35초 + klein 210장 11.3분(3.2초/장, VRAM 12~13.6GB) + 조립 4.9분, $0(research.md:1869-1877). Wan 움직임은 롱폼에서 한 번도 안 돌림(research.md:1920). 썸네일 코드 없음.
+- axdata_23: Wan 2.2 I2V 14B fp8+4스텝 LoRA, 512×512/768·49장 클립 45~66초, VRAM 최대 15.5GB, 18클립 실패 0(23 research.md:589). VACE 1.3B 138초/편(:1181). 14B fp16 은 넘침(:1172).
+- axdata_05: wanrun.py 70초·VRAM 14.3GB, 검은 mp4 약 13/58 자동 재시도 복구(05 research.md:8486). 09-27 신모델(TI2V 5B 거의 안 움직임 · Animate2 160초 · SCAIL-2 117초 · Wan-Move 66초 · Kandinsky5 98초). musubi T0 384×576 20.8초/스텝.
+- 모델 폴더: Wan 2.2 i2v high/low fp8 각 13.31GiB · ti2v 5B · VACE 1.3B/14B · SCAIL-2 · Animate2 · WanMove · lightx2v LoRA · ACE-Step 3.5B · Stable Audio 3 sfx. LTX·FramePack·HunyuanVideo 본체 없음. 립싱크·로컬 TTS 없음.
+- ⚠ 문서 어긋남(C등급, 지금 안 깨짐): PLAN_LONGFORM.md:16 «격리 뒤에만 Wan», 23 CLAUDE.md «램 32GB» — 실제는 Wan 09-28부터 가동, 훅 실측 RAM 47.9GB. 계획 확정 때 함께 고칠 것.
+
+### E. 판단(메인)
+- 상용 제작기의 가치는 흐름(장면표·장면별 재생성·교체) → 로컬로 재현 가능. 상용 모델 수준(소리 동시·10~30초 한 컷)은 로컬 불가 → «그림 중심 + 골라서 Wan 3~5초».
+- 차별점 = 소재 관련성 자동 검사(상용 0곳, 우리 실패 40%/8.6% 의 자리).
+- 첫 실측 필요: 가로 832×480·1280×720 Wan 시간·VRAM(미측정), LTX-2.3 비교(다운로드 승인 필요).
+
+### F. 보완 조사 2건 (2026-10-02 23:15, Gim «기존 영상모델 외 추가 모델 보완 조사» → 선택박스 «둘 다, 서브 2개», 토큰 153k·미기록)
+- 결과는 `PLAN_VIDEOGEN.md` 10절에 표로 반영. 아래는 출처.
+- 추가 영상 모델: Kandinsky 5(MIT, Lite 2B·Pro 19B) https://github.com/kandinskylab/kandinsky-5/ · LongCat-Video(MIT 13.6B) https://github.com/meituan-longcat/LongCat-Video · Ovi 1.1(Apache 11B 영상+소리, 공식 24GB) https://github.com/character-ai/Ovi · Wan2.2-Fun-A14B(Apache) https://huggingface.co/alibaba-pai/Wan2.2-Fun-A14B-Control · SkyReels-V2 DF(Skywork 라이선스, 지역 조항 원문 503 미확인) https://github.com/SkyworkAI/SkyReels-V2 · Step-Video(MIT, 72~79GB) · Open-Sora 2(Apache, 52~60GB) · Pusa(Apache) https://github.com/Yaofang-Liu/Pusa-VidGen · Helios(Apache 14B, distilled 오프로드 약 6GB, ComfyUI 없음) https://github.com/PKU-YuanGroup/Helios · LongLive·SANA-Video(NVIDIA, Apache) https://github.com/NVlabs/Sana · Bernini(ByteDance Apache) · Wan-Dancer(Apache).
+- 오픈웨이트 아레나 I2V(theopenweights.com, 10-02): LTX-2.5 Fast 1214 · LTX-2 Fast 1191 · LTX-2.3 Fast 1149 · HunyuanVideo-1.5 1134 · Wan 2.2 A14B 1107.
+- 이어붙이기: SVI(MIT, Wan2.1 I2V LoRA, 10~20분 시험) https://github.com/vita-epfl/Stable-Video-Infinity · Context Options(윈도 81·겹침 16, 1025장 VRAM 5GB 미만) · RIFLEx(약 2배, KJNodes) https://arxiv.org/abs/2502.15894
+- 한국어 TTS: Qwen3-TTS(Apache, 한국어 WER 1.755, 유사도 0.799, 블로그 5GB·transformers 5.0 비호환·무한 생성 버그 보고) https://github.com/QwenLM/Qwen3-TTS · VoxCPM2(Apache 2B 8GB, 한국어 WER 1.962 블로그) https://github.com/OpenBMB/VoxCPM · Fun-CosyVoice 3(코드 Apache, 가중치 미확인) · Chatterbox ML V3(MIT) · MOSS-TTS 1.5(Apache) · GPT-SoVITS(MIT, RTF 0.014~0.028) · OmniVoice(Apache) · Kani-TTS-400m-ko(Apache, 15초 넘으면 저하) · Supertonic 3(OpenRAIL-M, archive) · MeloTTS(MIT). 비상업: Fish S2 Pro·OpenAudio S1·Higgs v3. 한국어 없음: IndexTTS-2.5·Zonos·Spark·Dia.
+- VLM: Qwen3-VL(Apache, Ollama 4b 3.3GB·8b 6.1GB, 4B 장당 1.7초 블로그, ComfyUI-QwenVL 노드는 GPL-3.0) · Gemma 4(Apache) · MiniCPM-V 4.5(Apache) · SigLIP 2 so400m(Apache). 한국어 이해 공식 근거는 전부 미확인.
+- 업스케일·보간: SeedVR2(Apache) · FlashVSR(Apache, RTX40 호환 미확인) · Real-ESRGAN(BSD) · RIFE(MIT) · GIMM-VFI(S-Lab 비상업).
+- 음악·효과음: ACE-Step 1.5(MIT 상업 명시, 한국어 가사, 10초~10분) https://github.com/ace-step/ACE-Step-1.5 · DiffRhythm(Apache) · MusicGen(CC-BY-NC) · Stable Audio Open(Community License, 매출 조건 숫자 미확인) · **HunyuanVideo-Foley LICENSE 원문 «EU·영국·대한민국 제외»** · ThinkSound(연구 전용).
+- 립싱크: MuseTalk 1.5(MIT 4GB) · LatentSync 1.5 8GB / 1.6 18GB · InfiniteTalk(Apache) · Sonic(비상업) · Hallo3(MIT, H100).
+- 음성 인식: Whisper large-v3-turbo(MIT) · ghost613 한국어판(CER 2.06%, 라이선스 미확인) · WhisperX(BSD, 한국어 정렬 모델 별도) · Qwen3-ASR+ForcedAligner(Apache).
+- ⚠ 서브 자체 경고: WebFetch 요약값이라 원문과 다를 수 있음(SeedVR2 속도 1건은 원문에 없어 폐기됨). YuE 요약에 이상 내용 섞임 → 재확인 필요.
