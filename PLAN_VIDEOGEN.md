@@ -175,6 +175,7 @@
 4. **자막 시간 정확도** — TTS 결과를 ForcedAligner/Whisper 로 다시 맞춰 단어 단위 자막(지금 ASS 강조의 품질 개선).
 5. **효과음은 생성 모델 없이** — 한국에서 상업으로 쓸 수 있는 확실한 후보가 없음. 기존 합성 + 무료 라이브러리 유지.
 6. **받아야 할 것(승인 시)** — LTX-2.5/2.3 GGUF 약 10~16GB · Qwen3-TTS 약 4GB · Qwen3-VL 4B 약 3GB · SigLIP 2 약 2GB · ACE-Step 1.5 · (선택) LongCat fp8·SVI LoRA·Wan Fun InP. 모두 대기열 등록 후 다운로드.
+7. **(10-07 재조사 → `BENCH_PAID_TOOLS.md`)** — 상용 대비 격차 1위는 그림(klein 4B 아레나 70위/82). P0 음성 비교에 구글 Chirp 3 HD(같은 무료 한도) 추가, 그림 비교에 Z-Image Turbo(상업 라이선스 확인 뒤) 추가. Qwen-Image 2.1 은 연구용 라이선스라 제외.
 
 ## 9. 확인하지 못한 것
 

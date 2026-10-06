@@ -2347,3 +2347,33 @@ F 선택·분기 — 전례를 못 찾음. 기록만
 - 립싱크: MuseTalk 1.5(MIT 4GB) · LatentSync 1.5 8GB / 1.6 18GB · InfiniteTalk(Apache) · Sonic(비상업) · Hallo3(MIT, H100).
 - 음성 인식: Whisper large-v3-turbo(MIT) · ghost613 한국어판(CER 2.06%, 라이선스 미확인) · WhisperX(BSD, 한국어 정렬 모델 별도) · Qwen3-ASR+ForcedAligner(Apache).
 - ⚠ 서브 자체 경고: WebFetch 요약값이라 원문과 다를 수 있음(SeedVR2 속도 1건은 원문에 없어 폐기됨). YuE 요약에 이상 내용 섞임 → 재확인 필요.
+
+## 2026-10-07 08:20 — 남은 일 점검 (Gim «다음 작업이나 남은 사항 확인 후 보고», 0-a 점검이라 고친 것 없음)
+
+**확인 수단** — git status·log · `PLAN_VIDEOGEN.md` 6·8·9·10-3절 · research.md 09-26 항목 · `schtasks /query` · 미추적 파일 크기·날짜.
+**A (Gim 결정)**
+- 영상 툴 P0 측정(Wan 2.2 가로 832×480·1280×720 81장 + LTX-2.5·LongCat 비교, 하룻밤 GPU) — 10-02 «계획만»으로 보류 중.
+- 모델 다운로드 약 20~30GB(LTX GGUF 10~16GB·Qwen3-TTS 4GB·Qwen3-VL 4B 3GB·SigLIP 2 2GB·ACE-Step 1.5) — 승인 대기.
+- 롱폼 상위 5(백룸·요괴 도감·기묘한 가게·만약에 지구·타임슬립) 썸네일 시안 생성 — 09-26 제안 뒤 답 없음.
+- D 드라이브 정리 후보 — 루트 기억 `d-drive-cleanup-candidates.md`, 결정 대기.
+**사실(정상)** — `\AXdata_YouTube_DailyUpload`·`\AXdata_YouTube_UploadCheck` 둘 다 Disabled, 다음 실행 N/A(새 업로드 없음 유지).
+**B (0-a 라 안 고침, 방법만)** — 이 키 MEMORY.md 100자 넘는 줄 9개(세션 훅 경고): 요지를 각 기억 본문으로 옮기고 줄을 100자 안으로 줄이면 됨.
+**C (안 깨짐)**
+- 미추적 4개: `previews/179h_…훅.mp4`(7.6MB, 08-02)·`202h_…훅.mp4`(11.7MB, 08-02)·`_before_100_…별자리.mp4`(12.3MB, 08-04)·`rerender.log`(08-04, «완료 64편 · 실패 0편»). 8월 재렌더 부산물, 아무것도 참조 안 함. 삭제는 승인 필요라 그대로 둠.
+- `PLAN_LONGFORM.md:16` «격리 뒤에만 Wan» 등 낡은 표기 — 계획 확정 때 함께 고치기로 10-02 기록됨.
+- 루트 MEMORY.md 86%(21,499자) — 한도 전, 나중에 정리.
+
+## 2026-10-07 08:25~08:55 — 상용 유료 툴 재조사와 로컬 비교 (Gim «외부 상용 유료 툴 깊이 재조사 → 로컬과 비교점검 → 정리·보고»)
+
+**결정(선택박스 08:25)** — 범위 «단계별 전체» · 진행 «서브 3개 Sonnet». 서브 토큰 16.2만·24.6만·33.6만, 도구 호출 71·97·123회.
+**결과 문서** — `BENCH_PAID_TOOLS.md`(단계별 비교·원가·바뀐 사실·계획 반영·미확인).
+**서브 보고 요지(수치만, 판단은 메인)**
+- 영상·그림 모델: Veo 3.1 Std $0.40·Fast $0.10·Lite $0.05/초 720p, 최대 8초, preview 10-22 종료 · Gemini Omni Flash $0.10/초, 총 40초 · Runway Gen-4.5 12크레딧/초($0.12) · Vidu Q3 turbo 720p $0.055 · PixVerse V6 720p $0.03~0.04 · Wan 3.0 API 720p $0.10(가중치 없음) · Imagen 4 08-17 종료 · Nano Banana 2.1 1K $0.0336 · FLUX.2 klein 4B API $0.014/장. LMArena I2V(09-21): H3 1495·Omni 1.1 Flash 1488·Wan 3.0 1480·Veo 3.1 1398·Vidu Q3 Pro 1363·Kling v3 Pro 1354·Wan 2.2 1170(43위)·LTX-2 19B 1159. LMArena T2I(10-06): gpt-image-2.5 1425·Nano Banana 2.1 1328·Qwen-Image 2.1 1223·FLUX.2 max 1162·klein 9B 1070·klein 4B 1030(70위/82). ⚠ AA 영상 아레나는 척도 두 개로 갈려 정본 미확정.
+- 제작기: InVideo Starter $20(400크레딧)·Max 연 $75(5,000), Seedance 2.5 720p 5초 약 56크레딧 → 20분 전부 생성 13,440 · Pictory 스크립트→영상 30분 · Fliki 15분(수동 40분) · Vrew ₩14,900/23,900/39,600, 약관 12조 5항(이미지·오디오만 상업 자유) · CapCut 공식 정가 미공개 · 관련성 검사 공식 문구 15곳 모두 없음 · 공통 불만 = 실패·재생성 크레딧 차감, 환불 거부.
+- 음성·음악·LLM·ASR: Google Neural2 $16·Chirp 3 HD $30/100만 자, 둘 다 월 100만 자 무료 · ElevenLabs v4 $0.08/1K자(10-12까지 72% 할인), Starter 부터 상업 · Typecast 1자=1크레딧, Basic ₩9,900 3만 · CLOVA Dubbing Standard ₩19,900 개인·비영리 · 한국어 TTS 객관 평가 공개 0곳 · Soundraw ₩8,250 무제한·클레임 없음 주장 · Suno v6 Content ID 보장 없음 · ElevenLabs SFX $0.12/분 · Whisper API $0.006/분 · Sonnet 5.5 $2/$10.
+**메인 직접 확인**
+- MiniMax H3 HF 모델 카드(https://huggingface.co/MiniMaxAI/MiniMax-H3): «USA/EU/UK/South Korea» 상업 이용은 신청서 필요, 배포 예시 GPU 4장. 서브의 «연매출 2천만 달러 미만 무료»는 리뷰 출처라 채택 안 함. 결론(우리 PC 불가)은 10-02 와 같음.
+- Qwen-Image 2.1(09-20 출시, 7B): Qwen Research License — 상업은 별도 신청(codersera·aicybr·aireiter 리뷰 일치, 공식 원문 미열람). 16GB int8 구동 보고.
+**판정(메인)** — 격차 1위는 그림(약 300~400점). 원가는 전부 상용 API 시 편당 약 $10~15(저가)~$30~95(고가). 제작기 직접 만들기 유지. P0 에 Chirp 3 HD·Z-Image Turbo(라이선스 확인 뒤) 추가 권고. 로컬 전용 vs 상용 혼합은 Gim 결정(10-02 목표가 «로컬»이라 정답이 갈림).
+**확인 못 한 것** — 문서 7절과 같음.
+**정리** — 서브가 열어 둔 브라우저 탭 1개(revid.ai) 08:41 닫음, 브라우저 창 닫힘.
