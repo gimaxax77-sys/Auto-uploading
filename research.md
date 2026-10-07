@@ -2378,3 +2378,8 @@ F 선택·분기 — 전례를 못 찾음. 기록만
 **확인 못 한 것** — 문서 7절과 같음.
 **정리** — 서브가 열어 둔 브라우저 탭 1개(revid.ai) 08:41 닫음, 브라우저 창 닫힘.
 - 08:58 Gim 선택박스: 그림은 «로컬 유지 + 후보 시험»(상용 혼합 안 함). PLAN_VIDEOGEN 8절 4번에 기록.
+
+## 2026-10-07 09:15~09:25 — 비교군 채점 (Gim «각 비교군 결과물 점수 매겨»)
+- 해석: 상용 결과물 직접 생성은 유료·승인 필요라 0건 → 공개 아레나 점수를 «1위 대비 승률×2»로 100점 환산 + 우리 적합 50점(원가·약관·환경) → 종합. 권장안 즉시 적용 원칙(루트 CLAUDE.md)으로 채점 방식은 메인이 정함 — 임시.
+- 결과는 `BENCH_PAID_TOOLS.md` 8절. 그림 종합: gpt-image-2 79 · Nano Banana 2.1 72 · klein 4B 60 · Qwen 54 · klein 9B 47 · Z-Image 42(확인 시 62). 움직임: Omni Flash 79 · Veo 3.1 72 · Wan 3.0 68 · Wan 2.2 64 · Kling 51 · LTX-2 43. 음성 품질 미측정. 제작기: 직접 90 · Pictory 50 · Fliki 40 · InVideo 30.
+- 확인 못 한 것: gpt-image-2.5·Seedream·FLUX.2 max·Vidu Q3 Pro·H3 API 가격, Veo 아레나 등급, Z-Image LMArena 점수(AA 환산 추정), LTX-2·Z-Image 라이선스와 16GB 구동.
