@@ -38,7 +38,7 @@ AA 아레나(척도 다름): klein 4B 124위 862 · Z-Image Turbo 81위 941 · k
 **로컬 교체 후보 — 상업 이용이 걸림돌**
 - Qwen-Image 2.1(7B, 16GB 에서 int8 구동) — ❌ **Qwen Research License, 상업은 별도 신청**(메인 확인, 리뷰 다수 일치). 지금은 못 씀.
 - FLUX.2 klein 9B — ⚠ BFL 가격표상 «Platform 요금제에서 klein 9B 상업 이용» → 무료 상업 아님으로 보임(원문 미확인).
-- Z-Image Turbo(6B) — AA 점수가 klein 4B 보다 79점 높음. ⚠ 라이선스·16GB 구동 **미확인**(조사 필요).
+- Z-Image Turbo(6B) — AA 점수는 klein 4B 보다 79점 높으나 **(09-22 우리 PC 실측 탈락 — 장당 25.7~31.7초로 klein 8.2초의 약 3.4배, 퉁구스카 4장면 중 공중폭발을 지상 버섯구름으로 그림. 원문 `research_archive_~20261008.md` «z_image turbo 실사 비교 시험»)**. int8 판으로 16GB 구동은 됨. 라이선스는 `PLAN_LONGFORM.md:352` 기록상 Apache-2.0(원문 재확인 안 함).
 - HunyuanImage 3.0 — 같은 계열 영상 모델이 한국 제외였음, 확인 필요.
 
 **상용 혼합 시 원가** — 210장 × Nano Banana 2.1 $0.034 = **약 $7/편**. 썸네일만 상용이면 편당 3장 × $0.034 = 약 $0.10.
@@ -82,7 +82,7 @@ AA 아레나(척도 다름): klein 4B 124위 862 · Z-Image Turbo 81위 941 · k
 
 ## 6. 계획(`PLAN_VIDEOGEN.md`)에 반영할 것
 
-1. **P0 비교군 추가** — 음성: Qwen3-TTS·VoxCPM2·GPT-SoVITS 대 Neural2 에 **Chirp 3 HD** 추가(같은 무료 한도, 코드는 목소리 이름만 바뀜). 그림: klein 4B 대 **Z-Image Turbo**(라이선스 확인 뒤).
+1. **P0 비교군 추가** — 음성: Qwen3-TTS·VoxCPM2·GPT-SoVITS 대 Neural2 에 **Chirp 3 HD** 추가(같은 무료 한도, 코드는 목소리 이름만 바뀜). 그림: klein 4B 대 **klein 9B**(라이선스 원문 확인 뒤) — Z-Image Turbo 는 09-22 실측 탈락.
 2. **그림 품질을 눈으로 재는 칸** — 같은 장면 10개를 klein 4B 와 후보로 뽑아 나란히 보기(로컬만, 승인 불필요 범위).
 3. **결정 필요** — 로컬 전용 유지 vs 일부(썸네일·핵심 장면) 상용 API 혼합. 10-02 Gim 목표는 «로컬 생성».
 
@@ -92,7 +92,7 @@ AA 아레나(척도 다름): klein 4B 124위 862 · Z-Image Turbo 81위 941 · k
 - 대부분 상용 영상 모델의 생성 대기 시간(Veo 11초~6분 [공], H3 평균 약 264초 [리]만 확인).
 - Kling·Seedance·Midjourney·OpenAI 공식 가격 원문(403·읽기 실패, 리뷰 값 사용).
 - AA 영상 아레나는 척도가 두 개로 갈려 어느 쪽이 최신 정본인지 미확정(서브 보고).
-- Z-Image Turbo·HunyuanImage 3.0·klein 9B 의 상업 라이선스 원문.
+- HunyuanImage 3.0·klein 9B 의 상업 라이선스 원문.
 - CapCut 공식 정가, CLOVA·Supertone 공식 요금 숫자(스크립트 렌더링·접근 차단).
 - 참고(C) — `generate.py:27,49` 가 `claude-opus-4-8` 을 씀. 쇼츠 대본 단가는 편당 센트 단위라 지금 깨지는 것 없음.
 
@@ -117,10 +117,10 @@ AA 아레나(척도 다름): klein 4B 124위 862 · Z-Image Turbo 81위 941 · k
 | FLUX.2 max | 36 | 미확인 | — | — | — |
 | klein 9B (로컬) | 23 | 20 | 5 | 10 | 47 |
 | **klein 4B (우리)** | **19** | 20 | 15 | 15 | **60** |
-| Z-Image Turbo (로컬) | 약 23 추정 | 20 | 5 | 5 | 42 → 확인되면 62 |
+| Z-Image Turbo (로컬) | 약 23 추정 | 20 | 10 | 15 | 57 · **09-22 실측 탈락** |
 
-- Z-Image 품질은 LMArena 에 없어 AA 아레나 차이(klein 4B 대비 +79, klein 9B 와 거의 같음)를 LMArena 척도로 옮긴 추정입니다. 라이선스가 상업 자유이고 16GB 에서 돌면 종합 62 로 klein 4B(60)를 근소하게 넘습니다.
-- **로컬만 놓고 보면** klein 4B 60 > Qwen 54(못 씀) > klein 9B 47 > Z-Image 42(미확인). 상용을 넣으면 gpt-image-2 79·Nano Banana 72 가 위입니다 — 10-07 Gim 결정(로컬 유지)은 이 차이를 알고 고른 것.
+- Z-Image 품질은 LMArena 에 없어 AA 아레나 차이를 옮긴 추정입니다. 점수표로는 57 이지만 우리 PC 직접 비교(09-22)에서 3.4배 느리고 핵심 장면을 틀려 탈락했습니다 — 아레나 점수보다 우리 장면 직접 비교가 우선입니다.
+- **로컬만 놓고 보면** klein 4B 60 > Z-Image 57(실측 탈락) > Qwen 54(못 씀) > klein 9B 47(라이선스 미확인). 상용을 넣으면 gpt-image-2 79·Nano Banana 72 가 위입니다 — 10-07 Gim 결정(로컬 유지)은 이 차이를 알고 고른 것.
 
 **움직임 (편당 200초 기준 원가)**
 
