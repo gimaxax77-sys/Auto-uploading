@@ -14,5 +14,5 @@
    for %f in (test_*.py) do python -X utf8 -u %f
    ```
 
-   - `test_generate.py` 글자 수 가드 · `test_video.py` ffmpeg 조립(외부 API 불필요) · `test_youtube.py` 자격증명 없을 때 안내 · `test_check_upload.py` 업로드 점검 계산.
+   - `test_generate.py` 글자 수 가드 · `test_video.py` ffmpeg 조립(외부 API 불필요) · `test_youtube.py` 자격증명 없을 때 안내 · `test_check_upload.py` 업로드 점검 계산 · `test_analyze_video.py` 참고 영상 주소·자막 처리 · `test_prompt_rules.py` 롱폼 그림 프롬프트 규칙층(`longform_trial/gen.py`).
    - 코드를 건드렸으면 "완료"라고 말하기 전에 반드시 돌립니다.
