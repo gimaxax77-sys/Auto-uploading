@@ -23,7 +23,7 @@
 - 10-02: 로컬 영상 생성 툴 계획 v1 `PLAN_VIDEOGEN.md`(커밋 38016a3).
 - 10-07: 상용 유료 툴 재조사 `BENCH_PAID_TOOLS.md`(da0ce67) + 비교군 채점(c7e9fad). Gim 결정 = 그림 로컬 유지·상용 혼합 안 함(1c2558d).
 - 10-08: 기록 3파일 체제로 가지치기, Z-Image «미확인» 오기 정정.
-- 10-09: 작업 폴더 전수 점검 — HANDOFF·PLAN·PLAN_LONGFORM 상태 갱신, 배치 2개 CRLF 복구, archive 참조 경로·테스트 목록 정정. 테스트 6/6 통과.
+- 10-09: 작업 폴더 전수 점검 — HANDOFF·PLAN·PLAN_LONGFORM 상태 갱신, 배치 2개 CRLF 복구, archive 참조 경로·테스트 목록 정정. 테스트 6/6 통과. Gim 승인으로 GitHub 푸시(09-08 이후 24커밋)·origin/atup 삭제·8월 부산물 4개 휴지통·기억 목록 100자 정리.
 
 ## 유효한 조사 결론
 
