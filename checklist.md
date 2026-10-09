@@ -8,7 +8,7 @@
 - [ ] 롱폼 상위 5(백룸·요괴 도감·기묘한 가게·만약에 지구·타임슬립) 썸네일 시안 — 09-26 제안 뒤 답 없음.
 - [ ] D 드라이브 정리 후보 — 루트 기억 `d-drive-cleanup-candidates.md`.
 - [ ] 미추적 파일 4개 처리(previews 의 08-02·08-04 mp4 3개, rerender.log) — 삭제는 승인 필요.
-- [ ] GitHub 푸시 — main 이 origin 보다 22커밋 앞(마지막 푸시 09-08). 저장소가 PUBLIC 이라 승인 필요.
+- [ ] GitHub 푸시 — main 이 origin 보다 앞섬(마지막 푸시 09-08, 수는 git status -sb 로). 저장소가 PUBLIC 이라 승인 필요.
 - [ ] 원격 브랜치 `origin/atup` 정리 — main 에 전부 들어가 있음(남은 커밋 0). 지우기는 승인 필요.
 
 ## 내가 할 일(승인 불필요)
