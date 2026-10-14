@@ -1,7 +1,7 @@
 # axdata_13 — context-notes.md (지금 문제·조심할 것, 100줄 상한)
 
 ## 늘 조심할 것
-- 10-13부터 `_TOOLSuto-push` 가 main 을 30분마다·세션 끝에 자동 푸시 → 커밋 = 곧 PUBLIC 공개. 개인정보·자격증명은 커밋 전에 거른다(10-14 2a3737c 가 16:44 에 이렇게 올라감).
+- 10-13부터 `_TOOLS/auto-push` 가 main 을 30분마다·세션 끝에 자동 푸시 → 커밋 = 곧 PUBLIC 공개. 개인정보·자격증명은 커밋 전에 거른다(10-14 2a3737c 가 16:44 에 이렇게 올라감).
 - 새 유튜브 업로드는 Gim 지시 전엔 안 함. 업로드 작업은 `DailyUpload`·`UploadCheck` 둘 — 껐는지 확인은 `schtasks` 의 N/A.
 - GPU 작업은 `q.mjs add → try/wait → done`. ComfyUI 띄우면 끝날 때 트리 종료·포트 8188 닫힘·VRAM 확인.
 - 평일 08~21시는 Gim PC 불가 — 다운로드·설치·로그인 필요한 일은 밤·주말로.
