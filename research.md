@@ -51,3 +51,4 @@
 - 제작기 15곳 모두 소재-대사 관련성 검사 없음 → 직접 제작 유지.
 - 음성은 구글 Neural2 로 편당 약 $0.10(월 100만 자 무료). Chirp 3 HD 도 같은 무료 한도.
 - 못 쓰는 것: MiniMax H3(한국 상업 신청·GPU 4장), Qwen-Image 2.1(연구용), MMAudio(비상업), FLUX.1 dev(판매용 에셋 금지).
+- 10-16 21:50: 모델 사양서 — 6부문 32개 카드(AA 순위표 10-16 조회를 «1위 대비 승률×2» 100점으로 환산). klein 4B 20 · FLUX 3 klein 추정 49 · Nano Banana 87 / Neural2 15 · Chirp 3 HD 35 / LTX-2.5 Fast 58 · Wan 약 27~36. 페이지 https://claude.ai/artifact/8Vw5q3peFPzSqUF9XiCpNW
