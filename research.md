@@ -25,7 +25,7 @@
 - 10-08: 기록 3파일 체제로 가지치기, Z-Image «미확인» 오기 정정.
 - 10-09: 작업 폴더 전수 점검 — HANDOFF·PLAN·PLAN_LONGFORM 상태 갱신, 배치 2개 CRLF 복구, archive 참조 경로·테스트 목록 정정. 테스트 6/6 통과. Gim 승인으로 GitHub 푸시(09-08 이후 24커밋)·origin/atup 삭제·8월 부산물 4개 휴지통·기억 목록 100자 정리. 이어서 PLAN_LONGFORM «램 격리 뒤 Wan» 낡은 두 줄(314·354) 갱신.
 - 10-14: AI 영상 퀄리티 심층조사(서브 4갈래) — 결론: 모델보다 연출 부재가 병목, 시험작은 유튜브 수익화 불가 예시 «서사 없는 이미지 슬라이드쇼»와 형태가 겹침. 처방 6단계(샷리스트 대본·소리 층·2.5D·캐릭터 LoRA·선별·아트 디렉션). 페이지 https://claude.ai/artifact/Vqy8XXipS8w5KiHcfEBtQz
-- 10-16: 영상 제작 기준서 v1 `VIDEO_STANDARD.md`(서브 4갈래, 4d63337). 새 사실 — klein 9B 비상업 · 깊이 DA V2/DA3 Small Apache · Stable Audio 3 보유(등록 조건) · FLUX 3 klein 5.6B. 합격선 다수 «임시». 페이지 https://claude.ai/artifact/SNTjp6Xg8jBY6i4s3LubdP
+- 10-16: 영상 제작 기준서 v1 `영상_제작_기준서.md`(서브 4갈래, 4d63337). 새 사실 — klein 9B 비상업 · 깊이 DA V2/DA3 Small Apache · Stable Audio 3 보유(등록 조건) · FLUX 3 klein 5.6B. 합격선 다수 «임시». 페이지 https://claude.ai/artifact/SNTjp6Xg8jBY6i4s3LubdP
 
 ## 유효한 조사 결론
 

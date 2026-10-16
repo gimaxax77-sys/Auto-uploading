@@ -6,7 +6,7 @@
 - [ ] 영상 툴 P0 측정 승인(하룻밤 GPU) — Wan 2.2 가로 832×480·1280×720 81장, LTX-2.5·LongCat 비교, 음성 Qwen3-TTS·VoxCPM2·GPT-SoVITS 대 Neural2·Chirp 3 HD.
 - [ ] 모델 다운로드 약 20~30GB 승인(LTX GGUF·Qwen3-TTS·Qwen3-VL 4B·SigLIP 2·ACE-Step 1.5).
 - [ ] 롱폼 상위 5(백룸·요괴 도감·기묘한 가게·만약에 지구·타임슬립) 썸네일 시안 — 09-26 제안 뒤 답 없음.
-- [ ] 기준서 `VIDEO_STANDARD.md` 9절 결정 — Stable Audio 3 상업 등록 여부 · 다운로드 묶음(FLUX 3 klein 5.6B · 깊이 모델 · Qwen3-VL 4B).
+- [ ] 기준서 `영상_제작_기준서.md` 9절 결정 — Stable Audio 3 상업 등록 여부 · 다운로드 묶음(FLUX 3 klein 5.6B · 깊이 모델 · Qwen3-VL 4B).
 - [ ] D 드라이브 정리 후보 — 루트 기억 `d-drive-cleanup-candidates.md`.
 
 ## 내가 할 일(승인 불필요)
