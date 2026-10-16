@@ -6,17 +6,17 @@
 - [ ] 영상 툴 P0 측정 승인(하룻밤 GPU) — Wan 2.2 가로 832×480·1280×720 81장, LTX-2.5·LongCat 비교, 음성 Qwen3-TTS·VoxCPM2·GPT-SoVITS 대 Neural2·Chirp 3 HD.
 - [ ] 모델 다운로드 약 20~30GB 승인(LTX GGUF·Qwen3-TTS·Qwen3-VL 4B·SigLIP 2·ACE-Step 1.5).
 - [ ] 롱폼 상위 5(백룸·요괴 도감·기묘한 가게·만약에 지구·타임슬립) 썸네일 시안 — 09-26 제안 뒤 답 없음.
+- [ ] 기준서 `VIDEO_STANDARD.md` 9절 결정 — Stable Audio 3 상업 등록 여부 · 다운로드 묶음(FLUX 3 klein 5.6B · 깊이 모델 · Qwen3-VL 4B).
 - [ ] D 드라이브 정리 후보 — 루트 기억 `d-drive-cleanup-candidates.md`.
 
 ## 내가 할 일(승인 불필요)
-- [ ] klein 9B 상업 라이선스 원문 확인 → 무료 상업이면 P0 그림 비교 후보, 아니면 klein 4B 유지·프롬프트 개선.
 - [ ] 퉁구스카 210장면 프롬프트에 사람+동물 붙은 구가 더 있는지 훑기(09-22 미완).
 - [ ] 설정 시트 재제작(빈 배경·전신·여러 각도) + 구도 지시(근접·어깨너머·부감) 효과 측정 — GPU 대기열.
 
 ## 퀄리티 처방(10-14 조사) — 착수는 Gim 승인
 - [ ] ① 대본을 샷리스트(샷 크기·앵글·시점·감정·소리 큐)로 + 퉁구스카 2분 전후 비교.
 - [ ] ② 소리 층(음악 44.1k 스테레오·효과음 CC0·덕킹·무음).
-- [ ] ③ 2.5D 깊이 층 움직임 — 상업 가능 깊이 모델 라이선스 먼저 확인.
+- [ ] ③ 2.5D 깊이 층 움직임 — Depth Anything V2 Small·DA3 Small/Base(Apache) + Qwen-Image-Layered(보유).
 
 ## 나중(계획 확정 때 함께)
 - [ ] `generate.py:27,49` 의 모델 `claude-opus-4-8` 단가 재검토(쇼츠 재개 시).
