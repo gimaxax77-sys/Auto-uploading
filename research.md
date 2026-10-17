@@ -53,3 +53,4 @@
 - 못 쓰는 것: MiniMax H3(한국 상업 신청·GPU 4장), Qwen-Image 2.1(연구용), MMAudio(비상업), FLUX.1 dev(판매용 에셋 금지).
 - 10-16 21:50: 모델 사양서 — 6부문 32개 카드(AA 순위표 10-16 조회를 «1위 대비 승률×2» 100점으로 환산). klein 4B 20 · FLUX 3 klein 추정 49 · Nano Banana 87 / Neural2 15 · Chirp 3 HD 35 / LTX-2.5 Fast 58 · Wan 약 27~36. 페이지 https://claude.ai/artifact/8Vw5q3peFPzSqUF9XiCpNW
 - 10-18 00:40: FLUX 3 klein 받기 조사 — 저장소 black-forest-labs/flux-3-image-klein-comfy(로그인+연락처 동의 즉시 승인). 우리 몫 int8 5.83GB + 글자 해석기 qwen3vl_4b int8 4.86GB(VAE flux2-vae 이미 보유, 해시 미확인). ⚠ ComfyUI 0.41.0 부터 지원(지금 0.39.0). HF 토큰 이 PC 에 없음.
+- 10-18 00:55: ComfyUI 0.41 업데이트 계획 — 본체 08ff3c1→v0.41.0 + 화면 패키지 3개(frontend 1.55.17·templates 0.11.84·docs 0.5.14), torch 그대로, 되돌리기 2분. Gim 승인 대기. 페이지 https://claude.ai/artifact/V9NK4A5ibC2M6Rai654Uau
