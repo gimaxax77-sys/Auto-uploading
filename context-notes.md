@@ -23,3 +23,4 @@
 ## C 등급(안 고쳐도 지금 안 깨짐)
 - `generate.py:27,49` claude-opus-4-8: 쇼츠 대본 편당 센트 단위, 업로드 중지 중이라 비용 0.
 - 루트 MEMORY.md 47.7%(11,926자·143줄, 10-09 실측): 한도 25,000자·200줄 전.
+- human-parser-comfyui-node 불러오기 실패(«Ninja is required») — 13 은 안 씀. ninja.exe 는 _ENV/comfyui/Scripts 에 있으나 python.exe 직접 실행 시 PATH 에 없음. 쓰는 세션이 PATH 를 넣고 띄우면 됨(10-18 전 세션 공지).
